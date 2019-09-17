@@ -1,3 +1,4 @@
+var Sensor = require("./sensor.js");
 var MongoClient = require('mongodb').MongoClient;
 strftime = require("strftime");
 const platformName = "greenhouseCC8";
@@ -5,40 +6,33 @@ const ip = "localhost";
 var url = "mongodb://" + ip + ":27017/";
 const dbName = "greenhouse";
 
-function getTime(){
+
+exports.ip = function(){
+  return ip;
+}
+
+exports.platformName = function(){
+  return platformName;
+}
+
+exports.getTimeInFormat = function(){
   var date = new Date();
   return strftime('%Y-%m-%dT%H:%M:%S%z', date); 
+}
+
+function getTime(){
+  var date = new Date();
+  return date;
 }
 
 exports.getIp = function(){
   return ip;
 }
 
-exports.searchInfo = function(id_hardware,start_date,finish_date){
-  return new Promise((resolve, reject) => {
-    MongoClient.connect(url, function(err, db) {
-      if (err) throw err;
-      var dbo = db.db(dbName);
-      var query = { address: "Park Lane 38" };
-      dbo.collection("customers")
-        .aggregate(
-          { id: platformName},
-          { url: ip },
-          { date: getdAT}
-        )
-        .find(query).toArray(function(err, result) {
-          if (err) throw err;
-          console.log(result);
-          db.close();
-      });
-    });
-  });
-}
-
-exports.writeLogSearch = function(id,ip,date,search,info){
+exports.writeLogSearchOrChange = function(id,ip,date,search,info){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
-    var obj = { id: id, ip: ip, date: date, search: search, info: info};
+    var obj = { id: id, ip: ip, requestDate: date, date: getTime(), search: search, info: info};
     var dbo = db.db(dbName); 
     dbo.collection("logs/request").insertOne(obj,function(err, res) {
       if (err) throw err;
@@ -47,11 +41,10 @@ exports.writeLogSearch = function(id,ip,date,search,info){
     });
   });
 }
-
 exports.writeLogInfo = function(id,ip,date,info){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
-    var obj = { id: id, ip: ip, date: date, info: info};
+    var obj = { id: id, ip: ip, requestDate: date, date: new Date(getTime()), info: info};
     var dbo = db.db(dbName); 
     dbo.collection("logs/request").insertOne(obj,function(err, res) {
       if (err) throw err;
@@ -61,68 +54,91 @@ exports.writeLogInfo = function(id,ip,date,info){
   });
 }
 
-exports.searchInfo = function(idHardware,startDate,finishDate){
-  return new Promise((resolve, reject) => {
-    // MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
-    //   if (err) throw err;
-    //   var dbo = db.db(dbName); 
-    //   dbo.collection(idHardware).aggregate(
-    //     [
-    //       { 
-    //         $project : { _id : 0 } 
-    //       }, 
-    //       { 
-    //         $addFields: {
-    //           id: platformName,
-    //           url: ip,
-    //           date: getTime(), 
-    //           search: {
-    //             id_hardware: id,
-    //             type: "Estable",
-    //           }
-    //         }
-    //       },
-    //       { 
-    //         $match: { 
-    //           'date' : { '$gte' : ISODate('2013-07-26T18:23:37.000Z') }
-    //           'date' : { '$lt' : ISODate('2013-07-26T18:23:37.000Z') },
-    //         }
-    //       },          
-    //     ],
-    //   ).toArray(function(err, data) {
-    //     if(err)  reject(err) 
-    //     else{
-    //       console.log(data);
-    //       resolve(data);
-    //       db.close();
-    //     }
-    //   });
-    // });
+exports.writeDevice = function(id,sensor){
+  MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+    if (err) throw err;
+    var obj = {hardware_id: id, sensor: sensor, status: false, sensor: Sensor.getText(sensor), freq: "3000",  date: new Date(getTime())};
+    var dbo = db.db(dbName); 
+    dbo.collection(id).insertOne(obj,function(err, res) {
+      if (err) throw err;
+      console.log("deviceInfo inserted");
+      db.close();
+    });
   });
 }
 
-exports.getInfo = function(id){
+// exports.searchInfo = function(idHardware,startDate,finishDate){
+//   return new Promise((resolve, reject) => {
+//     MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+//       if (err) throw err;
+//       var dbo = db.db(dbName);
+//       var query = { 
+//         date: {
+//           $gte: new Date(startDate),
+//           $lt: new Date(finishDate),
+//         }
+//       };
+//       dbo.collection(idHardware)
+//         .find(query, { projection: { _id: 0}}).toArray(function(err, data) {
+//           if(err)  reject(err) 
+//           else{
+//             console.log(data);
+//             resolve(data);
+//             db.close();
+//           }
+//       });
+//     });
+//   });
+// }
+
+exports.searchInfo = function(idHardware,startDate,finishDate){
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+      if (err) throw err;
+      var dbo = db.db(dbName);
+      dbo.collection(idHardware).aggregate([
+        { $lookup:
+          {
+            from: 'info',
+            localField: 'hardware_id',
+            foreignField: 'id',
+            as: 'hardware'            
+          }
+        },
+        {
+          $unwind:'$hardware'
+        }, 
+        {
+          '$match' : { 'date' : { '$gte' : new Date(startDate),  '$lt': new Date(finishDate)} }
+        },              
+        {
+          $project: { 
+            type:'$hardware.type',
+            sensor: 1,
+            status: 1,
+            text: 1,
+            freq: 1,
+            date: 1,
+          },
+        }
+      ]).toArray(function(err, data) {
+          if(err)  reject(err) 
+          else{
+            console.log(data);
+            resolve(data);
+            db.close();
+          }
+      });
+    });
+  });
+}
+
+exports.getInfo = function(){
   return new Promise((resolve, reject) => {
     MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
       if (err) throw err;
       var dbo = db.db(dbName); 
-      var query = { id: id };
-      dbo.collection("info").aggregate(
-        [
-          { 
-            $project : { _id : 0 } 
-          }, 
-          { 
-            $addFields: {
-              url: ip,
-              date: getTime(), 
-            }
-          },
-          { 
-            $match: { id: id } 
-          },          
-        ],
-      ).toArray(function(err, data) {
+      dbo.collection("info").find({}, { projection: { _id: 0, id: 0}}).toArray(function(err, data) {
         if(err)  reject(err) 
         else{
           console.log(data);
@@ -134,19 +150,35 @@ exports.getInfo = function(id){
   });
 }
 
-exports.getInfo2 = function(id){
-  console.log(id);
-  return new Promise((resolve, reject) => {
-    MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
-      var dbo = db.db(dbName); 
-      var query = { id: id };
-      dbo.collection('info').find(query, { projection: { _id: 0 }}).toArray(function(err, data) {
-          if(err)  reject(err) 
-          else{
-            resolve(data);
-            db.close();
-          }
-      });
-    });
-  });
-}
+// exports.getInfo = function(id){
+//   return new Promise((resolve, reject) => {
+//     MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+//       if (err) throw err;
+//       var dbo = db.db(dbName); 
+//       var query = { id: id };
+//       dbo.collection("info").aggregate(
+//         [
+//           { 
+//             $project : { _id : 0 } 
+//           }, 
+//           { 
+//             $addFields: {
+//               url: ip,
+//               date: getTime(), 
+//             }
+//           },
+//           { 
+//             $match: { id: id } 
+//           },          
+//         ],
+//       ).toArray(function(err, data) {
+//         if(err)  reject(err) 
+//         else{
+//           console.log(data);
+//           resolve(data);
+//           db.close();
+//         }
+//       });
+//     });
+//   });
+// }
