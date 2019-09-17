@@ -35,10 +35,76 @@ exports.searchInfo = function(id_hardware,start_date,finish_date){
   });
 }
 
+exports.writeLogSearch = function(id,ip,date,search,info){
+  MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+    if (err) throw err;
+    var obj = { id: id, ip: ip, date: date, search: search, info: info};
+    var dbo = db.db(dbName); 
+    dbo.collection("logs/request").insertOne(obj,function(err, res) {
+      if (err) throw err;
+      console.log("writeLogSearchOrChange inserted");
+      db.close();
+    });
+  });
+}
+
+exports.writeLogInfo = function(id,ip,date,info){
+  MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+    if (err) throw err;
+    var obj = { id: id, ip: ip, date: date, info: info};
+    var dbo = db.db(dbName); 
+    dbo.collection("logs/request").insertOne(obj,function(err, res) {
+      if (err) throw err;
+      console.log("writeLogInfo inserted");
+      db.close();
+    });
+  });
+}
+
+exports.searchInfo = function(idHardware,startDate,finishDate){
+  return new Promise((resolve, reject) => {
+    // MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+    //   if (err) throw err;
+    //   var dbo = db.db(dbName); 
+    //   dbo.collection(idHardware).aggregate(
+    //     [
+    //       { 
+    //         $project : { _id : 0 } 
+    //       }, 
+    //       { 
+    //         $addFields: {
+    //           id: platformName,
+    //           url: ip,
+    //           date: getTime(), 
+    //           search: {
+    //             id_hardware: id,
+    //             type: "Estable",
+    //           }
+    //         }
+    //       },
+    //       { 
+    //         $match: { 
+    //           'date' : { '$gte' : ISODate('2013-07-26T18:23:37.000Z') }
+    //           'date' : { '$lt' : ISODate('2013-07-26T18:23:37.000Z') },
+    //         }
+    //       },          
+    //     ],
+    //   ).toArray(function(err, data) {
+    //     if(err)  reject(err) 
+    //     else{
+    //       console.log(data);
+    //       resolve(data);
+    //       db.close();
+    //     }
+    //   });
+    // });
+  });
+}
+
 exports.getInfo = function(id){
-  console.log(id);
   return new Promise((resolve, reject) => {
     MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+      if (err) throw err;
       var dbo = db.db(dbName); 
       var query = { id: id };
       dbo.collection("info").aggregate(
