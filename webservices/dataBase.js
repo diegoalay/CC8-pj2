@@ -96,7 +96,7 @@ exports.searchInfo = function(idHardware,startDate,finishDate){
     MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
       if (err) throw err;
       var dbo = db.db(dbName);
-      dbo.collection(idHardware).aggregate([
+      dbo.collection(idHardware).aggregate([     
         { $lookup:
           {
             from: 'info',
@@ -119,6 +119,9 @@ exports.searchInfo = function(idHardware,startDate,finishDate){
             text: 1,
             freq: 1,
             date: 1,
+            _id: 0,
+            myDate: 1,
+            url: 1,
           },
         }
       ]).toArray(function(err, data) {

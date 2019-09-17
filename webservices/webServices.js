@@ -48,7 +48,7 @@ app.post('/search', async (req, res, next) => {
     //     eachObj.value = r;
     // }
     // obj.data = data;
-    res.json({ message: result}); 
+    res.jsonp(result); 
 });
 
 app.post('/change', async (req, res, next) => {
