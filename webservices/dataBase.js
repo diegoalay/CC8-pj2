@@ -26,7 +26,9 @@ function getTime(){
 }
 
 exports.getIp = function(){
-  return ip;
+  return new Promise((resolve, reject) => {
+    resolve(ip);
+  });  
 }
 
 exports.writeLogSearchOrChange = function(id,ip,date,search,info){
@@ -91,7 +93,7 @@ exports.writeDevice = function(id,sensor){
 //   });
 // }
 
-exports.searchInfo = function(idHardware,startDate,finishDate){
+exports.searchEvents = function(idHardware,startDate,finishDate){
   return new Promise((resolve, reject) => {
     MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
       if (err) throw err;
@@ -141,7 +143,7 @@ exports.getInfo = function(){
     MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
       if (err) throw err;
       var dbo = db.db(dbName); 
-      dbo.collection("info").find({}, { projection: { _id: 0, id: 0}}).toArray(function(err, data) {
+      dbo.collection("info").find({}, { projection: { _id: 0 }}).toArray(function(err, data) {
         if(err)  reject(err) 
         else{
           console.log(data);

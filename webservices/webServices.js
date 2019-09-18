@@ -22,7 +22,14 @@ app.post('/info', async (req, res, next) => {
     obj.ip = DB.ip();
     obj.date = DB.getTimeInFormat();    
     result = await DB.getInfo();
-    obj['hardware'] = result;
+    obj.data = {};
+    for(var i = 0; i < result.length; i++){
+        var eachObj = {
+            tag: result[i].tag,
+            text: result[i].type,
+        }
+        obj.data[result[i].id] = eachObj;
+    }
     res.jsonp(obj);
 });
 
@@ -39,16 +46,27 @@ app.post('/search', async (req, res, next) => {
     var date = body['date'];
     var search = body['search'];
     DB.writeLogSearchOrChange(id,url,date,search,'request to ./search');
+    var obj = {};
+    obj.id = DB.platformName();
+    obj.url = DB.ip();
+    obj.date = DB.getTimeInFormat();       
+    var hardware = [];
     result = await DB.searchInfo(search.id_hardware,search.start_date,search.finish_date);
-    // var obj = {};
-    // var data = {};
-    // for(var r in result){
-    //     var eachObj = {};
-    //     eachObj = r.date;
-    //     eachObj.value = r;
-    // }
-    // obj.data = data;
-    res.jsonp(result); 
+    obj.search = {
+        id_hardware: id,
+        type: result[0].type,
+    }
+    obj.data = {};
+    for(var i = 0; i < result.length; i++){
+        var eachObj = {
+            sensor: result[i].sensor,
+            status: result[i].status,
+            text: result[i].text,
+            freq: result[i].freq,
+        }
+        obj.data[strftime('%Y-%m-%dT%H:%M:%S%z',new Date(result[i].date))] = eachObj;
+    }
+    res.jsonp(obj); 
 });
 
 app.post('/change', async (req, res, next) => {
@@ -64,7 +82,7 @@ app.post('/change', async (req, res, next) => {
     var date = body['date'];
     var change = body['change'];
     DB.writeLogSearchOrChange(id,url,date,change,'request to ./change');
-    res.json({ message: change}); 
+    res.json({ data: change}); 
 });
 
 app.post('/devices', async (req, res, next) => {
