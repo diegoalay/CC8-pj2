@@ -13,48 +13,110 @@
     <script>
     </script>
   </body>
+  <div id="forms"></div>
+  </form>
 </html>
 
 <script>
 var xhr = new XMLHttpRequest();
 
 function createForm(json){
-    console.log(json);
-    $('form').jsonForm({
-        schema: {
-            name: {
-                status: 'string',
-                title: 'Name',
-                required: true
-            },
-            age: {
-                type: 'number',
-                title: 'Age'
-            }
-        },
-        onSubmit: function (errors, values) {
-            if (errors) {
-                $('#res').html('<p>I beg your pardon?</p>');
-            } else {
-                $('#res').html('<p>Hello ' + values.name + '.' +
-                    (values.age ? '<br/>You are ' + values.age + '.' : '') +
-                    '</p>');
-            }
+    jsonObj = JSON.parse(json);
+    var data = jsonObj.data;
+    for (var key in data) {
+        obj = data[key];
+        form = document.createElement("form");
+        form.setAttribute('id',"form-"+key)
+        document.getElementById("forms").appendChild(form);        
+        var formdata = {
+            schema: {
+                id: {
+                    type: 'string',
+                    title: 'ID',
+                    default: key,
+                    readOnly: true,
+                    required: true
+                },
+                description: {
+                    type: 'string',
+                    title: 'Description',
+                    readOnly: true,
+                    default: obj.tag,
+                },
+                freq: {
+                    type: 'number',
+                    title: 'Frequence',
+                    step: 1000,
+                    required: true,
+                },
+                text: {
+                    type: 'string',
+                    title: 'Text',
+                    required: true,
+                },                
+                status: {
+                    type: "string",
+                    title: "Status",
+                    required: false,
+                    enum: [
+                        true,
+                        false,
+                    ]
+                },
+            }, 
+			onSubmit: function (errors, values) {
+				if (errors) {
+					alert(error);
+				} else {
+                    change(values);
+				}
+			}            
         }
-    });  
+        $("#form-" + key).jsonForm(formdata);
+    }
 }
 
-function poling(){
-    // setInterval(() => {
-        var obj = {
+function header(){
+    obj = {
             "id":"FE_CC8Project001",
             "url":"192.168.1.14",
             "date":"1989-12-20T07:35:12.457Z"          
         }
+    return obj;
+}
+
+function change(hardware){
+    // setInterval(() => {
+        console.log(hardware);
+        var obj = header();
+        obj.change = {};
+        obj.change[hardware.id] = {
+            status: hardware.status,
+            freq: hardware.freq,
+            text: hardware.text,
+        }
+        xhr.open('POST', 'http://localhost:8000/change', true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = function (e) {
+            if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                console.log(xhr.responseText);
+            }
+          };
+          xhr.onerror = function (e) {
+            console.error(xhr.statusText + e);
+          };
+          xhr.send(JSON.stringify(obj)); 
+    // // }, 2000);
+}
+
+function poling(){
+    // setInterval(() => {
+        var obj = header();
         xhr.open('POST', 'http://localhost:8000/info', true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = function (e) {
             if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                console.log(xhr.responseText);
                 createForm(xhr.responseText);
             }
           };
