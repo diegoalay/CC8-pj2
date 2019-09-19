@@ -44,7 +44,7 @@ function getContentType(file){
 
 http.createServer(function (req, res) {
     var request = url.parse(req.url, true);
-    var filename = (request.pathname == "./") ? "./index.html" : "." + request.pathname;
+    var filename = (request.pathname == "/") ? "./index.html" : "." + request.pathname;
     var contentType = getContentType(filename);
     fs.readFile(filename, function(err, data) {
       if (err) {

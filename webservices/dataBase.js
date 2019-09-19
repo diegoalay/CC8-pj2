@@ -59,7 +59,7 @@ exports.writeLogInfo = function(id,ip,date,info){
 exports.writeDevice = function(id,sensor){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
-    var obj = {hardware_id: id, sensor: sensor, status: false, sensor: Sensor.getText(sensor), freq: "3000",  date: new Date(getTime())};
+    var obj = {hardware_id: id, sensor: sensor, status: false, text: Sensor.getText(sensor), freq: "3000",  date: new Date(getTime())};
     var dbo = db.db(dbName); 
     dbo.collection(id).insertOne(obj,function(err, res) {
       if (err) throw err;

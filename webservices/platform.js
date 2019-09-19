@@ -2,11 +2,14 @@ var express    = require('express');        // Utilizaremos express, aqui lo man
 var app        = express();                 // definimos la app usando express
 var bodyParser = require('body-parser'); //
 var DB = require('./dataBase.js');
+var cors = require('cors');
+app.use(cors());
+app.options('*', cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-var port = process.env.PORT || 8080;        // seteamos el puerto
+var port = process.env.PORT || 8000;        // seteamos el puerto
 
-app.post('/info', async (req, res, next) => {
+app.post('/info', async (req, res, next) => {    
     if(req.headers["content-type"] == "application/json"){
         body = req.body;
     }else if(req.headers["content-type"] == "application/x-www-form-urlencoded"){
@@ -19,7 +22,7 @@ app.post('/info', async (req, res, next) => {
     DB.writeLogInfo(id,url,date,'request to ./info');   
     var obj = {};
     obj.id = DB.platformName();
-    obj.ip = DB.ip();
+    obj.url = DB.ip();
     obj.date = DB.getTimeInFormat();    
     result = await DB.getInfo();
     obj.data = {};
@@ -51,9 +54,9 @@ app.post('/search', async (req, res, next) => {
     obj.url = DB.ip();
     obj.date = DB.getTimeInFormat();       
     var hardware = [];
-    result = await DB.searchInfo(search.id_hardware,search.start_date,search.finish_date);
+    result = await DB.searchEvents(search.id_hardware,search.start_date,search.finish_date);
     obj.search = {
-        id_hardware: id,
+        id_hardware: search.id_hardware,
         type: result[0].type,
     }
     obj.data = {};
