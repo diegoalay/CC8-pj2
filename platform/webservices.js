@@ -9,12 +9,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 var port = process.env.PORT || 8000;        // seteamos el puerto
 
-app.post('/info', async (req, res, next) => {    
+
+function getParams(req){
     if(req.headers["content-type"] == "application/json"){
-        body = req.body;
+        return req.body;
     }else if(req.headers["content-type"] == "application/x-www-form-urlencoded"){
-        body = req.params;
+        return req.params;
     }
+    return new Object();
+}
+
+app.post('/info', async (req, res, next) => {    
+    var body = getParams(req);
     var body = req.body;
     var id = body['id'];
     var url = body['url'];
@@ -25,24 +31,19 @@ app.post('/info', async (req, res, next) => {
     obj.url = DB.ip();
     obj.date = DB.getTimeInFormat();    
     result = await DB.getInfo();
-    obj.data = {};
+    obj.hardware = {};
     for(var i = 0; i < result.length; i++){
         var eachObj = {
             tag: result[i].tag,
             text: result[i].type,
         }
-        obj.data[result[i].id] = eachObj;
+        obj.hardware[result[i].id] = eachObj;
     }
     res.jsonp(obj);
 });
 
 app.post('/search', async (req, res, next) => {
-    var body;
-    if(req.headers["content-type"] == "application/json"){
-        body = req.body;
-    }else if(req.headers["content-type"] == "application/x-www-form-urlencoded"){
-        body = req.params;
-    }
+    var body = getParams(req);
     var body = req.body;
     var id = body['id'];
     var url = body['url'];
@@ -53,7 +54,6 @@ app.post('/search', async (req, res, next) => {
     obj.id = DB.platformName();
     obj.url = DB.ip();
     obj.date = DB.getTimeInFormat();       
-    var hardware = [];
     result = await DB.searchEvents(search.id_hardware,search.start_date,search.finish_date);
     obj.search = {
         id_hardware: search.id_hardware,
@@ -73,12 +73,7 @@ app.post('/search', async (req, res, next) => {
 });
 
 app.post('/change', async (req, res, next) => {
-    var body;
-    if(req.headers["content-type"] == "application/json"){
-        body = req.body;
-    }else if(req.headers["content-type"] == "application/x-www-form-urlencoded"){
-        body = req.params;
-    }
+    var body = getParams(req);
     var body = req.body;
     var id = body['id'];
     var url = body['url'];
@@ -89,12 +84,7 @@ app.post('/change', async (req, res, next) => {
 });
 
 app.post('/devices', async (req, res, next) => {
-    var body;
-    if(req.headers["content-type"] == "application/json"){
-        body = req.body;
-    }else if(req.headers["content-type"] == "application/x-www-form-urlencoded"){
-        body = req.params;
-    }
+    var body = getParams(req);
     var id = body['id'];
     var sensor = body['sensor'];
     DB.writeDevice(id,sensor);

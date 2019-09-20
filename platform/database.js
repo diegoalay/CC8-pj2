@@ -43,6 +43,7 @@ exports.writeLogSearchOrChange = function(id,ip,date,search,info){
     });
   });
 }
+
 exports.writeLogInfo = function(id,ip,date,info){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
@@ -68,30 +69,6 @@ exports.writeDevice = function(id,sensor){
     });
   });
 }
-
-// exports.searchInfo = function(idHardware,startDate,finishDate){
-//   return new Promise((resolve, reject) => {
-//     MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
-//       if (err) throw err;
-//       var dbo = db.db(dbName);
-//       var query = { 
-//         date: {
-//           $gte: new Date(startDate),
-//           $lt: new Date(finishDate),
-//         }
-//       };
-//       dbo.collection(idHardware)
-//         .find(query, { projection: { _id: 0}}).toArray(function(err, data) {
-//           if(err)  reject(err) 
-//           else{
-//             console.log(data);
-//             resolve(data);
-//             db.close();
-//           }
-//       });
-//     });
-//   });
-// }
 
 exports.searchEvents = function(idHardware,startDate,finishDate){
   return new Promise((resolve, reject) => {

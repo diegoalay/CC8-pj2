@@ -1,0 +1,12 @@
+{
+    "name": "greenhouse",
+    "main": "webservices.js",
+    "dependencies": {
+        "body-parser": "~1.0.1",
+        "cors": "^2.8.5",
+        "express": "~4.0.0",
+        "mongodb": "^3.3.2",
+        "nodemailer": "^6.3.0",
+        "strftime": "^0.10.0"
+    }
+}

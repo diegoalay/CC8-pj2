@@ -4,7 +4,6 @@ var fs = require('fs');
 // var uc = require('upper-case');
 // var events = require('events');
 // var eventEmitter = new events.EventEmitter();
-var mailer = require('./mailer.js');
 
 function getContentType(file){
     var typeFile = file.substring(file.lastIndexOf(".") + 1,file.length);

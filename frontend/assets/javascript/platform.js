@@ -1,30 +1,19 @@
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Getting started with JSON Form</title>
-    <link rel="stylesheet" href="deps/opt/bootstrap.css" />
-  </head>
-  <body>
-    <h1>Getting started with JSON Form</h1>
-    <form></form>
-    <script type="text/javascript" src="deps/jquery.min.js"></script>
-    <script type="text/javascript" src="deps/underscore.js"></script>
-    <script type="text/javascript" src="lib/jsonform.js"></script>
-    <script>
-    </script>
-  </body>
-  <div id="forms"></div>
-  </form>
-</html>
-
-<script>
 var xhr = new XMLHttpRequest();
+var platformIp = "localhost:8000";
+var myIp = "localhost:8000";
+var myName = "greenhouse";
+
+function getTimeInFormat(){
+  var date = new Date();
+  return date.toISOString(); 
+}
 
 function createForm(json){
     jsonObj = JSON.parse(json);
-    var data = jsonObj.data;
+    var data = jsonObj.hardware;
     for (var key in data) {
         obj = data[key];
+        console.log(obj);
         form = document.createElement("form");
         form.setAttribute('id',"form-"+key)
         document.getElementById("forms").appendChild(form);        
@@ -72,15 +61,16 @@ function createForm(json){
 				}
 			}            
         }
+        console.log(formdata);
         $("#form-" + key).jsonForm(formdata);
     }
 }
 
 function header(){
     obj = {
-            "id":"FE_CC8Project001",
-            "url":"192.168.1.14",
-            "date":"1989-12-20T07:35:12.457Z"          
+            "id": myName,
+            "url": myIp,
+            "date": getTimeInFormat(),        
         }
     return obj;
 }
@@ -95,7 +85,7 @@ function change(hardware){
             freq: hardware.freq,
             text: hardware.text,
         }
-        xhr.open('POST', 'http://localhost:8000/change', true);
+        xhr.open('POST', 'http://' + platformIp + '/change', true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = function (e) {
             if ((xhr.readyState === 4) && (xhr.status === 200)) {
@@ -112,7 +102,7 @@ function change(hardware){
 function poling(){
     // setInterval(() => {
         var obj = header();
-        xhr.open('POST', 'http://localhost:8000/info', true);
+        xhr.open('POST', 'http://' + platformIp + '/info', true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = function (e) {
             if ((xhr.readyState === 4) && (xhr.status === 200)) {
@@ -132,4 +122,3 @@ document.onreadystatechange = () => {
         poling();
     }  
 };
-</script>
