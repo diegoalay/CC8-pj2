@@ -1,9 +1,26 @@
 var http = require('http');
 var url = require('url');
 var fs = require('fs');
-// var uc = require('upper-case');
-// var events = require('events');
-// var eventEmitter = new events.EventEmitter();
+var express    = require('express');        // Utilizaremos express, aqui lo mandamos llamar
+var app        = express();                 // definimos la app usando express
+var bodyParser = require('body-parser'); //
+var DB = require('./database.js');
+var cors = require('cors');
+app.use(cors());
+app.options('*', cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+var port = process.env.PORT || 80;        // seteamos el puerto
+
+
+function getParams(req){
+    if(req.headers["content-type"] == "application/json" || req.headers["content-type"] == "application/x-www-form-urlencoded"){
+        return req.body;
+    }else if(req.headers["content-type"] == "application/x-www-form-urlencoded"){
+        return req.params;
+    }
+    return new Object();
+}
 
 function getContentType(file){
     var typeFile = file.substring(file.lastIndexOf(".") + 1,file.length);
@@ -41,9 +58,11 @@ function getContentType(file){
     }
 }
 
-http.createServer(function (req, res) {
-    var request = url.parse(req.url, true);
-    var filename = (request.pathname == "/") ? "./index.html" : "." + request.pathname;
+app.get('(/*.html|/|/*.js|/*.css)', async (req, res, next) => {  
+    var path = ''; 
+    if(req.url.indexOf('?') > 0)  path = req.url.substring(0,req.url.indexOf('?'));
+    else path = req.url;
+    var filename = (path == "/") ? "./index.html" : "." + path;
     var contentType = getContentType(filename);
     fs.readFile(filename, function(err, data) {
       if (err) {
@@ -52,8 +71,21 @@ http.createServer(function (req, res) {
       } 
       res.writeHead(200, {'Content-Type': contentType});
       res.write(data);
-    //   mailer.sendMail();
       return res.end();
     });
-}).listen(8080);
+});
 
+app.get('/platforms/list', async (req, res, next) => {   
+    var result = await DB.listPlatform();
+    res.jsonp(result);
+});
+
+app.post('/platforms/new', async (req, res, next) => {   
+    var body = getParams(req);
+    console.log(body);
+    var result = DB.newPlatform(body);
+    res.end();
+});
+
+app.listen(port);
+console.log('Aplicación creada en el puerto: ' + port);

@@ -131,36 +131,3 @@ exports.getInfo = function(){
     });
   });
 }
-
-// exports.getInfo = function(id){
-//   return new Promise((resolve, reject) => {
-//     MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
-//       if (err) throw err;
-//       var dbo = db.db(dbName); 
-//       var query = { id: id };
-//       dbo.collection("info").aggregate(
-//         [
-//           { 
-//             $project : { _id : 0 } 
-//           }, 
-//           { 
-//             $addFields: {
-//               url: ip,
-//               date: getTime(), 
-//             }
-//           },
-//           { 
-//             $match: { id: id } 
-//           },          
-//         ],
-//       ).toArray(function(err, data) {
-//         if(err)  reject(err) 
-//         else{
-//           console.log(data);
-//           resolve(data);
-//           db.close();
-//         }
-//       });
-//     });
-//   });
-// }

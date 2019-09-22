@@ -1,6 +1,6 @@
 var xhr = new XMLHttpRequest();
-var platformIp = "localhost:8000";
-var myIp = "localhost:8000";
+var platformIp = "";
+var myIp = "localhost:80";
 var myName = "greenhouse";
 
 function getTimeInFormat(){
@@ -61,7 +61,6 @@ function createForm(json){
 				}
 			}            
         }
-        console.log(formdata);
         $("#form-" + key).jsonForm(formdata);
     }
 }
@@ -119,6 +118,9 @@ function poling(){
 
 document.onreadystatechange = () => {
     if (document.readyState === 'complete') {
+        var url = new URL(window.location.href);
+        platformName = url.searchParams.get("name");
+        platformIp = url.searchParams.get("url");
         poling();
     }  
 };

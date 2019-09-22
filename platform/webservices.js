@@ -1,13 +1,13 @@
 var express    = require('express');        // Utilizaremos express, aqui lo mandamos llamar
 var app        = express();                 // definimos la app usando express
 var bodyParser = require('body-parser'); //
-var DB = require('./dataBase.js');
+var DB = require('./database.js');
 var cors = require('cors');
 app.use(cors());
 app.options('*', cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-var port = process.env.PORT || 8000;        // seteamos el puerto
+var port = process.env.PORT || 8080;        // seteamos el puerto
 
 
 function getParams(req){

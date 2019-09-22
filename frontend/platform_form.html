@@ -1,0 +1,14 @@
+<html>
+<body>
+<h1>New platform</h1>
+<form action="/platforms/new" method="POST">
+    <input type="text" name="name" placeholder="Ingrese el nombre" required/>
+    <input type="text" name="url" placeholder="Ingrese la url" required/>
+    <select name="role" required>
+        <option value="0">PROPIA</option>
+        <option value="1" selected>EXTERNA</option>
+    </select>
+    <button>Guardar</button>
+</form>
+</body>
+</html>
