@@ -1,5 +1,3 @@
-var http = require('http');
-var url = require('url');
 var fs = require('fs');
 var express    = require('express');        // Utilizaremos express, aqui lo mandamos llamar
 var app        = express();                 // definimos la app usando express
@@ -81,6 +79,13 @@ app.get('/platforms/list', async (req, res, next) => {
 });
 
 app.post('/platforms/new', async (req, res, next) => {   
+    var body = getParams(req);
+    console.log(body);
+    var result = DB.newPlatform(body);
+    res.end();
+});
+
+app.post('/platform/change', async (req, res, next) => {   
     var body = getParams(req);
     console.log(body);
     var result = DB.newPlatform(body);
