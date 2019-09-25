@@ -83,15 +83,18 @@ exports.createDevice = function(id,sensor){
   });
 }
 
-exports.change = function(idHardware, change){
+exports.change = function(idHardware, fields){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
     var query = { id: idHardware };
     var dbo = db.db(dbName); 
-    dbo.collection(id).insertOne(obj,function(err, res) {
-      if (err) throw err;
-      console.log("deviceInfo inserted");
-      db.close();
+    dbo.collection("info").updateOne(query, { $set: fields }, function(err, res) {
+      if (err) return(false);
+      else{
+        console.log("info updated " + idHardware);
+        db.close();
+        return(true);
+      }
     });
   });
 }
@@ -118,7 +121,7 @@ exports.updateEvent= function(idEvent, fields){
     MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
       var query = { _id: ObjectID(idEvent) };
       var dbo = db.db(dbName); 
-      dbo.collection("events").update(query, { $set: fields }, function(err, res) {
+      dbo.collection("events").updateOne(query, { $set: fields }, function(err, res) {
         if (err) reject(false);
         else{
           console.log("event updated " + idEvent);

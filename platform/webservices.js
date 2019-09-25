@@ -2,7 +2,7 @@ var express    = require('express');        // Utilizaremos express, aqui lo man
 var app        = express();                 // definimos la app usando express
 var bodyParser = require('body-parser'); //
 var DB = require('./database.js');
-var handlerEvents = require('./handlerevents.js');
+// var handlerEvents = require('./handlerevents.js');
 var cors = require('cors');
 app.use(cors());
 app.options('*', cors());
@@ -50,19 +50,22 @@ app.post('/search', async (req, res, next) => {
     DB.createLogSearchOrChange(id,url,date,search,'request to ./search');
     var obj = DB.getHeader();    
     result = await DB.searchEvents(search.id_hardware,search.start_date,search.finish_date);
+    info = await DB.getInfoById(search.id_hardware)
     obj.search = {
         id_hardware: search.id_hardware,
-        type: result[0].type,
+        type: info.type,
     }
     obj.data = {};
-    for(var i = 0; i < result.length; i++){
-        var eachObj = {
-            sensor: result[i].sensor,
-            status: result[i].status,
-            text: result[i].text,
-            freq: result[i].freq,
+    if(result.length > 0){
+        for(var i = 0; i < result.length; i++){
+            var eachObj = {
+                sensor: result[i].sensor,
+                status: result[i].status,
+                text: result[i].text,
+                freq: result[i].freq,
+            }
+            obj.data[strftime('%Y-%m-%dT%H:%M:%S%z',new Date(result[i].date))] = eachObj;
         }
-        obj.data[strftime('%Y-%m-%dT%H:%M:%S%z',new Date(result[i].date))] = eachObj;
     }
     res.jsonp(obj); 
 });
@@ -134,6 +137,6 @@ app.post('/delete', async (req, res, next) => {
     res.jsonp(obj);
 });
 
-handlerEvents.handler();
+// handlerEvents.handler();
 app.listen(port);
 console.log('Aplicación creada en el puerto: ' + port);
