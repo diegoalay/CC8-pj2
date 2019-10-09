@@ -184,8 +184,8 @@ function change(event){
 
 
 async function handlerEvent(event){
-    // var localIp = DB.ip();
-    var localIp = '1234';
+    var localIp = DB.ip();
+    // var localIp = '1234';
     var idEvent = event.if.left.id;
     var urlEvent = event.if.left.url;
     console.log(localIp);

@@ -102,11 +102,12 @@ app.post('/create', async (req, res, next) => {
     for(key in body.create){
         body[key] = body.create[key];    
     }
+    body.hardware_id = body.create.if.left.id;
     delete body.create;
     var obj = DB.getHeader();
     try{
-        obj.status = "OK";
         obj.idEvent = await DB.createEvent(body);    
+        obj.status = "OK";
     }catch(e){
         obj.status = "ERROR";
     }
@@ -120,6 +121,7 @@ app.post('/update', async (req, res, next) => {
     for(key in body.update){
         body[key] = body.update[key];    
     }    
+    body.hardware_id = body.create.if.left.id;
     delete body.update.id;
     delete body.update;
     var obj = DB.getHeader();

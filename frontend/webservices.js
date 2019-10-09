@@ -10,7 +10,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 var port = process.env.PORT || 80;        // seteamos el puerto
 
-
 function getParams(req){
     if(req.headers["content-type"] == "application/json" || req.headers["content-type"] == "application/x-www-form-urlencoded"){
         return req.body;
@@ -71,6 +70,38 @@ app.get('(/*.html|/|/*.js|/*.css)', async (req, res, next) => {
       res.write(data);
       return res.end();
     });
+});
+
+app.post('/events/create', async (req, res, next) => {
+    var body = getParams(req);
+    for(key in body.create){
+        body[key] = body.create[key];    
+    }
+    delete body.create;    
+    DB.createEvent(body);    
+    return res.end();
+});
+
+app.post('/events/update', async (req, res, next) => {
+    var body = getParams(req);
+    for(key in body.update){
+        body[key] = body.update[key];    
+    }
+    var idEvent = body.update.id;
+    delete body.update;
+    DB.updateEvent(idEvent,body);
+    return res.end();
+});
+
+app.post('/events/delete', async (req, res, next) => {
+    var body = getParams(req);
+    for(key in body.update){
+        body[key] = body.update[key];    
+    }    
+    var idEvent = body.delete.id;
+    delete body.delete;
+    if(DB.deleteEvent(idEvent));
+    return res.end();
 });
 
 app.get('/platforms/list', async (req, res, next) => {   

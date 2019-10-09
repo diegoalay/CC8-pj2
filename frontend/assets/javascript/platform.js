@@ -65,6 +65,7 @@ function createForm(json){
     }
 }
 
+
 function header(){
     obj = {
             "id": myName,
@@ -74,28 +75,101 @@ function header(){
     return obj;
 }
 
-function change(hardware){
-    // setInterval(() => {
-        console.log(hardware);
-        var obj = header();
-        obj.change = {};
-        obj.change[hardware.id] = {
-            status: hardware.status,
-            freq: hardware.freq,
-            text: hardware.text,
+function generateCondition(key){
+    var obj = {};
+    //if
+    obj[key] = {}
+    obj[key].if = {
+        left: {
+            url: "192.168.1.14",
+            id: "id001",
+            freq: 6000
+        },
+        condition: '=',
+        rigth:{
+            sensor: 770,
+            status: false,
+            freq: 30000,
+            text: "Prueba"
         }
-        xhr.open('POST', 'http://' + platformIp + '/change', true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onload = function (e) {
-            if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                console.log(xhr.responseText);
-            }
-          };
-          xhr.onerror = function (e) {
-            console.error(xhr.statusText + e);
-          };
-          xhr.send(JSON.stringify(obj)); 
-    // // }, 2000);
+    };
+
+    //then
+    obj[key].then = {
+        url:"localhost:8080",
+        id:"id01",
+        status:false,
+        freq:30000,
+        text:"Prueba",        
+    };
+
+    //else
+    obj[key].else = {
+        url:"localhost:8080",
+        id:"id01",
+        status:false,
+        freq:30000,
+        text:"Prueba"
+    };
+    return obj;
+}
+
+function event(key){
+    var obj = header();
+    obj[key] = {};
+    if(key == 'create'){
+        obj[key] = (generateCondition(key))[key];
+    }else if(key == 'update'){
+        obj[key].id = idEvent;
+        obj[key] = (generateCondition(key))[key];
+    }else if(key == 'delete'){
+        obj[key].id = idEvent;
+    }
+    xhr.open('POST', 'http://' + platformIp + '/' + key, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function (e) {
+        var response = JSON.parse(xhr.responseText);
+        if ((xhr.readyState === 4) && (xhr.status === 200)) {
+            if(key == 'create') obj.idEvent = response.idEvent;
+            xhr.open('POST', 'http://' + myIp + '/events/' + key, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onload = function (e) {
+                if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                    alert(key + ' event successfully');
+                }
+            };
+            xhr.onerror = function (e) {
+                console.error(xhr.statusText + e);
+            };
+            xhr.send(JSON.stringify(obj));             
+        }
+    };
+    xhr.onerror = function (e) {
+        console.error(xhr.statusText + e);
+    };
+    xhr.send(JSON.stringify(obj)); 
+}
+
+function change(hardware){
+    console.log(hardware);
+    var obj = header();
+    obj.change = {};
+    obj.change[hardware.id] = {
+        status: hardware.status,
+        freq: hardware.freq,
+        text: hardware.text,
+    }
+    xhr.open('POST', 'http://' + platformIp + '/change', true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function (e) {
+        if ((xhr.readyState === 4) && (xhr.status === 200)) {
+            console.log(xhr.responseText);
+        }
+    };
+    xhr.onerror = function (e) {
+        console.error(xhr.statusText + e);
+    };
+    xhr.send(JSON.stringify(obj)); 
 }
 
 function poling(){
@@ -122,5 +196,6 @@ document.onreadystatechange = () => {
         platformName = url.searchParams.get("name");
         platformIp = url.searchParams.get("url");
         poling();
+        event('create');
     }  
 };

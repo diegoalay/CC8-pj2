@@ -69,46 +69,52 @@ exports.writeDevice = function(id,sensor){
   });
 }
 
-exports.searchEvents = function(idHardware,startDate,finishDate){
+exports.createEvent = function(obj){
   return new Promise((resolve, reject) => {
     MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
       if (err) throw err;
-      var dbo = db.db(dbName);
-      dbo.collection(idHardware).aggregate([     
-        { $lookup:
-          {
-            from: 'info',
-            localField: 'hardware_id',
-            foreignField: 'id',
-            as: 'hardware'            
-          }
-        },
-        {
-          $unwind:'$hardware'
-        }, 
-        {
-          '$match' : { 'date' : { '$gte' : new Date(startDate),  '$lt': new Date(finishDate)} }
-        },              
-        {
-          $project: { 
-            type:'$hardware.type',
-            sensor: 1,
-            status: 1,
-            text: 1,
-            freq: 1,
-            date: 1,
-            _id: 0,
-            myDate: 1,
-            url: 1,
-          },
+      var dbo = db.db(dbName); 
+      dbo.collection("events").insertOne(obj,function(err, res) {
+        if (err) reject(err);
+        else{
+          console.log("event inserted " + res.insertedId);
+          db.close();
+          resolve(res.insertedId);
         }
-      ]).toArray(function(err, data) {
-          if(err)  reject(err) 
-          else{
-            console.log(data);
-            resolve(data);
-            db.close();
-          }
+      });
+    });
+  });
+}
+
+exports.updateEvent= function(idEvent, fields){
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+      var query = { _id: ObjectID(idEvent) };
+      var dbo = db.db(dbName); 
+      dbo.collection("events").updateOne(query, { $set: fields }, function(err, res) {
+        if (err) reject(false);
+        else{
+          console.log("event updated " + idEvent);
+          db.close();
+          resolve(true);
+        }
+      });
+    });
+  });
+}
+
+exports.deleteEvent = function(idEvent){
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+      var query = { _id: ObjectID(idEvent) };
+      var dbo = db.db(dbName); 
+      dbo.collection("events").deleteOne(query, function(err, res) {
+        if (err) reject(false);
+        else{
+          console.log("event deleted " + idEvent);
+          db.close();
+          resolve(true);
+        }
       });
     });
   });

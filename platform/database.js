@@ -245,3 +245,20 @@ exports.getEvents = function(){
     });
   });
 }
+
+exports.getEventsById = function(hardware_id){
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+      if (err) throw err;
+      var dbo = db.db(dbName); 
+      var query = {hardware_id: hardware_id}
+      dbo.collection("events").find(query, { projection: { _id: 0 }}).toArray(function(err, data) {
+        if(err)  reject(err) 
+        else{
+          db.close();
+          resolve(data);
+        }
+      });
+    });
+  });
+}
