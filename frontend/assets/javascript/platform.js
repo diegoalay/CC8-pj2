@@ -8,6 +8,11 @@ function getTimeInFormat(){
   return date.toISOString(); 
 }
 
+function convertDateInFormat(time){
+    var date = new Date(time);
+    return date.toISOString();
+}
+
 function createForm(json){
     jsonObj = JSON.parse(json);
     var data = jsonObj.hardware;
@@ -150,6 +155,71 @@ function event(key){
     xhr.send(JSON.stringify(obj)); 
 }
 
+function search(hardware,startDate,finishDate){
+    //buscamos en cache primero
+    var obj = header();
+    obj.search = {};
+    obj.search['id_hardware'] = hardware;
+    obj.search['start_date'] = startDate;
+    obj.search['finish_date'] = finishDate;  
+    xhr.open('POST', 'http://' + myIp + '/search', true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function (e) {
+        var frontResp = JSON.parse(xhr.responseText);
+        console.log(frontResp);
+        if ((xhr.readyState === 4) && (xhr.status === 200)) {
+            var length = Object.keys(frontResp.data).length;
+            alert(length);
+            if(length > 0){
+                if(new Date(frontResp.start) > new Date(startDate) && new Date(frontResp.finish) >= new Date(finishDate)){
+                    pending  = new Date(new Date(frontResp.start).getTime());
+                    finishDate = pending.toISOString();
+                    alert('pedir el resto izquierda: ' + startDate + ' - ' + finishDate);
+                }else if(new Date(frontResp.start) >= new Date(startDate) && new Date(frontResp.finish) < new Date(finishDate)){
+                    pending  = new Date(new Date(frontResp.finish).getTime() +  (new Date(finishDate).getTime() - new Date(frontResp.finish).getTime()));
+                    startDate = finishDate;
+                    finishDate = pending.toISOString();
+                    alert('pedir el resto derecha: ' + new Date(frontResp.finish) + '-' + pending);
+                }else if(new Date(frontResp.start) <= new Date(startDate) && new Date(frontResp.finish) >= new Date(finishDate)){
+                    alert('todo en cache');
+                }else{
+                    alert('pedir todo');
+                }
+            }
+            if(false){
+                xhr.open('POST', 'http://' + platformIp + '/search', true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.onload = function (e) {
+                    var platformResp = JSON.parse(xhr.responseText);
+                    console.log(platformResp);
+                    if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                        console.log(platformResp);
+                        xhr.open('POST', 'http://' + myIp + '/device', true);
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                        xhr.onload = function (e) {
+                            if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                                console.log(true);   
+                            }
+                        };
+                        xhr.onerror = function (e) {
+                            console.error(xhr.statusText + e);
+                        };
+                        xhr.send(JSON.stringify(platformResp));                         
+                    }
+                };
+                xhr.onerror = function (e) {
+                    console.error(xhr.statusText + e);
+                };
+                xhr.send(JSON.stringify(obj)); 
+            }            
+        }
+    };
+    xhr.onerror = function (e) {
+        console.error(xhr.statusText + e);
+    };
+    xhr.send(JSON.stringify(obj)); 
+}
+
 function change(hardware){
     console.log(hardware);
     var obj = header();
@@ -196,6 +266,10 @@ document.onreadystatechange = () => {
         platformName = url.searchParams.get("name");
         platformIp = url.searchParams.get("url");
         poling();
-        event('create');
+        // search("id01","2019-09-17T14:33:37-0600","2019-09-19T00:06:22-0600" );
+        // search("id01","2019-09-12T14:33:37-0600","2019-09-19T00:06:22-0600" );
+        // search("id01","2019-09-17T14:33:37-0600","2019-09-22T00:06:22-0600" );
+        // search("id01","2019-09-17T14:33:38-0600","2019-09-18T00:06:22-0600" );
+        // event('create');
     }  
 };

@@ -30,6 +30,14 @@ exports.getIp = function(){
   });  
 }
 
+exports.getHeader = function(){
+  var obj = {}
+  obj.id = platformName;
+  obj.url = ip;
+  obj.date = getTime();
+  return obj;  
+}
+
 exports.writeLogSearchOrChange = function(id,ip,date,search,info){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
@@ -82,6 +90,18 @@ exports.createEvent = function(obj){
           resolve(res.insertedId);
         }
       });
+    });
+  });
+}
+
+exports.createDevice = function(obj){
+  MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db(dbName); 
+    dbo.collection('devices').insertOne(obj,function(err, res) {
+      if (err) throw err;
+      console.log('device inserted');
+      db.close();
     });
   });
 }
@@ -140,10 +160,41 @@ exports.listPlatform = function(){
       dbo.collection("platforms").find({}, { projection: { _id: 0 }}).toArray(function(err, data) {
         if(err)  reject(err) 
         else{
-          console.log(data);
           resolve(data);
           db.close();
         }
+      });
+    });
+  });
+}
+
+
+exports.searchEvents = function(idHardware,startDate,finishDate){
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+      if (err) throw err;
+      var dbo = db.db(dbName);
+      dbo.collection('devices').aggregate([       
+        {
+          '$match' : { 'date' : { '$gte' : new Date(startDate),  '$lte': new Date(finishDate)} }
+        },              
+        {
+          $project: { 
+            sensor: 1,
+            status: 1,
+            text: 1,
+            freq: 1,
+            date: 1,
+            type: 1,
+            _id: 0,
+          },
+        }
+      ]).sort({date: 1}).toArray(function(err, data) {
+          if(err)  reject(err) 
+          else{
+            db.close();
+            resolve(data);
+          }
       });
     });
   });

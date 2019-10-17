@@ -23,11 +23,6 @@ exports.platformName = function(){
   return platformName;
 }
 
-exports.getNow = function(){
-  var date = new Date();
-  return strftime('%Y-%m-%dT%H:%M:%S%z', date); 
-}
-
 function getTimeInFormat(){
   var date = new Date();
   return strftime('%Y-%m-%dT%H:%M:%S%z', date); 
@@ -44,14 +39,14 @@ exports.getIp = function(){
   });  
 }
 
-exports.createLogSearchOrChange = function(id,ip,date,search,info){
+exports.createLogSearchOrChange = function(id,ip,date,search,info,type){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
     var obj = { id: id, ip: ip, requestDate: date, date: getTime(), search: search, info: info};
     var dbo = db.db(dbName); 
     dbo.collection("logs/request").insertOne(obj,function(err, res) {
       if (err) throw err;
-      console.log("createLogSearchOrChange inserted");
+      console.log(type + " request");
       db.close();
     });
   });
@@ -64,7 +59,7 @@ exports.createLogInfo = function(id,ip,date,info){
     var dbo = db.db(dbName); 
     dbo.collection("logs/request").insertOne(obj,function(err, res) {
       if (err) throw err;
-      console.log("createLogInfo inserted");
+      console.log("info request");
       db.close();
     });
   });
@@ -73,7 +68,7 @@ exports.createLogInfo = function(id,ip,date,info){
 exports.createDevice = function(id,sensor){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
-    var obj = {hardware_id: id, sensor: sensor, status: false, text: Sensor.getText(sensor), freq: "3000",  date: new Date(getTime())};
+    var obj = {hardware_id: id, sensor: sensor, status: false, text: Sensor.getText(sensor), freq: "3000",  date: new Date()};
     var dbo = db.db(dbName); 
     dbo.collection(id).insertOne(obj,function(err, res) {
       if (err) throw err;
@@ -168,7 +163,7 @@ exports.searchEvents = function(idHardware,startDate,finishDate){
           $unwind:'$hardware'
         }, 
         {
-          '$match' : { 'date' : { '$gte' : new Date(startDate),  '$lt': new Date(finishDate)} }
+          '$match' : { 'date' : { '$gte' : new Date(startDate),  '$lte': new Date(finishDate)} }
         },              
         {
           $project: { 
@@ -186,7 +181,7 @@ exports.searchEvents = function(idHardware,startDate,finishDate){
       ]).toArray(function(err, data) {
           if(err)  reject(err) 
           else{
-            console.log(data);
+            // console.log(data);
             db.close();
             resolve(data);
           }
@@ -204,7 +199,7 @@ exports.getInfoById = function(id){
       dbo.collection("info").findOne(query, { projection: { _id: 0 }}, function(err, data) {
         if(err)  reject(err) 
         else{
-          console.log(data);
+          // console.log(data);
           db.close();
           resolve(data);
         }
@@ -221,7 +216,7 @@ exports.getInfo = function(id){
       dbo.collection("info").find({}, { projection: { _id: 0, sensor: 0, satatus: 0, freq: 0, text: 0 }}).toArray(function(err, data) {
         if(err)  reject(err) 
         else{
-          console.log(data);
+          // console.log(data);
           db.close();
           resolve(data);
         }

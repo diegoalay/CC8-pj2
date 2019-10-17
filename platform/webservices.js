@@ -2,6 +2,8 @@ var express    = require('express');        // Utilizaremos express, aqui lo man
 var app        = express();                 // definimos la app usando express
 var bodyParser = require('body-parser'); //
 var DB = require('./database.js');
+var mqtt = require('mqtt');
+var client  = mqtt.connect('mqtt://172.20.10.3');
 // var handlerEvents = require('./handlerevents.js');
 var cors = require('cors');
 app.use(cors());
@@ -19,6 +21,19 @@ function getParams(req){
     }
     return new Object();
 }
+
+client.on('connect', function () {
+    client.subscribe('/devices', function (err) {
+      if (!err) {
+        client.publish('/response', 'Axel me hace su hijo');
+      }
+    })
+  })
+  
+client.on('message', function (topic, message) {
+    // message is Buffer
+    console.log(message.toString());
+})
 
 app.post('/info', async (req, res, next) => {    
     var body = getParams(req);
@@ -47,7 +62,7 @@ app.post('/search', async (req, res, next) => {
     var url = body['url'];
     var date = body['date'];
     var search = body['search'];
-    DB.createLogSearchOrChange(id,url,date,search,'request to ./search');
+    DB.createLogSearchOrChange(id,url,date,search,'request to ./search', 'search');
     var obj = DB.getHeader();    
     result = await DB.searchEvents(search.id_hardware,search.start_date,search.finish_date);
     info = await DB.getInfoById(search.id_hardware)
@@ -81,9 +96,7 @@ app.post('/change', async (req, res, next) => {
     for(key in change){
         idHardware = key;
     }
-    console.log(idHardware);
-    console.log(change[idHardware]);
-    DB.createLogSearchOrChange(id,url,date,change,'request to ./change');
+    DB.createLogSearchOrChange(id,url,date,change,'request to ./change','change');
     DB.change(idHardware,change[idHardware]);
     res.json({ data: change}); 
 });
@@ -138,7 +151,6 @@ app.post('/delete', async (req, res, next) => {
     else obj.status = "ERROR";
     res.jsonp(obj);
 });
-
-// handlerEvents.handler();
+// '1883'
 app.listen(port);
-console.log('Aplicación creada en el puerto: ' + port);
+console.log('Aplicac ión creada en el puerto: ' + port);

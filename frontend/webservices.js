@@ -111,16 +111,60 @@ app.get('/platforms/list', async (req, res, next) => {
 
 app.post('/platforms/new', async (req, res, next) => {   
     var body = getParams(req);
-    console.log(body);
     var result = DB.newPlatform(body);
     res.end();
 });
 
 app.post('/platform/change', async (req, res, next) => {   
     var body = getParams(req);
-    console.log(body);
     var result = DB.newPlatform(body);
     res.end();
+});
+
+app.post('/device', async (req, res, next) => {   
+    var body = getParams(req);
+    var idHardware = body.data['id_hardware'];
+    var type = body.data['type'];
+    var idHardware = body.search['id_hardware'];
+    var type = body.search['type'];    
+    for(key in body.data){
+        var obj = {};
+        obj = body.data[key];
+        obj.date = new Date(key); 
+        obj.idHardware = idHardware;
+        obj.type = type;
+        DB.createDevice(obj);    
+    }
+    res.end();
+});
+
+app.post('/search', async (req, res, next) => {   
+    var body = getParams(req);
+    var idHardware = body.search['id_hardware'];
+    var startDate = body.search['start_date'];
+    var finishDate = body.search['finish_date'];
+    var result = await DB.searchEvents(idHardware,startDate,finishDate);
+    var obj = {}
+    obj = DB.getHeader();
+    obj.from = 'cache';
+    obj.search = {}
+    obj.search['id_hardware'] = idHardware;
+    obj.data = {};
+    if(result.length > 0){
+        obj.search['type'] = result[0].type;
+        obj.start = (result[0].date);
+        obj.finish = (result[result.length - 1].date);       
+        for(var i = 0; i < result.length; i++){ 
+            var eachObj = {
+                sensor: result[i].sensor || "",
+                status: result[i].status || "",
+                text: result[i].text || "",
+                freq: result[i].freq || "",
+            }
+            obj.data[strftime('%Y-%m-%dT%H:%M:%S%z',new Date(result[i].date))] = eachObj;
+        }
+    }
+    res.jsonp(obj); 
 });
 
 app.listen(port);

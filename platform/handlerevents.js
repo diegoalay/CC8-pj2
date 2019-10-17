@@ -77,7 +77,6 @@ function lookupEvent(search,event){
             }
         }        
     }
-
     if(match){
         change(event.then)
     }else{
@@ -91,10 +90,10 @@ function search(event,hardwareEvent){
     var url = url = event['url'];
     var requestUrl = '';
     var requestPort = '';
-    // var end_date = new Date();
-    // var start_date = new Date(end_date.getTime() - 1000);
-    var start_date = new Date('2019-09-17T14:33:37-0600');
-    var end_date = new Date('2019-09-19T00:06:22-0600');
+    var end_date = new Date();
+    var start_date = new Date(end_date.getTime() - 1000);
+    // var start_date = new Date('2019-09-17T14:33:37-0600');
+    // var end_date = new Date('2019-09-19T00:06:22-0600');
     obj.search = {
         id_hardware: event.id,
         start_date: strftime('%Y-%m-%dT%H:%M:%S%z', start_date),
@@ -258,13 +257,14 @@ async function handlerEvent(event){
     }   
 }
  
-handler = async function(){
-    // interval(async () => {
-        var events = await DB.getEvents(); 
-        for(key in events){
-            handlerEvent(events[key]);
-        }
-    // }, 1000)
-}
+// handler = async function(){
+//     console.log('empieza');
+//     interval(async () => {
+//         var events = await DB.getEvents(); 
+//         for(key in events){
+//             handlerEvent(events[key]);
+//         }
+//     }, 10000)
+// }
 
-handler();
+// handler();

@@ -4,5 +4,73 @@
 <p>My paragraph.</p>
 <a href="./platform_list.html">PLATFORMS LIST</a><br>
 <a href="./platform_form.html">NUEVA PLATAFORMA</a><br>
+<button id="change-name" class="change-name"><i class="fas fa-signature"></i>Events</button>
+<div id="name-modal" class="name-modal">
+    <div class="content-modal">
+        <span class="close">&times;</span>
+        <div class="field-modal">
+            <h3>LEFT</h3>
+            <select id="IpHardware">
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+            </select>
+            <select id="IdHardware">
+                <option value=""></option>
+                <option va  lue=""></option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+            </select>            
+            <h3>CONDITION</h3>
+            <select id="condition">
+                <option value="EQ">=</option>
+                <option value="NEQ">!=</option>
+                <option value="LT"><</option>
+                <option value="GT0">></option>
+                <option value="LTE"><=</option>
+                <option value="GTE">>=</option>
+            </select> 
+            <h3>RIGTH</h3>
+            <select id="rigth">
+                <option value="sensor">sensor</option>
+                <option value="status">status</option>
+                <option value="freq">freq</option>
+                <option value="text">text</option>
+            </select>                        
+            <span class="name-input">
+                <input type="text" name="node-name-input" id="node-name-input" placeholder="Ejemplo: Nodo1">
+            </span>
+            <button id="button-save" class="button-save">Guardar</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
+<script>
+    //Modal
+    let nameModal = document.getElementById("name-modal");
+    let btn = document.getElementById("change-name");
+    let span = document.getElementsByClassName("close")[0];
+    let btnSave = document.getElementById('button-save');
+
+    btn.onclick = () => {
+    nameModal.style.display = "block";
+    };
+
+    span.onclick = () => {
+    nameModal.style.display = "none";
+    };
+
+    btnSave.onclick = () => {
+        nameModal.style.display = "none";
+    };
+
+    window.onclick = (event) => {
+    if (event.target == nameModal) {
+        nameModal.style.display = "none";
+    }
+    };    
+</script>
