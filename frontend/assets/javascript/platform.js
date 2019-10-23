@@ -183,10 +183,11 @@ function search(hardware,startDate,finishDate){
                 }else if(new Date(frontResp.start) <= new Date(startDate) && new Date(frontResp.finish) >= new Date(finishDate)){
                     alert('todo en cache');
                 }else{
+                    pending
                     alert('pedir todo');
                 }
             }
-            if(false){
+            if(pending){
                 xhr.open('POST', 'http://' + platformIp + '/search', true);
                 xhr.setRequestHeader("Content-Type", "application/json");
                 xhr.onload = function (e) {
