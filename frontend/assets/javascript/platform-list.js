@@ -23,7 +23,7 @@ function createPlatform(platforms) {
         text += `</td>`;
         text += `<td>`;
         text +=    `<button data-toggle="tooltip"  onClick="editPlatform(\'` + name + `\',\'` + url + `\',\'` + role + `\',this)"  title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>`;
-        text    += `<button data-toggle="tooltip" onClick="deletePlatform(` + i + `)" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>`;
+        text    += `<button data-toggle="tooltip" onClick="deletePlatform(` + i + `,this)" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>`;
         text += `</td>`;
         text += `</tr>`;
         newRow = tableRef.insertRow(tableRef.rows.length);
@@ -33,12 +33,13 @@ function createPlatform(platforms) {
 }
 
 function editPlatform(name, url, role, element) {
-
+    
 }
 
-function deletePlatform(index){
-    console.log(index);
-    document.getElementById("IpHardware").deleteRow(index);
+function deletePlatform(index,element){
+    var row = element.parentElement.parentElement;
+    var index = $('table tr').index(row);
+    document.getElementById("IpHardwarse").deleteRow(index);
 }
 
 function poling() {
