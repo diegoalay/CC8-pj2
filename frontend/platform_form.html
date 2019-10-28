@@ -1,14 +1,341 @@
-<html>
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>FrontEnd - Invernadero</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Google Fonts
+		============================================ -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet">
+    <!-- Bootstrap CSS
+		============================================ -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!-- Bootstrap CSS
+		============================================ -->
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="assets/css/animate.css">
+    <!-- normalize CSS
+		============================================ -->
+    <link rel="stylesheet" href="assets/css/normalize.css">
+    <!-- meanmenu icon CSS
+		============================================ -->
+    <link rel="stylesheet" href="assets/css/meanmenu.min.css">
+    <!-- main CSS
+		============================================ -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <!-- morrisjs CSS
+		============================================ -->
+    <link rel="stylesheet" href="assets/css/morrisjs/morris.css">
+    <!-- mCustomScrollbar CSS
+		============================================ -->
+    <link rel="stylesheet" href="assets/css/scrollbar/jquery.mCustomScrollbar.min.css">
+    <!-- metisMenu CSS
+		============================================ -->
+    <link rel="stylesheet" href="assets/css/metisMenu/metisMenu.min.css">
+    <link rel="stylesheet" href="assets/css/metisMenu/metisMenu-vertical.css">
+
+    <link rel="stylesheet" href="style.css">
+    <!-- responsive CSS
+		============================================ -->
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <!-- modernizr JS
+		============================================ -->
+    <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
+    <script src="https://kit.fontawesome.com/d73b9dc8c8.js" crossorigin="anonymous"></script>
+</head>
+
 <body>
-<h1>New platform</h1>
-<form action="/platforms/new" method="POST">
-    <input type="text" name="name" placeholder="Ingrese el nombre" required/>
-    <input type="text" name="url" placeholder="Ingrese la url" required/>
-    <select name="role" required>
+    <div class="left-sidebar-pro">
+        <nav id="sidebar" class="">
+            <div class="sidebar-header">
+                <a href="index.html"><img class="main-logo" src="img/logo/logo.png" alt="" /></a>
+                <strong><img src="img/logo/logosn.png" alt="" /></strong>
+            </div>
+            <div class="nalika-profile">
+                <div class="profile-dtl">
+                    <a href="index.html"><i class="fas fa-wifi" style="font-size: 34px; color: white;"></i></a>
+                    <h2><span class="min-dtn">IoT</span></h2>
+                </div>
+            </div>
+            <div class="left-custom-menu-adp-wrap comment-scrollbar">
+                <nav class="sidebar-nav left-sidebar-menu-pro">
+                    <ul class="metismenu" id="menu1">
+                        <li class="active">
+                            <a class="has-arrow" href="">
+                                <i class="fas fa-cubes"></i>
+                                <span class="mini-click-non">Plataformas</span>
+                            </a>
+                            <ul class="submenu-angle" aria-expanded="true">
+                                <li><a title="Ver Plataformas" href="./platform_list.html"><span class="mini-sub-pro">Ver Plataformas</span></a></li>
+                                <li><a title="Agregar Plataforma" href="./platform_form.html"><span class="mini-sub-pro">Agregar Plataforma</span></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </nav>
+    </div>
+    <div class="all-content-wrapper">
+        <div class="header-advance-area">
+            <div class="header-top-area">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="header-top-wraper">
+                                <div class="row">
+                                    <div class="col-lg-1 col-md-0 col-sm-1 col-xs-12">
+                                        <div class="menu-switcher-pro">
+                                            <button type="button" id="sidebarCollapse" class="btn bar-button-pro header-drl-controller-btn btn-info navbar-btn">
+                                                <i class="fas fa-bars"></i>
+                                                    </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Mobile Menu start -->
+            <div class="mobile-menu-area">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="mobile-menu">
+                                <nav id="dropdown">
+                                    <ul class="mobile-menu-nav">
+                                        <li><a data-toggle="collapse" data-target="#Charts" href="#">Plataformas <span class="admin-project-icon nalika-icon nalika-down-arrow"></span></a>
+                                            <ul class="collapse dropdown-header-top">
+                                                <li><a href="./platform_list.html">Ver Plataformas</a></li>
+                                                <li><a href="./platform_form.html">Agregar Plataforma</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Mobile Menu end -->
+            <div class="breadcome-area mt-5">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="breadcome-list">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <div class="breadcomb-wp">
+                                            <div class="breadcomb-icon">
+                                                <i class="fas fa-plus-circle"></i>
+                                            </div>
+                                            <div class="breadcomb-ctn">
+                                                <br>
+                                                <h2>Agregar Plataforma</h2>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="product-status mg-b-30">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="review-content-section product-status-wrap">
+                                    <form action="/platforms/new" method="POST">
+                                        <div class="input-group mg-b-pro-edt">
+                                            <span class="input-group-addon"><i class="fas fa-signature" aria-hidden="true"></i></span>
+                                            <input class="form-control" type="text" name="name" placeholder="Ingrese el nombre" required>
+                                        </div>
+                                        <div class="input-group mg-b-pro-edt">
+                                            <span class="input-group-addon"><i class="fas fa-link" aria-hidden="true"></i></i></span>
+                                            <input class="form-control" type="text" name="url" placeholder="Ingrese la url" required>
+                                        </div>
+                                        <select name="select" class="form-control pro-edt-select form-control-primary">
+                                                <option value="100">Seleccione tipo de Plataforma</option>
+                                                <option value="0">Propia</option>
+                                                <option value="1">Externa</option>
+                                            </select>
+                                        <div class="text-center custom-pro-edt-ds" style="margin-top: 30px;">
+                                            <button type="submit" class="btn btn-ctl-bt waves-effect waves-light m-r-10">Guardar
+                                                        </button>
+                                            <button type="button" class="btn btn-ctl-bt waves-effect ">Descartar
+                                                        </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright-area">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="footer-copy-right">
+                            <p>Copyright © 2019 Todos los derechos reservados.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- jquery
+		============================================ -->
+    <script src="assets/js/vendor/jquery-1.12.4.min.js"></script>
+    <!-- bootstrap JS
+		============================================ -->
+    <script src="assets/js/bootstrap.min.js"></script>
+    <!-- wow JS
+		============================================ -->
+    <script src="assets/js/wow.min.js"></script>
+    <!-- price-slider JS
+		============================================ -->
+    <script src="assets/js/jquery-price-slider.js"></script>
+    <!-- meanmenu JS
+		============================================ -->
+    <script src="assets/js/jquery.meanmenu.js"></script>
+    <!-- owl.carousel JS
+		============================================ -->
+    <script src="assets/js/owl.carousel.min.js"></script>
+    <!-- sticky JS
+		============================================ -->
+    <script src="assets/js/jquery.sticky.js"></script>
+    <!-- scrollUp JS
+		============================================ -->
+    <script src="assets/js/jquery.scrollUp.min.js"></script>
+    <!-- mCustomScrollbar JS
+		============================================ -->
+    <script src="assets/js/scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="assets/js/scrollbar/mCustomScrollbar-active.js"></script>
+    <!-- metisMenu JS
+		============================================ -->
+    <script src="assets/js/metisMenu/metisMenu.min.js"></script>
+    <script src="assets/js/metisMenu/metisMenu-active.js"></script>
+    <!-- morrisjs JS
+		============================================ -->
+    <script src="assets/js/sparkline/jquery.sparkline.min.js"></script>
+    <script src="assets/js/sparkline/jquery.charts-sparkline.js"></script>
+    <!-- calendar JS
+		============================================ -->
+    <script src="assets/js/calendar/moment.min.js"></script>
+    <script src="assets/js/calendar/fullcalendar.min.js"></script>
+    <script src="assets/js/calendar/fullcalendar-active.js"></script>
+    <!-- plugins JS
+		============================================ -->
+    <script src="assets/js/plugins.js"></script>
+    <!-- main JS
+		============================================ -->
+    <script src="assets/js/main.js"></script>
+    <script type="text/javascript" src="assets/javascript/platform-list.js"></script>
+</body>
+
+</html>
+<script>
+    //Modal
+    let xhr = new XMLHttpRequest();
+    let myIp = "localhost:80";
+    let myName = "greenhouse";
+    let nameModal = document.getElementById("name-modal");
+    let btn = document.getElementById("change-name");
+    let span = document.getElementsByClassName("close")[0];
+    let btnSave = document.getElementById('button-save');
+
+    btn.onclick = () => {
+        nameModal.style.display = "block";
+    };
+
+    span.onclick = () => {
+        nameModal.style.display = "none";
+    };
+
+    btnSave.onclick = () => {
+        nameModal.style.display = "none";
+    };
+
+    window.onclick = (event) => {
+        if (event.target == nameModal) {
+            nameModal.style.display = "none";
+        }
+    };
+
+    function getHardware(element) {
+        console.log(element)
+    }
+
+    function appendPlatforms(json) {
+        jsonObj = JSON.parse(json);
+        var select = document.getElementById("IpHardware");
+        for (var key in jsonObj) {
+            obj = jsonObj[key];
+            option = document.createElement("option");
+            option.setAttribute('name', obj.name);
+            option.setAttribute('url', obj.url);
+            option.innerHTML = obj.name;
+            select.appendChild(option);
+        }
+    }
+
+    function getPlatforms() {
+        xhr.open('GET', 'http://' + myIp + '/platforms/list', true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = function(e) {
+            if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                appendPlatforms(xhr.responseText);
+            }
+        };
+        xhr.onerror = function(e) {
+            console.error(xhr.statusText + e);
+        };
+        xhr.send();
+    }
+
+    document.onreadystatechange = () => {
+        if (document.readyState == 'complete') {
+            getPlatforms();
+            document.getElementById(`IpHardware`).addEventListener('change', function() {
+                let option = this[this.selectedIndex];
+                const url = option.getAttribute('url');
+
+            });
+        }
+    }
+</script>
+
+
+<!-- <html>
+
+<body>
+    <h1>New platform</h1>
+    <form action="/platforms/new" method="POST">
+        <input type="text" name="name" placeholder="Ingrese el nombre" required/>
+        <input type="text" name="url" placeholder="Ingrese la url" required/>
+        <select name="role" required>
         <option value="0">PROPIA</option>
         <option value="1" selected>EXTERNA</option>
     </select>
-    <button>Guardar</button>
-</form>
+        <button>Guardar</button>
+    </form>
 </body>
-</html>
+
+</html> -->
