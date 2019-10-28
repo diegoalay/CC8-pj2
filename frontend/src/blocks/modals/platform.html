@@ -1,0 +1,40 @@
+<!-- Modal Agregar Plataforma -->
+<div class="modal fade" id="platformModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="breadcomb-wp">
+                    <div class="breadcomb-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div class="breadcomb-ctn">
+                        <br>
+                        <h2 id="titlePlatformModal"></h2>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="far fa-times-circle modal-close"></i>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <div class="review-content-section product-status-wrap">
+                    <form action="/platforms/new" method="POST">
+                        <div class="input-group mg-b-pro-edt">
+                            <span class="input-group-addon"><i class="fas fa-signature" aria-hidden="true"></i></span>
+                            <input class="form-control" type="text" id="modalName" name="name" placeholder="Ingrese el nombre" required>
+                        </div>
+                        <div class="input-group mg-b-pro-edt">
+                            <span class="input-group-addon"><i class="fas fa-link" aria-hidden="true"></i></i></span>
+                            <input class="form-control" type="text" id="modalUrl" name="url" placeholder="Ingrese la url" required>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="botonEvento" data-dismiss="modal">Cancelar</button>
+                <button type="button" id="button-save" class="botonEvento">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+    
