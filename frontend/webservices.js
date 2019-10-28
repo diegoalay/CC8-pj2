@@ -111,13 +111,20 @@ app.get('/platforms/list', async (req, res, next) => {
 
 app.post('/platforms/new', async (req, res, next) => {   
     var body = getParams(req);
-    var result = DB.newPlatform(body);
+    var result = await DB.newPlatform(body);
+    res.send(result);
+});
+
+app.post('/platforms/delete', async (req, res, next) => {   
+    var body = getParams(req);
+    var result = DB.deletePlatform(body.idPlatform);
     res.end();
 });
 
-app.post('/platform/change', async (req, res, next) => {   
+app.post('/platforms/update', async (req, res, next) => {   
     var body = getParams(req);
-    var result = DB.newPlatform(body);
+    console.log(body);
+    var result = DB.updatePlatform(body.idPlatform, { name: body.name, url: body.url});
     res.end();
 });
 

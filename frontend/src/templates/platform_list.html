@@ -35,7 +35,7 @@
                 <div class="product-status-wrap">
                     <h4>Plataformas</h4>
                     <div class="add-product">
-                        <a href="#" id="change-name" data-toggle="modal" data-target="#platformModal">Agregar Plataforma</a>
+                        <a href="#" id="change-name" onClick="newPlatform('Crear Plataforma','','',this)">Agregar Plataforma</a>
                     </div>
                     <table id="IpHardware">
                         <thead>
@@ -61,6 +61,9 @@
         </div>
     </div>
 </div>
-@@include('../blocks/modals/event.html')
+<script>
+    let view = 'platform_list';
+</script>
+@@include('../blocks/modals/platform.html')
 @@include('../blocks/footer.html')
 <script src="assets/javascript/platform-list.js"></script>

@@ -56,7 +56,7 @@
 <div class="section-admin container-fluid">
     <div class="row mt-5 mb-5">
         <div class="col-md-6">
-            <button type="button" class="btn botonEvento btn-lg btn-block change-name" id="change-name" data-toggle="modal" data-target="#platformModal">
+            <button type="button" class="btn botonEvento btn-lg btn-block change-name" id="change-name" onClick="newPlatform('Crear Plataforma','','',this)">
                             Agregar Plataforma
                     </button>
         </div>
@@ -70,4 +70,10 @@
 
 
 <br>
-<br> @@include('../blocks/footer.html')
+<br> 
+<script>
+    let view = 'index';
+</script>
+@@include('../blocks/modals/platform.html')
+@@include('../blocks/footer.html')
+<script src="assets/javascript/platform-list.js"></script>

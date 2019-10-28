@@ -1,44 +1,128 @@
 var xhr = new XMLHttpRequest();
 var myIp = 'localhost';
 let myName = "greenhouse";
+var action = ``;
+var idRow = ``;
+var currentRow = ``;
 
-function createPlatform(platforms) {
-    platforms = JSON.parse(platforms);
+function appendPlatform(platform) {
+    console.log(platform);
     var tableRef = document.getElementById("IpHardware").getElementsByTagName('tbody')[0];
-    var i = 1; 
-    for (key in platforms) {
-        var name = platforms[key].name;
-        var role = platforms[key].role;
-        var url = platforms[key].url;
-        text = `<tr>`;
-        text += `<td>`;
-        text +=   `${name}`;
-        text += `</td>`;
-        text += `<td>`;
-        text +=   `${url}`;
-        text += `</td>`;
-        text += `<td>`;
-        text +=    `<button data-toggle="tooltip"  onClick="editPlatform(\'` + name + `\',\'` + url + `\',this)"  title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>`;
-        text    += `<button data-toggle="tooltip" onClick="deletePlatform(` + i + `,this)" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>`;
-        text += `</td>`;
-        text += `</tr>`;
-        newRow = tableRef.insertRow(tableRef.rows.length);
-        newRow.innerHTML = text;
-        i++;
-    }
+    var name = platform.name;
+    var id = platform._id;
+    var url = platform.url;
+    text = `<tr>`;
+    text += `<td id="${id}-name">`;
+    text +=   `${name}`;
+    text += `</td>`;
+    text += `<td id="${id}-url">`;
+    text +=   `${url}`;
+    text += `</td>`;
+    text += `<td>`;
+    text +=    `<button data-toggle="tooltip"  onClick="editPlatform('Editar plataforma',\'` + id + `\',this)"  title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>`;
+    text    += `<button data-toggle="tooltip" onClick="deletePlatform(\'` + id + `\',this)" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>`;
+    text += `</td>`;
+    text += `</tr>`;
+    newRow = tableRef.insertRow(tableRef.rows.length);
+    newRow.innerHTML = text;
 }
 
-function editPlatform(name, url, element) {
-    $('#platformModal').modal('toggle');
-    document.getElementById(`titlePlatformModal`).textContent = `Editar Plataforma`;
+function newPlatform(text, name, url, element) {
+    action = `create`;
+    platformModal.modal('toggle');
+    document.getElementById(`titlePlatformModal`).textContent = text;
     document.getElementById(`modalName`).value = name;
     document.getElementById(`modalUrl`).value = url;
 }
 
-function deletePlatform(index,element){
-    var row = element.parentElement.parentElement;
-    var index = $('table tr').index(row);
-    document.getElementById("IpHardware").deleteRow(index);
+function sendRequest(){
+    if(action == `create`) createPlatform();
+    else updatePlatform();
+}
+
+function createPlatform() {
+    platformModal.modal("hide");
+    var name = document.getElementById(`modalName`).value;
+    var url = document.getElementById(`modalUrl`).value;
+    var obj = {
+        name: name,
+        url: url,
+    }
+    xhr.open('POST', 'http://' + myIp + '/platforms/new', true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function(e) {
+        if ((xhr.readyState === 4) && (xhr.status === 200)) {
+            response  = xhr.responseText;
+            response = response.replace(/['"]+/g, '')
+            document.getElementById(`modalName`).value = ``;
+            document.getElementById(`modalUrl`).value = ``;
+            if(view == `platform_list`){
+                console.log(response);
+                obj._id = response;
+                appendPlatform(obj);
+            }
+        }
+    };
+    xhr.onerror = function(e) {
+        console.error(xhr.statusText + e);
+    };
+    xhr.send(JSON.stringify(obj)); 
+}
+
+function updatePlatform() {
+    let name = document.getElementById(`modalName`).value;
+    let url = document.getElementById(`modalUrl`).value
+    var obj = {
+        idPlatform: idRow,
+        name: name,
+        url: url,
+    }
+    document.getElementById(`${idRow}-name`).innerHTML = name;
+    document.getElementById(`${idRow}-url`).innerHTML = url;
+    platformModal.modal('hide');
+    xhr.open('POST', 'http://' + myIp + '/platforms/update', true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function(e) {
+        if ((xhr.readyState === 4) && (xhr.status === 200)) {
+
+        }
+    };
+    xhr.onerror = function(e) {
+        console.error(xhr.statusText + e);
+    };
+    xhr.send(JSON.stringify(obj));     
+}
+
+function editPlatform(text, id, element) {
+    action = `update`;
+    idRow = id;
+    let name = document.getElementById(`${idRow}-name`).textContent;
+    let url = document.getElementById(`${idRow}-url`).textContent;
+    platformModal.modal('toggle');
+    currentRow = element.parentElement.parentElement;
+    document.getElementById(`titlePlatformModal`).textContent = text;
+    document.getElementById(`modalName`).value = name;
+    document.getElementById(`modalUrl`).value = url;   
+}
+
+function deletePlatform(id,element){
+    currentRow = element.parentElement.parentElement;
+    idRow = id;
+    var index = $('table tr').index(currentRow);
+    var obj = {
+        idPlatform: id,
+    }
+    xhr.open('POST', 'http://' + myIp + '/platforms/delete', true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function(e) {
+        if ((xhr.readyState === 4) && (xhr.status === 200)) {
+            document.getElementById("IpHardware").deleteRow(index);
+        }
+    };
+    xhr.onerror = function(e) {
+        console.error(xhr.statusText + e);
+    };
+    xhr.send(JSON.stringify(obj));   
 }
 
 function poling() {
@@ -46,7 +130,10 @@ function poling() {
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = function(e) {
         if ((xhr.readyState === 4) && (xhr.status === 200)) {
-            createPlatform(xhr.responseText);
+            response = JSON.parse(xhr.responseText);
+            for (key in response) {
+                appendPlatform(response[key]);
+            }
         }
     };
     xhr.onerror = function(e) {
@@ -58,6 +145,7 @@ function poling() {
 
 document.onreadystatechange = () => {
     if (document.readyState === 'complete') {
-        poling();
+        platformModal = $('#platformModal');
+        if(view == `platform_list`) poling();
     }
 };

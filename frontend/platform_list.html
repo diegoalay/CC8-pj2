@@ -170,7 +170,7 @@
                 <div class="product-status-wrap">
                     <h4>Plataformas</h4>
                     <div class="add-product">
-                        <a href="#" id="change-name" data-toggle="modal" data-target="#platformModal">Agregar Plataforma</a>
+                        <a href="#" id="change-name" onClick="newPlatform('Crear Plataforma','','',this)">Agregar Plataforma</a>
                     </div>
                     <table id="IpHardware">
                         <thead>
@@ -196,70 +196,49 @@
         </div>
     </div>
 </div>
-<!-- Modal Evento -->
-<div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="exampleModalLongTitle">Creador de eventos</h3>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<script>
+    let view = 'platform_list';
+</script>
+<!-- Modal Agregar Plataforma -->
+<div class="modal fade" id="platformModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="breadcomb-wp">
+                    <div class="breadcomb-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div class="breadcomb-ctn">
+                        <br>
+                        <h2 id="titlePlatformModal"></h2>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <i class="far fa-times-circle modal-close"></i>
                     </button>
-                </div>
-                <div class="modal-body">
-                    <h3>LEFT</h3>
-                    <div class="input-field">
-                        <p>Seleccione IP Hardware</p>
-                        <select id="IpHardware" name="select" class="form-control pro-edt-select form-control-primary">
-                            <option value="" disabled selected>Choose your option</option>
-                        </select>
-                    </div>
-    
-                    <div class="input-field mb-4">
-                        <p>Seleccione ID Hardware</p>
-                        <select id="IdHardware" name="select" class="form-control pro-edt-select form-control-primary">
-                            <option value=""></option>
-                            <option value=""></option>
-                            <option value=""></option>
-                            <option value=""></option>
-                            <option value=""></option>
-                        </select>
-                    </div>
-                    <h3>CONDITION</h3>
-                    <div class="input-field">
-                        <p>Seleccione la condición</p>
-                        <select id="condition" name="select" class="form-control pro-edt-select form-control-primary">
-                            <option value="EQ">=</option>
-                            <option value="NEQ">!=</option>
-                            <option value="LT"><</option>
-                            <option value="GT0">></option>
-                            <option value="LTE"><=</option>
-                            <option value="GTE">>=</option>
-                        </select>
-                    </div>
-                    <h3>RIGTH</h3>
-                    <div class="input-field">
-                        <select id="rigth" name="select" class="form-control pro-edt-select form-control-primary">
-                            <option value="sensor">sensor</option>
-                            <option value="status">status</option>
-                            <option value="freq">freq</option>
-                            <option value="text">text</option>
-                        </select>
-                    </div>
-                    <div class="input-field">
+            </div>
+            <div class="modal-body">
+                <div class="review-content-section product-status-wrap">
+                    <form action="/platforms/new" method="POST">
                         <div class="input-group mg-b-pro-edt">
-                            <span class="input-group-addon"><i class="fas fa-keyboard" aria-hidden="true"></i></span>
-                            <input class="form-control" type="text" name="node-name-input" id="node-name-input" placeholder="Nodo1" required>
+                            <span class="input-group-addon"><i class="fas fa-signature" aria-hidden="true"></i></span>
+                            <input class="form-control" type="text" id="modalName" name="name" placeholder="Ingrese el nombre" required>
                         </div>
-                    </div>
+                        <div class="input-group mg-b-pro-edt">
+                            <span class="input-group-addon"><i class="fas fa-link" aria-hidden="true"></i></i></span>
+                            <input class="form-control" type="text" id="modalUrl" name="url" placeholder="Ingrese la url" required>
+                        </div>
+                    </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="botonEvento" data-dismiss="modal">Cancelar</button>
-                    <button type="button" id="button-save" class="botonEvento">Guardar</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="botonEvento" data-dismiss="modal">Cancelar</button>
+                <button type="button" onClick="sendRequest()" id="button-save" class="botonEvento">Guardar</button>
             </div>
         </div>
     </div>
+</div>
+    
 <div class="footer-copyright-area">
     <div class="container-fluid">
         <div class="row">

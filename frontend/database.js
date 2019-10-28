@@ -1,6 +1,7 @@
 var Sensor = require("./sensor.js");
 var MongoClient = require('mongodb').MongoClient;
 strftime = require("strftime");
+const ObjectID = require('mongodb').ObjectID;
 const platformName = "greenhouseCC8";
 const ip = "localhost";
 var url = "mongodb://" + ip + ":27017/";
@@ -140,16 +141,53 @@ exports.deleteEvent = function(idEvent){
   });
 }
 
-exports.newPlatform = function(obj){
+exports.deletePlatform = function(idPlatform){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
+    var query = { _id: ObjectID(idPlatform) };
     var dbo = db.db(dbName); 
-    dbo.collection('platforms').insertOne(obj,function(err, res) {
-      if (err) throw err;
-      console.log("platform inserted");
-      db.close();
+    dbo.collection("platforms").deleteOne(query, function(err, res) {
+      if (err) return(false);
+      else{
+        console.log("platforms removed " + idPlatform);
+        db.close();
+        return(true);
+      }
     });
   });
+}
+
+exports.updatePlatform = function(idPlatform, fields){
+  console.log(idPlatform);
+  console.log(fields);
+  MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+    if (err) throw err;
+    var query = { _id: ObjectID(idPlatform) };
+    var dbo = db.db(dbName); 
+    dbo.collection("platforms").updateOne(query, { $set: fields }, function(err, res) {
+      if (err) return(false);
+      else{
+        console.log("platforms updated " + idPlatform);
+        db.close();
+        return(true);
+      }
+    });
+  });
+}
+
+exports.newPlatform = function(obj){
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+      var dbo = db.db(dbName); 
+      dbo.collection("platforms").insertOne(obj, function(err, res) {
+        if (err) reject(false);
+        else{
+          db.close();
+          resolve(res.insertedId);
+        }
+      });
+    });
+  });  
 }
 
 exports.listPlatform = function(){
@@ -157,7 +195,7 @@ exports.listPlatform = function(){
     MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
       if (err) throw err;
       var dbo = db.db(dbName); 
-      dbo.collection("platforms").find({}, { projection: { _id: 0 }}).toArray(function(err, data) {
+      dbo.collection("platforms").find({}, { projection: { }}).toArray(function(err, data) {
         if(err)  reject(err) 
         else{
           resolve(data);
