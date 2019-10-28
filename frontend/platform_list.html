@@ -7,6 +7,7 @@
     <title>FrontEnd - Invernadero</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <!-- Google Fonts
 		============================================ -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet">
@@ -17,8 +18,6 @@
 		============================================ -->
     <link rel="stylesheet" href="assets/css/font-awesome.min.css">
 
-    <!-- animate CSS
-		============================================ -->
     <link rel="stylesheet" href="assets/css/animate.css">
     <!-- normalize CSS
 		============================================ -->
@@ -39,6 +38,7 @@
 		============================================ -->
     <link rel="stylesheet" href="assets/css/metisMenu/metisMenu.min.css">
     <link rel="stylesheet" href="assets/css/metisMenu/metisMenu-vertical.css">
+
     <link rel="stylesheet" href="style.css">
     <!-- responsive CSS
 		============================================ -->
@@ -53,8 +53,7 @@
     <div class="left-sidebar-pro">
         <nav id="sidebar" class="">
             <div class="sidebar-header">
-                <a href="index.html"><img class="main-logo" src="img/logo/logo.png" alt="" /></a>
-                <strong><img src="img/logo/logosn.png" alt="" /></strong>
+
             </div>
             <div class="nalika-profile">
                 <div class="profile-dtl">
@@ -75,6 +74,15 @@
                                 <li><a title="Agregar Plataforma" href="./platform_form.html"><span class="mini-sub-pro">Agregar Plataforma</span></a></li>
                             </ul>
                         </li>
+                        <li class="active">
+                            <a class="has-arrow" href="">
+                                <i class="far fa-calendar-alt"></i>
+                                <span class="mini-click-non">Eventos</span>
+                            </a>
+                            <ul class="submenu-angle" aria-expanded="true">
+                                <li><a title="Ver Plataformas" href="./events_list.html"><span class="mini-sub-pro">Ver Eventos</span></a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </nav>
             </div>
@@ -91,8 +99,8 @@
                                     <div class="col-lg-1 col-md-0 col-sm-1 col-xs-12">
                                         <div class="menu-switcher-pro">
                                             <button type="button" id="sidebarCollapse" class="btn bar-button-pro header-drl-controller-btn btn-info navbar-btn">
-                                                <i class="fas fa-bars"></i>
-                                                    </button>
+                                            <i class="fas fa-bars"></i>
+                                                </button>
                                         </div>
                                     </div>
 
@@ -113,7 +121,14 @@
                                         <li><a data-toggle="collapse" data-target="#Charts" href="#">Plataformas <span class="admin-project-icon nalika-icon nalika-down-arrow"></span></a>
                                             <ul class="collapse dropdown-header-top">
                                                 <li><a href="./platform_list.html">Ver Plataformas</a></li>
-                                                <li><a href="./platform_form.html">Agregar Plataforma</a></li>
+                                                <li>
+                                                    <a href="./platform_form.html"></a>Agregar Plataforma</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li><a data-toggle="collapse" data-target="#Charts" href="#">Eventos <span class="admin-project-icon nalika-icon nalika-down-arrow"></span></a>
+                                            <ul class="collapse dropdown-header-top">
+                                                <li><a href="./events_list.html">Ver Eventos</a></li>
                                             </ul>
                                         </li>
                                     </ul>
@@ -123,113 +138,113 @@
                     </div>
                 </div>
             </div>
-            <!-- Mobile Menu end -->
-            <div class="breadcome-area mt-5">
-                <div class="container-fluid">
+<!-- Mobile Menu end -->
+<div class="breadcome-area mt-5">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="breadcome-list">
                     <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <div class="breadcome-list">
-                                <div class="row">
-                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                                        <div class="breadcomb-wp">
-                                            <div class="breadcomb-icon">
-                                                <i class="fas fa-list"></i>
-                                            </div>
-                                            <div class="breadcomb-ctn">
-                                                <br>
-                                                <h2>Lista de Plataformas</h2>
-                                            </div>
-                                        </div>
-                                    </div>
-
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="breadcomb-wp">
+                                <div class="breadcomb-icon">
+                                    <i class="fas fa-list"></i>
+                                </div>
+                                <div class="breadcomb-ctn">
+                                    <br>
+                                    <h2>Lista de Plataformas</h2>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+</div>
 
 
-        <div class="product-status mg-b-30">
-            <div class="container-fluid">
-                <div class="row">
-                    <div id="platform-list"></div>
-                    <!-- Lo que mandes a mostrar en JS deberias de integrarlo al layout que hice de listado de plataformas aca. -->
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="product-status-wrap">
-                            <h4>Plataformas</h4>
-                            <div class="add-product">
-                                <a href="#">Agregar Plataforma</a>
-                            </div>
-                            <table>
-                                <tr>
-                                    <th>Nombre Plataforma</th>
-                                    <th>Status</th>
-                                    <th>Opciones</th>
-                                </tr>
-                                <tr>
-                                    <td>Plataforma 1</td>
-                                    <td>
-                                        <button class="pd-setting">Active</button>
-                                    </td>
-                                    <td>
-                                        <button data-toggle="tooltip" title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
-                                        <button data-toggle="tooltip" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Plataforma 2</td>
-                                    <td>
-                                        <button class="ds-setting">Disabled</button>
-                                    </td>
-                                    <td>
-                                        <button data-toggle="tooltip" title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
-                                        <button data-toggle="tooltip" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Plataforma 3</td>
-                                    <td>
-                                        <button class="ps-setting">Paused</button>
-                                    </td>
-                                    <td>
-                                        <button data-toggle="tooltip" title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
-                                        <button data-toggle="tooltip" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Plataforma 4</td>
-                                    <td>
-                                        <button class="pd-setting">Active</button>
-                                    </td>
-                                    <td>
-                                        <button data-toggle="tooltip" title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
-                                        <button data-toggle="tooltip" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Plataforma 5</td>
-                                    <td>
-                                        <button class="ps-setting">Paused</button>
-                                    </td>
-                                    <td>
-                                        <button data-toggle="tooltip" title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
-                                        <button data-toggle="tooltip" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Plataforma 6</td>
-                                    <td>
-                                        <button class="pd-setting">Active</button>
-                                    </td>
-                                    <td>
-                                        <button data-toggle="tooltip" title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
-                                        <button data-toggle="tooltip" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-                                    </td>
-                                </tr>
-                            </table>
-                            <!-- <div class="custom-pagination">
+<div class="product-status mg-b-30">
+    <div class="container-fluid">
+        <div class="row">
+            <div id="platform-list"></div>
+            <!-- Lo que mandes a mostrar en JS deberias de integrarlo al layout que hice de listado de plataformas aca. -->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="product-status-wrap">
+                    <h4>Plataformas</h4>
+                    <div class="add-product">
+                        <a href="#">Agregar Plataforma</a>
+                    </div>
+                    <table>
+                        <tr>
+                            <th>Nombre Plataforma</th>
+                            <th>Status</th>
+                            <th>Opciones</th>
+                        </tr>
+                        <tr>
+                            <td>Plataforma 1</td>
+                            <td>
+                                <button class="pd-setting">Active</button>
+                            </td>
+                            <td>
+                                <button data-toggle="tooltip" title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                <button data-toggle="tooltip" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Plataforma 2</td>
+                            <td>
+                                <button class="ds-setting">Disabled</button>
+                            </td>
+                            <td>
+                                <button data-toggle="tooltip" title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                <button data-toggle="tooltip" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Plataforma 3</td>
+                            <td>
+                                <button class="ps-setting">Paused</button>
+                            </td>
+                            <td>
+                                <button data-toggle="tooltip" title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                <button data-toggle="tooltip" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Plataforma 4</td>
+                            <td>
+                                <button class="pd-setting">Active</button>
+                            </td>
+                            <td>
+                                <button data-toggle="tooltip" title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                <button data-toggle="tooltip" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Plataforma 5</td>
+                            <td>
+                                <button class="ps-setting">Paused</button>
+                            </td>
+                            <td>
+                                <button data-toggle="tooltip" title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                <button data-toggle="tooltip" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Plataforma 6</td>
+                            <td>
+                                <button class="pd-setting">Active</button>
+                            </td>
+                            <td>
+                                <button data-toggle="tooltip" title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                <button data-toggle="tooltip" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                            </td>
+                        </tr>
+                    </table>
+                    <!-- <div class="custom-pagination">
                                 <ul class="pagination">
                                     <li class="page-item"><a class="page-link" href="#">Previous</a></li>
                                     <li class="page-item"><a class="page-link" href="#">1</a></li>
@@ -238,68 +253,223 @@
                                     <li class="page-item"><a class="page-link" href="#">Next</a></li>
                                 </ul>
                             </div> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="footer-copyright-area">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="footer-copy-right">
-                            <p>Copyright © 2019 Todos los derechos reservados.</p>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+<div class="footer-copyright-area">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="footer-copy-right">
+                    <p>Copyright © 2019 Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
     </div>
-    <!-- jquery
-		============================================ -->
-    <script src="assets/js/vendor/jquery-1.12.4.min.js"></script>
-    <!-- bootstrap JS
-		============================================ -->
-    <script src="assets/js/bootstrap.min.js"></script>
-    <!-- wow JS
-		============================================ -->
-    <script src="assets/js/wow.min.js"></script>
-    <!-- price-slider JS
-		============================================ -->
-    <script src="assets/js/jquery-price-slider.js"></script>
-    <!-- meanmenu JS
-		============================================ -->
-    <script src="assets/js/jquery.meanmenu.js"></script>
-    <!-- owl.carousel JS
-		============================================ -->
-    <script src="assets/js/owl.carousel.min.js"></script>
-    <!-- sticky JS
-		============================================ -->
-    <script src="assets/js/jquery.sticky.js"></script>
-    <!-- scrollUp JS
-		============================================ -->
-    <script src="assets/js/jquery.scrollUp.min.js"></script>
-    <!-- mCustomScrollbar JS
-		============================================ -->
-    <script src="assets/js/scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
-    <script src="assets/js/scrollbar/mCustomScrollbar-active.js"></script>
-    <!-- metisMenu JS
-		============================================ -->
-    <script src="assets/js/metisMenu/metisMenu.min.js"></script>
-    <script src="assets/js/metisMenu/metisMenu-active.js"></script>
-    <!-- morrisjs JS
-		============================================ -->
-    <script src="assets/js/sparkline/jquery.sparkline.min.js"></script>
-    <script src="assets/js/sparkline/jquery.charts-sparkline.js"></script>
+</div>
+</div>
 
-    <!-- plugins JS
-		============================================ -->
-    <script src="assets/js/plugins.js"></script>
-    <!-- main JS
-		============================================ -->
-    <script src="assets/js/main.js"></script>
-    <script type="text/javascript" src="assets/javascript/platform-list.js"></script>
+<!-- <div class="container">
+    <a href="./platform_list.html">PLATFORMS LIST</a><br>
+    <a href="./platform_form.html">NUEVA PLATAFORMA</a><br>
+    <button id="change-name" class="change-name"><i class="fas fa-signature"></i>Events</button>
+    <div id="name-modal" class="name-modal">
+        <div class="content-modal">
+            <span class="close">&times;</span>
+            <div class="field-modal">
+                <h3>LEFT</h3>
+            </div>
+            <div class="input-field col s12">
+                <select id="IpHardware">
+                    <option value="" disabled selected>Choose your option</option>
+                </select>
+                <label>Seleccione IP Hardware</label>
+            </div>
+
+            <select id="IdHardware">
+              <option value=""></option>
+              <option value=""></option>
+              <option value=""></option>
+              <option value=""></option>
+              <option value=""></option>
+            </select>
+            <h3>CONDITION</h3>
+            <select id="condition">
+              <option value="EQ">=</option>
+              <option value="NEQ">!=</option>
+              <option value="LT"><</option>
+              <option value="GT0">></option>
+              <option value="LTE"><=</option>
+              <option value="GTE">>=</option>
+            </select>
+            <h3>RIGTH</h3>
+            <select id="rigth">
+              <option value="sensor">sensor</option>
+              <option value="status">status</option>
+              <option value="freq">freq</option>
+              <option value="text">text</option>
+            </select>
+            <span class="name-input">
+            <input type="text" name="node-name-input" id="node-name-input" placeholder="Ejemplo: Nodo1">
+        </span>
+            <button id="button-save" class="button-save">Guardar</button>
+        </div>
+    </div>
+</div> -->
+
+<!-- Modal Agregar Plataforma -->
+<div class="modal fade" id="platformModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="breadcomb-wp">
+                    <div class="breadcomb-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div class="breadcomb-ctn">
+                        <br>
+                        <h2>Agregar Plataforma</h2>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="far fa-times-circle modal-close"></i>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <div class="review-content-section product-status-wrap">
+                    <form action="/platforms/new" method="POST">
+                        <div class="input-group mg-b-pro-edt">
+                            <span class="input-group-addon"><i class="fas fa-signature" aria-hidden="true"></i></span>
+                            <input class="form-control" type="text" name="name" placeholder="Ingrese el nombre" required>
+                        </div>
+                        <div class="input-group mg-b-pro-edt">
+                            <span class="input-group-addon"><i class="fas fa-link" aria-hidden="true"></i></i></span>
+                            <input class="form-control" type="text" name="url" placeholder="Ingrese la url" required>
+                        </div>
+                        <select name="select" class="form-control pro-edt-select form-control-primary">
+                            <option value="100">Seleccione tipo de Plataforma</option>
+                            <option value="0">Propia</option>
+                            <option value="1">Externa</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="botonEvento" data-dismiss="modal">Cancelar</button>
+                <button type="button" id="button-save" class="botonEvento">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Evento -->
+<div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLongTitle">Creador de eventos</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="far fa-times-circle modal-close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3>LEFT</h3>
+                <div class="input-field">
+                    <p>Seleccione IP Hardware</p>
+                    <select id="IpHardware" name="select" class="form-control pro-edt-select form-control-primary">
+                        <option value="" disabled selected>Choose your option</option>
+                    </select>
+                </div>
+
+                <div class="input-field mb-4">
+                    <p>Seleccione ID Hardware</p>
+                    <select id="IdHardware" name="select" class="form-control pro-edt-select form-control-primary">
+                        <option value=""></option>
+                        <option value=""></option>
+                        <option value=""></option>
+                        <option value=""></option>
+                        <option value=""></option>
+                    </select>
+                </div>
+                <h3>CONDITION</h3>
+                <div class="input-field">
+                    <p>Seleccione la condición</p>
+                    <select id="condition" name="select" class="form-control pro-edt-select form-control-primary">
+                        <option value="EQ">=</option>
+                        <option value="NEQ">!=</option>
+                        <option value="LT"><</option>
+                        <option value="GT0">></option>
+                        <option value="LTE"><=</option>
+                        <option value="GTE">>=</option>
+                    </select>
+                </div>
+                <h3>RIGTH</h3>
+                <div class="input-field">
+                    <select id="rigth" name="select" class="form-control pro-edt-select form-control-primary">
+                        <option value="sensor">sensor</option>
+                        <option value="status">status</option>
+                        <option value="freq">freq</option>
+                        <option value="text">text</option>
+                    </select>
+                </div>
+                <div class="input-field">
+                    <div class="input-group mg-b-pro-edt">
+                        <span class="input-group-addon"><i class="fas fa-keyboard" aria-hidden="true"></i></span>
+                        <input class="form-control" type="text" name="node-name-input" id="node-name-input" placeholder="Nodo1" required>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="botonEvento" data-dismiss="modal">Cancelar</button>
+                <button type="button" id="button-save" class="botonEvento">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- jquery
+============================================ -->
+<script src="assets/js/vendor/jquery-1.12.4.min.js"></script>
+<!-- bootstrap JS
+============================================ -->
+<script src="assets/js/bootstrap.min.js"></script>
+<!-- wow JS
+============================================ -->
+<script src="assets/js/wow.min.js"></script>
+<!-- price-slider JS
+============================================ -->
+<script src="assets/js/jquery-price-slider.js"></script>
+<!-- meanmenu JS
+============================================ -->
+<script src="assets/js/jquery.meanmenu.js"></script>
+<!-- owl.carousel JS
+============================================ -->
+<script src="assets/js/owl.carousel.min.js"></script>
+<!-- sticky JS
+============================================ -->
+<script src="assets/js/jquery.sticky.js"></script>
+<!-- scrollUp JS
+============================================ -->
+<script src="assets/js/jquery.scrollUp.min.js"></script>
+<!-- mCustomScrollbar JS
+============================================ -->
+<script src="assets/js/scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="assets/js/scrollbar/mCustomScrollbar-active.js"></script>
+<!-- metisMenu JS
+============================================ -->
+<script src="assets/js/metisMenu/metisMenu.min.js"></script>
+<script src="assets/js/metisMenu/metisMenu-active.js"></script>
+<!-- morrisjs JS
+============================================ -->
+<script src="assets/js/sparkline/jquery.sparkline.min.js"></script>
+<script src="assets/js/sparkline/jquery.charts-sparkline.js"></script>
+
+<!-- plugins JS
+============================================ -->
+<script src="assets/js/plugins.js"></script>
+<!-- main JS
+============================================ -->
+<script src="assets/js/main.js"></script>
 </body>
 
 </html>
