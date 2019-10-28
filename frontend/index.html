@@ -72,6 +72,21 @@ window.onclick = (event) => {
     }
 };   
 
+function getTimeInFormat(){
+  var date = new Date();
+  return date.toISOString(); 
+}
+
+function header(){
+    obj = {
+            "id": myName,
+            "url": myIp,
+            "date": getTimeInFormat(),        
+        }
+    return obj;
+}
+
+
 function getHardware(element){
     console.log(element)
 }
@@ -89,6 +104,14 @@ function appendPlatforms(json){
     }
 }
 
+function appendHardware(json){
+    jsonObj = JSON.parse(json);
+    for (var key in jsonObj) {
+        obj = jsonObj[key];
+        console.log(obj);       
+    }
+}
+
 function getPlatforms(){
     xhr.open('GET', 'http://' + myIp + '/platforms/list', true);
     xhr.setRequestHeader("Content-Type", "application/json");
@@ -103,13 +126,29 @@ function getPlatforms(){
     xhr.send(); 
 }
 
+function getInfo(platformIp){
+    console.log(platformIp);
+    var obj = header();
+    xhr.open('POST', 'http://' + platformIp + '/info', true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function (e) {
+        if ((xhr.readyState === 4) && (xhr.status === 200)) {
+            appendHardware(xhr.responseText);
+        }
+    };
+    xhr.onerror = function (e) {
+        console.error(xhr.statusText + e);
+    };
+    xhr.send(JSON.stringify(obj)); 
+}
+
 document.onreadystatechange = () => {
     if(document.readyState == 'complete'){
         getPlatforms();
         document.getElementById(`IpHardware`).addEventListener('change', function(){
             let option = this[this.selectedIndex];
             const url = option.getAttribute('url');
-            
+            getInfo(url);
         });
     }   
 }

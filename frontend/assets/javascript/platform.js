@@ -82,40 +82,50 @@ function header(){
 
 function generateCondition(key){
     var obj = {};
+    obj[key] = {};
     //if
-    obj[key] = {}
-    obj[key].if = {
-        left: {
-            url: "192.168.1.14",
-            id: "id001",
-            freq: 6000
-        },
-        condition: '=',
-        rigth:{
-            sensor: 770,
-            status: false,
-            freq: 30000,
-            text: "Prueba"
-        }
-    };
+    if(ifIsDirty){
+        // var leftChange = document.getElementById;
+        leftKey = leftChange.getAttribute('type')
+        // var rigthChange = document.getElementById;
+        rigthKey = leftChange.getAttribute('type')
+        obj[key].if = {
+            left: {
+                url: leftUrl,
+                id: leftId,
+                leftKey: leftChange.value,
+            },
+            condition: '=',
+            rigth:{
+                rigth: rigthChange.value,
+            }
+        };
+    }
 
     //then
-    obj[key].then = {
-        url:"localhost:8080",
-        id:"id01",
-        status:false,
-        freq:30000,
-        text:"Prueba",        
-    };
+    if(thenIsDirty){
+        // var thenChange = document.getElementById;
+        thenKey = leftChange.getAttribute('type');
+        obj[key].then = {
+            url:"localhost:8080",
+            id:"id01",
+            status:false,
+            freq:30000,
+            text:"Prueba",        
+        };
+    
+    }
 
     //else
-    obj[key].else = {
-        url:"localhost:8080",
-        id:"id01",
-        status:false,
-        freq:30000,
-        text:"Prueba"
-    };
+    if(elseIsDirty){
+        obj[key].else = {
+            url:"localhost:8080",
+            id:"id01",
+            status:false,
+            freq:30000,
+            text:"Prueba"
+        };
+    }
     return obj;
 }
 
