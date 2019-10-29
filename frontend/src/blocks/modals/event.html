@@ -38,21 +38,22 @@
                                     <option value="GTE">>=</option>
                                 </select>
                         </div>
+                        <p>Seleccione la propiedad</p>
+                        <div class="input-field">
+                            <select id="rigthPlatform" name="select" class="form-control pro-edt-select form-control-primary">
+                                <option value="sensor">sensor</option>
+                                <option value="status">status</option>
+                                <option value="freq">freq</option>
+                                <option value="text">text</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="col-ms-12 col-md-4">
                         <h3>RIGTH</h3>
                         <div class="input-field">
-                            <select id="rigthType" name="select" class="form-control pro-edt-select form-control-primary">
-                                    <option value="sensor">sensor</option>
-                                    <option value="status">status</option>
-                                    <option value="freq">freq</option>
-                                    <option value="text">text</option>
-                                </select>
-                        </div>
-                        <div class="input-field">
                             <div class="input-group mg-b-pro-edt">
                                 <span class="input-group-addon"><i class="fas fa-keyboard" aria-hidden="true"></i></span>
-                                <input class="form-control" type="text" name="node-name-input" id="rigthValue" placeholder="Nodo1" required>
+                                <input class="form-control" type="text" name="node-name-input" id="rigthValue" placeholder="Ingrese el valor ..." required>
                             </div>
                         </div>
                     </div>
@@ -79,7 +80,7 @@
                     <div class="col-ms-12 col-md-4">
                         <h3>RIGTH</h3>
                         <div class="input-field">
-                            <select id="thenType" name="select" class="form-control pro-edt-select form-control-primary">
+                            <select id="thenKey" name="select" class="form-control pro-edt-select form-control-primary">
                                     <option value="sensor">sensor</option>
                                     <option value="status">status</option>
                                     <option value="freq">freq</option>
@@ -89,7 +90,7 @@
                         <div class="input-field">
                             <div class="input-group mg-b-pro-edt">
                                 <span class="input-group-addon"><i class="fas fa-keyboard" aria-hidden="true"></i></span>
-                                <input class="form-control" type="text" name="node-name-input" id="thenValue" placeholder="Nodo1" required>
+                                <input class="form-control" type="text" name="node-name-input" id="thenValue" placeholder="Ingrese el valor ..." required>
                             </div>
                         </div>
                     </div>
@@ -114,9 +115,9 @@
                         </div>
                     </div>
                     <div class="col-ms-12 col-md-4">
-                        <h3>RIGTH</h3>
+                        <h3>THEN</h3>
                         <div class="input-field">
-                            <select id="elseType" name="select" class="form-control pro-edt-select form-control-primary">
+                            <select id="elseKey" name="select" class="form-control pro-edt-select form-control-primary">
                                     <option value="sensor">sensor</option>
                                     <option value="status">status</option>
                                     <option value="freq">freq</option>
@@ -126,7 +127,7 @@
                         <div class="input-field">
                             <div class="input-group mg-b-pro-edt">
                                 <span class="input-group-addon"><i class="fas fa-keyboard" aria-hidden="true"></i></span>
-                                <input class="form-control" type="text" name="node-name-input" id="thenValue" placeholder="Nodo1" required>
+                                <input class="form-control" type="text" name="node-name-input" id="thenValue" placeholder="Ingrese el valor ..." required>
                             </div>
                         </div>
                     </div>
@@ -134,7 +135,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="botonEvento" data-dismiss="modal">Cancelar</button>
-                <button type="button" id="button-save" class="botonEvento">Guardar</button>
+                <button type="button" onClick="sendRequest()"  id="button-save" class="botonEvento">Guardar</button>
             </div>
         </div>
     </div>

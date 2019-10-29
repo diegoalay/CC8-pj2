@@ -205,14 +205,14 @@ function appendPlatform(platform) {
     var url = platform.url;
     text = `<tr>`;
     text += `<td id="${id}-name">`;
-    text +=   `${name}`;
+    text += `${name}`;
     text += `</td>`;
     text += `<td id="${id}-url">`;
-    text +=   `${url}`;
+    text += `${url}`;
     text += `</td>`;
     text += `<td>`;
-    text +=    `<button data-toggle="tooltip"  onClick="editPlatform('Editar plataforma',\'` + id + `\',this)"  title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>`;
-    text    += `<button data-toggle="tooltip" onClick="deletePlatform(\'` + id + `\',this)" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>`;
+    text += `<button data-toggle="tooltip"  onClick="editPlatform('Editar plataforma',\'` + id + `\',this)"  title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>`;
+    text += `<button data-toggle="tooltip" onClick="deletePlatform(\'` + id + `\',this)" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>`;
     text += `</td>`;
     text += `</tr>`;
     newRow = tableRef.insertRow(tableRef.rows.length);
@@ -232,13 +232,9 @@ function appendPlatformCard(platform) {
     text += `<h2 class="text-left no-margin">${url}</h2>`;
     text += `</div></div></div></div>`;
     $('#platformCard').append(text);
-
-
-
 }
 
 function polingCard() {
-    alert('entra');
     xhr.open('GET', 'http://' + myIp + '/platforms/list', true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = function(e) {
@@ -263,8 +259,8 @@ function newPlatform(text, name, url, element) {
     document.getElementById(`modalUrl`).value = url;
 }
 
-function sendRequest(){
-    if(action == `create`) createPlatform();
+function sendRequest() {
+    if (action == `create`) createPlatform();
     else updatePlatform();
 }
 
@@ -280,11 +276,11 @@ function createPlatform() {
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = function(e) {
         if ((xhr.readyState === 4) && (xhr.status === 200)) {
-            response  = xhr.responseText;
+            response = xhr.responseText;
             response = response.replace(/['"]+/g, '')
             document.getElementById(`modalName`).value = ``;
             document.getElementById(`modalUrl`).value = ``;
-            if(view == `platform_list`){
+            if (view == `platform_list`) {
                 console.log(response);
                 obj._id = response;
                 appendPlatform(obj);
@@ -294,7 +290,7 @@ function createPlatform() {
     xhr.onerror = function(e) {
         console.error(xhr.statusText + e);
     };
-    xhr.send(JSON.stringify(obj)); 
+    xhr.send(JSON.stringify(obj));
 }
 
 function updatePlatform() {
@@ -318,7 +314,7 @@ function updatePlatform() {
     xhr.onerror = function(e) {
         console.error(xhr.statusText + e);
     };
-    xhr.send(JSON.stringify(obj));     
+    xhr.send(JSON.stringify(obj));
 }
 
 function editPlatform(text, id, element) {
@@ -330,10 +326,10 @@ function editPlatform(text, id, element) {
     currentRow = element.parentElement.parentElement;
     document.getElementById(`titlePlatformModal`).textContent = text;
     document.getElementById(`modalName`).value = name;
-    document.getElementById(`modalUrl`).value = url;   
+    document.getElementById(`modalUrl`).value = url;
 }
 
-function deletePlatform(id,element){
+function deletePlatform(id, element) {
     currentRow = element.parentElement.parentElement;
     idRow = id;
     var index = $('table tr').index(currentRow);
@@ -350,7 +346,7 @@ function deletePlatform(id,element){
     xhr.onerror = function(e) {
         console.error(xhr.statusText + e);
     };
-    xhr.send(JSON.stringify(obj));   
+    xhr.send(JSON.stringify(obj));
 }
 
 function poling() {
@@ -372,13 +368,12 @@ function poling() {
 
 
 document.onreadystatechange = () => {
-    alert(1);
     if (document.readyState === 'complete') {
         platformModal = $('#platformModal');
-        if(view == `platform_list`) poling();
-        else if (view == `index`) {
-            polingCard();   
-            alert(1);
+        if (view == `platform_list`) {
+            poling();
+        } else if (view == `index`) {
+            polingCard();
         }
     }
 };

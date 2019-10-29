@@ -5,6 +5,9 @@ action = ``;
 idRow = ``;
 currentRow = ``;
 eventModal = ``;
+let ifIsDirty = ``;
+let thenIsDirty = ``;
+let elseIsDirty = ``;
 let infoData = [];
 
 function appendEvent(event) {
@@ -38,37 +41,8 @@ function newEvent(text, name, url, element) {
 }
 
 function sendRequest(){
-    if(action == `create`) createEvent();
+    if(action == `create`) createEvent('create');
     else updateEvent();
-}
-
-function createEvent() {
-    eventModal.modal("hide");
-    var name = document.getElementById(`modalName`).value;
-    var url = document.getElementById(`modalUrl`).value;
-    var obj = {
-        name: name,
-        url: url,
-    }
-    xhr.open('POST', 'http://' + myIp + '/events/new', true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = function(e) {
-        if ((xhr.readyState === 4) && (xhr.status === 200)) {
-            response  = xhr.responseText;
-            response = response.replace(/['"]+/g, '')
-            document.getElementById(`modalName`).value = ``;
-            document.getElementById(`modalUrl`).value = ``;
-            if(view == `event_list`){
-                console.log(response);
-                obj._id = response;
-                appendEvent(obj);
-            }
-        }
-    };
-    xhr.onerror = function(e) {
-        console.error(xhr.statusText + e);
-    };
-    xhr.send(JSON.stringify(obj)); 
 }
 
 function updateEvent() {
@@ -163,56 +137,93 @@ function header(){
     return obj;
 }
 
+function correctFormat(type, val){
+    alert(val);
+    alert(type);
+    try{
+        if(type == `text`){
+            return val;
+        }else if(type == `status`){
+            if(val == `true`) return true;
+            else return false;
+        }else{
+            return parseFloat(val);
+        }
+    }catch(e){
+        alert(e);
+        return `invalid format`;
+    }
+}
+
 function generateCondition(key){
     var obj = {};
     obj[key] = {};
     //if
     if(ifIsDirty){
-        // var leftChange = document.getElementById;
-        leftKey = leftChange.getAttribute('type')
-        // var rigthChange = document.getElementById;
-        rigthKey = leftChange.getAttribute('type')
+        leftPlatform = document.getElementById('leftPlatform');
+        leftPlatform = leftPlatform.options[leftPlatform.selectedIndex];
+        leftHardware = document.getElementById('leftHardware')
+        leftHardware = leftHardware.options[leftHardware.selectedIndex];
+        condition = document.getElementById('condition');
+        condition = condition.options[condition.selectedIndex].value;
+        leftId = leftHardware.getAttribute('id');
+        leftUrl = leftPlatform.getAttribute('url');
+        rigthKey = document.getElementById('rigthPlatform');
+        rigthKey = rigthKey.options[rigthKey.selectedIndex].value;
+        rigthValue = correctFormat(rigthKey, document.getElementById('rigthValue').value);
         obj[key].if = {
             left: {
                 url: leftUrl,
                 id: leftId,
-                leftKey: leftChange.value,
+                freq: 6000,
             },
-            condition: '=',
+            condition: condition,
             rigth:{
-                rigth: rigthChange.value,
+                [`${rigthKey}`]: rigthValue,
             }
         };
     }
 
     //then
     if(thenIsDirty){
-        // var thenChange = document.getElementById;
-        thenKey = leftChange.getAttribute('type');
+        thenPlatform = document.getElementById('thenPlatform');
+        thenPlatform = thenPlatform.options[thenPlatform.selectedIndex];
+        thenHardware = document.getElementById('thenHardware');
+        thenHardware = thenHardware.options[thenHardware.selectedIndex];
+        thenUrl = thenPlatform.getAttribute('url');
+        thenId = thenHardware.getAttribute('id');
+        thenKey = document.getElementById('thenKey');
+        thenKey = thenKey.options[thenKey.selectedIndex].value;
+        thenValue = correctFormat(thenKey, document.getElementById('thenValue').value);
         obj[key].then = {
-            url:"localhost:8080",
-            id:"id01",
-            status:false,
-            freq:30000,
-            text:"Prueba",        
+            url: thenUrl,
+            id: thenId,
+            [`${thenKey}`]: rigthValue,       
         };
-    
     }
 
     //else
     if(elseIsDirty){
+        elsePlatform = document.getElementById('elsePlatform');
+        elsePlatform = elsePlatform.options[elsePlatform.selectedIndex];
+        elseHardware = document.getElementById('elseHardware');
+        elseHardware = elseHardware.options[elseHardware.selectedIndex];
+        elseUrl = elsePlatform.getAttribute('url');
+        elseId = elseHardware.getAttribute('id');
+        elseKey = document.getElementById('elseKey');
+        elseKey = elseKey.options[elseKey.selectedIndex].value;
+        elseValue = correctFormat(elseKey, document.getElementById('elseValue').value);
         obj[key].else = {
-            url:"localhost:8080",
-            id:"id01",
-            status:false,
-            freq:30000,
-            text:"Prueba"
+            url: elseUrl,
+            id: elseId,
+            [`${elseKey}`]: elseValue,       
         };
     }
+    console.log(obj);
     return obj;
 }
 
-function event(key){
+function createEvent(key){
     var obj = header();
     obj[key] = {};
     if(key == 'create'){
@@ -223,29 +234,30 @@ function event(key){
     }else if(key == 'delete'){
         obj[key].id = idEvent;
     }
-    xhr.open('POST', 'http://' + eventIp + '/' + key, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = function (e) {
-        var response = JSON.parse(xhr.responseText);
-        if ((xhr.readyState === 4) && (xhr.status === 200)) {
-            if(key == 'create') obj.idEvent = response.idEvent;
-            xhr.open('POST', 'http://' + myIp + '/events/' + key, true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onload = function (e) {
-                if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                    alert(key + ' event successfully');
-                }
-            };
-            xhr.onerror = function (e) {
-                console.error(xhr.statusText + e);
-            };
-            xhr.send(JSON.stringify(obj));             
-        }
-    };
-    xhr.onerror = function (e) {
-        console.error(xhr.statusText + e);
-    };
-    xhr.send(JSON.stringify(obj)); 
+    console.log(obj);
+    // xhr.open('POST', 'http://' + eventIp + '/' + key, true);
+    // xhr.setRequestHeader("Content-Type", "application/json");
+    // xhr.onload = function (e) {
+    //     var response = JSON.parse(xhr.responseText);
+    //     if ((xhr.readyState === 4) && (xhr.status === 200)) {
+    //         if(key == 'create') obj.idEvent = response.idEvent;
+    //         xhr.open('POST', 'http://' + myIp + '/events/' + key, true);
+    //         xhr.setRequestHeader("Content-Type", "application/json");
+    //         xhr.onload = function (e) {
+    //             if ((xhr.readyState === 4) && (xhr.status === 200)) {
+    //                 alert(key + ' event successfully');
+    //             }
+    //         };
+    //         xhr.onerror = function (e) {
+    //             console.error(xhr.statusText + e);
+    //         };
+    //         xhr.send(JSON.stringify(obj));             
+    //     }
+    // };
+    // xhr.onerror = function (e) {
+    //     console.error(xhr.statusText + e);
+    // };
+    // xhr.send(JSON.stringify(obj)); 
 }
 
 function getHardware(element){
@@ -301,8 +313,8 @@ function appendPlatforms(json){
         option = document.createElement("option");
         option.setAttribute('name', obj.name);
         option.setAttribute('url', obj.url);
-        option2 = option;
-        option3 = option;
+        option2 = option.cloneNode(true);;
+        option3 = option.cloneNode(true);
         option.innerHTML = obj.name;
         option2.innerHTML = obj.name;
         option3.innerHTML = obj.name;
@@ -330,8 +342,8 @@ function getPlatforms(){
 document.onreadystatechange = () => {
     if (document.readyState === 'complete') {
         eventModal = $('#eventModal');
+        getPlatforms();
         if(view == `event_list`) {
-            getPlatforms();
             document.getElementById(`leftPlatform`).addEventListener('change', function(){
                 let option = this[this.selectedIndex];
                 const url = option.getAttribute('url');

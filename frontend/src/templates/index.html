@@ -1,4 +1,4 @@
- @@include('../blocks/header.html')
+@@include('../blocks/header.html')
 <!-- Mobile Menu end -->
 <div class="breadcome-area mt-5">
     <div class="container-fluid">
@@ -17,7 +17,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -28,7 +27,8 @@
 <div class="section-admin container-fluid">
     <div class="row admin text-center">
         <div class="col-md-12">
-            <div class="row" id="platformCard"></div>
+            <div class="row" id="platformCard">
+            </div>
         </div>
     </div>
 </div>
@@ -40,7 +40,7 @@
                     </button>
         </div>
         <div class="col-md-6">
-            <button type="button" class="btn botonEvento btn-lg btn-block change-name" id="change-name" onClick="newEvent('Crear Evento','','',this)">
+            <button type="button" class="btn botonEvento btn-lg btn-block change-name" id="change-name" data-toggle="modal" data-target="#eventModal">
                             Agregar Evento
                     </button>
         </div>
@@ -53,8 +53,7 @@
 <script>
     let view = 'index';
 </script>
-@@include('../blocks/modals/platform.html')
-@@include('../blocks/modals/event.html')
+@@include('../blocks/modals/platform.html') 
+@@include('../blocks/modals/event.html') 
 @@include('../blocks/footer.html')
 <script src="assets/javascript/platform-list.js"></script>
-<script src="assets/javascript/event-list.js"></script>
