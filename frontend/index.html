@@ -196,7 +196,7 @@
                     </button>
         </div>
         <div class="col-md-6">
-            <button type="button" class="btn botonEvento btn-lg btn-block change-name" id="change-name" data-toggle="modal" data-target="#eventModal">
+            <button type="button" class="btn botonEvento btn-lg btn-block change-name" id="change-name" onClick="newEvent('Crear Evento','','',this)">
                             Agregar Evento
                     </button>
         </div>
@@ -205,7 +205,7 @@
 
 
 <br>
-<br> 
+<br>
 <script>
     let view = 'index';
 </script>
@@ -254,57 +254,134 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="exampleModalLongTitle">Creador de eventos</h3>
+                <h3 class="modal-title" id="titleEventModal"></h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <i class="far fa-times-circle modal-close"></i>
                     </button>
             </div>
             <div class="modal-body">
-                <h3>LEFT</h3>
-                <div class="input-field">
-                    <p>Seleccione IP Hardware</p>
-                    <select id="IpHardware" name="select" class="form-control pro-edt-select form-control-primary">
-                            <option value="" disabled selected>Choose your option</option>
-                        </select>
-                </div>
-
-                <div class="input-field mb-4">
-                    <p>Seleccione ID Hardware</p>
-                    <select id="IdHardware" name="select" class="form-control pro-edt-select form-control-primary">
-                            <option value=""></option>
-                            <option value=""></option>
-                            <option value=""></option>
-                            <option value=""></option>
-                            <option value=""></option>
-                        </select>
-                </div>
-                <h3>CONDITION</h3>
-                <div class="input-field">
-                    <p>Seleccione la condición</p>
-                    <select id="condition" name="select" class="form-control pro-edt-select form-control-primary">
-                            <option value="EQ">=</option>
-                            <option value="NEQ">!=</option>
-                            <option value="LT"><</option>
-                            <option value="GT0">></option>
-                            <option value="LTE"><=</option>
-                            <option value="GTE">>=</option>
-                        </select>
-                </div>
-                <h3>RIGTH</h3>
-                <div class="input-field">
-                    <select id="rigth" name="select" class="form-control pro-edt-select form-control-primary">
-                            <option value="sensor">sensor</option>
-                            <option value="status">status</option>
-                            <option value="freq">freq</option>
-                            <option value="text">text</option>
-                        </select>
-                </div>
-                <div class="input-field">
-                    <div class="input-group mg-b-pro-edt">
-                        <span class="input-group-addon"><i class="fas fa-keyboard" aria-hidden="true"></i></span>
-                        <input class="form-control" type="text" name="node-name-input" id="node-name-input" placeholder="Nodo1" required>
+                <div class="row admin">
+                    <div class="col-ms-12 col-md-4">
+                        <h3>IF</h3>
+                        <div class="input-field">
+                            <p>Seleccione IP Hardware</p>
+                            <select id="leftPlatform" name="select" class="form-control pro-edt-select form-control-primary">
+                                    <option url="default" selected>Seleccione la plataforma.</option>
+                                </select>
+                        </div>
+                        <div class="input-field mb-4">
+                            <p>Seleccione ID Hardware</p>
+                            <select id="leftHardware" name="select" class="form-control pro-edt-select form-control-primary">
+                                <option value="" disabled selected>Seleccione el dispositivo.</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-ms-12 col-md-4">
+                        <h3>CONDITION</h3>
+                        <div class="input-field">
+                            <p>Seleccione la condición</p>
+                            <select id="condition" name="select" class="form-control pro-edt-select form-control-primary">
+                                    <option value="EQ">=</option>
+                                    <option value="NEQ">!=</option>
+                                    <option value="LT"><</option>
+                                    <option value="GT0">></option>
+                                    <option value="LTE"><=</option>
+                                    <option value="GTE">>=</option>
+                                </select>
+                        </div>
+                    </div>
+                    <div class="col-ms-12 col-md-4">
+                        <h3>RIGTH</h3>
+                        <div class="input-field">
+                            <select id="rigthType" name="select" class="form-control pro-edt-select form-control-primary">
+                                    <option value="sensor">sensor</option>
+                                    <option value="status">status</option>
+                                    <option value="freq">freq</option>
+                                    <option value="text">text</option>
+                                </select>
+                        </div>
+                        <div class="input-field">
+                            <div class="input-group mg-b-pro-edt">
+                                <span class="input-group-addon"><i class="fas fa-keyboard" aria-hidden="true"></i></span>
+                                <input class="form-control" type="text" name="node-name-input" id="rigthValue" placeholder="Nodo1" required>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <div class="row admin">
+                    <div class="col-ms-12 col-md-4">
+                        <h3>Else</h3>
+                        <div class="input-field">
+                            <p>Seleccione IP Hardware</p>
+                            <select id="thenPlatform" name="select" class="form-control pro-edt-select form-control-primary">
+                                    <option url="default" selected>Seleccione la plataforma.</option>
+                                </select>
+                        </div>
+                    </div>
+                    <div class="col-ms-12 col-md-4">
+                        <h3>HARDWARE</h3>
+                        <div class="input-field">
+                            <p>Seleccione el dispositivo</p>
+                            <select id="thenHardware" name="select" class="form-control pro-edt-select form-control-primary">
+                                <option value="" disabled selected>Seleccione el dispositivo.</option>    
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-ms-12 col-md-4">
+                        <h3>RIGTH</h3>
+                        <div class="input-field">
+                            <select id="thenType" name="select" class="form-control pro-edt-select form-control-primary">
+                                    <option value="sensor">sensor</option>
+                                    <option value="status">status</option>
+                                    <option value="freq">freq</option>
+                                    <option value="text">text</option>
+                                </select>
+                        </div>
+                        <div class="input-field">
+                            <div class="input-group mg-b-pro-edt">
+                                <span class="input-group-addon"><i class="fas fa-keyboard" aria-hidden="true"></i></span>
+                                <input class="form-control" type="text" name="node-name-input" id="thenValue" placeholder="Nodo1" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+                <div class="row admin">
+                    <div class="col-ms-12 col-md-4">
+                        <h3>Else</h3>
+                        <div class="input-field">
+                            <p>Seleccione IP Hardware</p>
+                            <select id="elsePlatform" name="select" class="form-control pro-edt-select form-control-primary">
+                                    <option url="default" selected>Seleccione la plataforma.</option>
+                                </select>
+                        </div>
+                    </div>
+                    <div class="col-ms-12 col-md-4">
+                        <h3>HARDWARE</h3>
+                        <div class="input-field">
+                            <p>Seleccione el dispositivo</p>
+                            <select id="elseHardware" name="select" class="form-control pro-edt-select form-control-primary">
+                                <option value="" disabled selected>Seleccione el dispositivo.</option>    
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-ms-12 col-md-4">
+                        <h3>RIGTH</h3>
+                        <div class="input-field">
+                            <select id="elseType" name="select" class="form-control pro-edt-select form-control-primary">
+                                    <option value="sensor">sensor</option>
+                                    <option value="status">status</option>
+                                    <option value="freq">freq</option>
+                                    <option value="text">text</option>
+                                </select>
+                        </div>
+                        <div class="input-field">
+                            <div class="input-group mg-b-pro-edt">
+                                <span class="input-group-addon"><i class="fas fa-keyboard" aria-hidden="true"></i></span>
+                                <input class="form-control" type="text" name="node-name-input" id="thenValue" placeholder="Nodo1" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>                                                
             </div>
             <div class="modal-footer">
                 <button type="button" class="botonEvento" data-dismiss="modal">Cancelar</button>
@@ -442,3 +519,4 @@
     // }
 </script>
 <script src="assets/javascript/platform-list.js"></script>
+<script src="assets/javascript/event-list.js"></script>

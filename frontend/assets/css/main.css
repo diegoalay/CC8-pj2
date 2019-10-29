@@ -137,6 +137,16 @@ textarea {
     margin-bottom: 20px;
 }
 
+#eventModal .modal-dialog {
+    margin-top: 100px;
+}
+
+@media (min-width: 992px) {
+    #eventModal .modal-dialog {
+        width: 900px !important;
+    }
+}
+
 
 /* ==========================================================================
    Helper classes

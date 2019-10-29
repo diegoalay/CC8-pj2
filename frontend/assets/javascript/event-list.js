@@ -1,9 +1,11 @@
-var xhr = new XMLHttpRequest();
-var myIp = 'localhost';
-let myName = "greenhouse";
-var action = ``;
-var idRow = ``;
-var currentRow = ``;
+xhr = new XMLHttpRequest();
+myIp = 'localhost';
+myName = "greenhouse";
+action = ``;
+idRow = ``;
+currentRow = ``;
+eventModal = ``;
+let infoData = [];
 
 function appendEvent(event) {
     console.log(event);
@@ -31,8 +33,8 @@ function newEvent(text, name, url, element) {
     action = `create`;
     eventModal.modal('toggle');
     document.getElementById(`titleEventModal`).textContent = text;
-    document.getElementById(`modalName`).value = name;
-    document.getElementById(`modalUrl`).value = url;
+    // document.getElementById(`modalName`).value = name;
+    // document.getElementById(`modalUrl`).value = url;
 }
 
 function sendRequest(){
@@ -246,9 +248,123 @@ function event(key){
     xhr.send(JSON.stringify(obj)); 
 }
 
+function getHardware(element){
+    console.log(element)
+}
+
+function removeOptions(selectbox) {
+    for(var i = selectbox.options.length - 1 ; i >= 1 ; i--){
+        selectbox.remove(i);
+    }
+}
+
+function appendHardware(url, selectName){
+    jsonObj = infoData[url];
+    console.log(jsonObj);
+    var selectHardware = document.getElementById(selectName);
+    removeOptions(selectHardware);
+    var data = jsonObj.hardware;
+    for (var key in data) {
+        obj = data[key];
+        option = document.createElement("option");
+        option.setAttribute('tag', obj.tag);
+        option.setAttribute('type', obj.type);
+        option.setAttribute('id', key);
+        option.innerHTML = key;
+        selectHardware.appendChild(option);         
+    }
+}
+
+function info(url){
+    var obj = header();
+    xhr.open('POST', 'http://' + url + '/info', true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function (e) {
+        if ((xhr.readyState === 4) && (xhr.status === 200)) {
+            var item = JSON.parse(xhr.responseText);
+            infoData[url] = item;
+        }
+    };
+    xhr.onerror = function (e) {
+        console.error(xhr.statusText + e);
+    };
+    xhr.send(JSON.stringify(obj)); 
+}
+
+function appendPlatforms(json){
+    jsonObj = JSON.parse(json);
+    var selectLeft = document.getElementById("leftPlatform");
+    var selectThen = document.getElementById("thenPlatform");
+    var selectElse = document.getElementById("elsePlatform");
+    for (var key in jsonObj) {
+        obj = jsonObj[key];
+        option = document.createElement("option");
+        option.setAttribute('name', obj.name);
+        option.setAttribute('url', obj.url);
+        option2 = option;
+        option3 = option;
+        option.innerHTML = obj.name;
+        option2.innerHTML = obj.name;
+        option3.innerHTML = obj.name;
+        selectLeft.appendChild(option);
+        selectThen.appendChild(option2);
+        selectElse.appendChild(option3);   
+        info(obj.url); 
+    }
+}
+
+function getPlatforms(){
+    xhr.open('GET', 'http://' + myIp + '/platforms/list', true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function (e) {
+        if ((xhr.readyState === 4) && (xhr.status === 200)) {
+            appendPlatforms(xhr.responseText);
+        }
+    };
+    xhr.onerror = function (e) {
+        console.error(xhr.statusText + e);
+    };
+    xhr.send(); 
+}
+
 document.onreadystatechange = () => {
     if (document.readyState === 'complete') {
-        platformModal = $('#eventModal');
-        if(view == `event_list`) poling();
-    }  
-};
+        eventModal = $('#eventModal');
+        if(view == `event_list`) {
+            getPlatforms();
+            document.getElementById(`leftPlatform`).addEventListener('change', function(){
+                let option = this[this.selectedIndex];
+                const url = option.getAttribute('url');
+                if(url == 'default') {
+                    ifIsDirty = false; 
+                    removeOptions(document.getElementById('leftHardware'));
+                }else{
+                    ifIsDirty = true;
+                    appendHardware(url, 'leftHardware');
+                }
+            });
+            document.getElementById(`thenPlatform`).addEventListener('change', function(){
+                let option = this[this.selectedIndex];
+                const url = option.getAttribute('url');
+                if(url == 'default'){
+                    thenIsDirty = false;
+                    removeOptions(document.getElementById('thenHardware'));
+                }else{
+                    thenIsDirty = true;
+                    appendHardware(url,'thenHardware');
+                }
+            });
+            document.getElementById(`elsePlatform`).addEventListener('change', function(){
+                let option = this[this.selectedIndex];
+                const url = option.getAttribute('url');
+                if(url == 'default'){ 
+                    elseIsDirty = false; 
+                    removeOptions(document.getElementById('elseHardware'));
+                }else{
+                    elseIsDirty = true;
+                    appendHardware(url,'elseHardware');
+                }
+            });
+        }  
+    }
+};  
