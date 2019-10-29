@@ -104,6 +104,11 @@ app.post('/events/delete', async (req, res, next) => {
     return res.end();
 });
 
+app.post('/events/list', async (req, res, next) => {
+    var result = await DB.listEvent();
+    res.jsonp(result);
+});
+
 app.get('/platforms/list', async (req, res, next) => {   
     var result = await DB.listPlatform();
     res.jsonp(result);
