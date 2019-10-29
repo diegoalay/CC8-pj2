@@ -141,6 +141,22 @@ exports.deleteEvent = function(idEvent){
   });
 }
 
+exports.listEvent = function(){
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+      if (err) throw err;
+      var dbo = db.db(dbName); 
+      dbo.collection("events").find({}, { projection: { }}).toArray(function(err, data) {
+        if(err)  reject(err) 
+        else{
+          resolve(data);
+          db.close();
+        }
+      });
+    });
+  });
+}
+
 exports.deletePlatform = function(idPlatform){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;

@@ -4,6 +4,7 @@ let myName = "greenhouse";
 var action = ``;
 var idRow = ``;
 var currentRow = ``;
+var platformModal = ``;
 
 function appendPlatform(platform) {
     console.log(platform);

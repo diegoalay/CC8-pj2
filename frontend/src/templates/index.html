@@ -30,7 +30,7 @@
             <div class="row" id="platformCard">
             </div>
         </div>
-    </div>
+    </div>x
 </div>
 <div class="section-admin container-fluid">
     <div class="row mt-5 mb-5">
@@ -40,7 +40,7 @@
                     </button>
         </div>
         <div class="col-md-6">
-            <button type="button" class="btn botonEvento btn-lg btn-block change-name" id="change-name" data-toggle="modal" data-target="#eventModal">
+            <button type="button" class="btn botonEvento btn-lg btn-block change-name" id="change-name" onClick="newEvent('Crear Evento','','',this)">
                             Agregar Evento
                     </button>
         </div>
@@ -53,5 +53,8 @@
 <script>
     let view = 'index';
 </script>
-@@include('../blocks/modals/platform.html') @@include('../blocks/modals/event.html') @@include('../blocks/footer.html')
+@@include('../blocks/modals/platform.html')
+@@include('../blocks/modals/event.html')
+@@include('../blocks/footer.html')
 <script src="assets/javascript/platform-list.js"></script>
+<script src="assets/javascript/event-list.js"></script>
