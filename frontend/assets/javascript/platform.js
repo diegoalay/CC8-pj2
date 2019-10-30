@@ -17,8 +17,7 @@ function createForm(json) {
     var data = jsonObj.hardware;
     for (var key in data) {
         obj = data[key];
-        console.log(obj);
-
+        // console.log(obj);
         //TABS
 
         form = document.createElement("div");
@@ -209,6 +208,9 @@ function graphic(jsonObj){
         labels.push(key);
         data.push(jsonObj[key].sensor);
     }
+    console.log(labels);
+    console.log(data);
+
 }
 
 function search(hardware, startDate, finishDate) {
@@ -223,6 +225,7 @@ function search(hardware, startDate, finishDate) {
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = function(e) {
         var frontResp = JSON.parse(xhr.responseText);
+        console.log(frontResp);
         let pendingData = false;
         if ((xhr.readyState === 4) && (xhr.status === 200)) {
             var length = Object.keys(frontResp.data).length;
@@ -235,8 +238,9 @@ function search(hardware, startDate, finishDate) {
                 } else if (new Date(frontResp.start) >= new Date(startDate) && new Date(frontResp.finish) < new Date(finishDate)) {
                     pending = new Date(new Date(frontResp.finish).getTime() + (new Date(finishDate).getTime() - new Date(frontResp.finish).getTime()));
                     startDate = frontResp.finish;
+                    // startDate = startDate.toISOString();
                     finishDate = pending.toISOString();
-                    alert('pedir el resto derecha: ' + new Date(frontResp.finish) + '-' + pending);
+                    alert('pedir el resto derecha: ' + startDate + '-' + pending);
                     pendingData = true;
                 } else if (new Date(frontResp.start) <= new Date(startDate) && new Date(frontResp.finish) >= new Date(finishDate)) {
                     alert('todo en cache');
@@ -255,7 +259,6 @@ function search(hardware, startDate, finishDate) {
                 xhr.setRequestHeader("Content-Type", "application/json");
                 xhr.onload = function(e) {
                     var platformResp = JSON.parse(xhr.responseText);
-                    console.log(platformResp);
                     obj.data = platformResp.data
                     if ((xhr.readyState === 4) && (xhr.status === 200)) {
                         xhr.open('POST', 'http://' + myIp + '/device', true);
@@ -318,10 +321,10 @@ function poling() {
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = function(e) {
         if ((xhr.readyState === 4) && (xhr.status === 200)) {
-            console.log(xhr.responseText);
             createForm(xhr.responseText);
             $('#platform-name').text(platformName);
         }
+        search("id01","2019-09-17T14:33:37-0600","2019-10-29T00:06:22-0600" );
     };
     xhr.onerror = function(e) {
         console.error(xhr.statusText + e);
@@ -337,7 +340,6 @@ document.onreadystatechange = () => {
         platformName = url.searchParams.get("name");
         platformIp = url.searchParams.get("url");
         poling();
-        search("id01","2019-09-17T14:33:37-0600","2019-10-31T00:06:22-0600" );
         // search("id01","2019-09-12T14:33:37-0600","2019-09-19T00:06:22-0600" );
         // search("id01","2019-09-17T14:33:37-0600","2019-09-22T00:06:22-0600" );
         // search("id01","2019-09-17T14:33:38-0600","2019-09-18T00:06:22-0600" );
