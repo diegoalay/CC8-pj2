@@ -1,3 +1,6 @@
+var xhr = new XMLHttpRequest();
+var myIp = 'localhost';
+let myName = "greenhouse";
 
 function getTimeInFormat() {
     var date = new Date();
@@ -186,52 +189,6 @@ function createForm(json) {
 
             document.getElementById(`form-${key}`).appendChild(form1);
         }
-        // var formdata = {
-        //     schema: {
-        //         id: {
-        //             type: 'string',
-        //             title: 'ID',
-        //             default: key,
-        //             readOnly: true,
-        //             required: true
-        //         },
-        //         description: {
-        //             type: 'string',
-        //             title: 'Description',
-        //             readOnly: true,
-        //             default: obj.tag,
-        //         },
-        //         freq: {
-        //             type: 'number',
-        //             title: 'Frequence',
-        //             default: 1000,
-        //             required: true,
-        //         },
-        //         text: {
-        //             type: 'string',
-        //             title: 'Text',
-        //             default: 'Algun texto',
-        //             required: true,
-        //         },
-        //         status: {
-        //             type: "string",
-        //             title: "Status",
-        //             required: false,
-        //             enum: [
-        //                 true,
-        //                 false,
-        //             ]
-        //         },
-        //     },
-        //     onSubmit: function(errors, values) {
-        //         if (errors) {
-        //             alert(error);
-        //         } else {
-        //             change(values);
-        //         }
-        //     }
-        // }
-        // $("#form-" + key).jsonForm(formdata);
     }
 }
 
@@ -243,91 +200,6 @@ function header() {
         "date": getTimeInFormat(),
     }
     return obj;
-}
-
-function generateCondition(key) {
-    var obj = {};
-    obj[key] = {};
-    //if
-    if (ifIsDirty) {
-        // var leftChange = document.getElementById;
-        leftKey = leftChange.getAttribute('type')
-            // var rigthChange = document.getElementById;
-        rigthKey = leftChange.getAttribute('type')
-        obj[key].if = {
-            left: {
-                url: leftUrl,
-                id: leftId,
-                leftKey: leftChange.value,
-            },
-            condition: '=',
-            rigth: {
-                rigth: rigthChange.value,
-            }
-        };
-    }
-
-    //then
-    if (thenIsDirty) {
-        // var thenChange = document.getElementById;
-        thenKey = leftChange.getAttribute('type');
-        obj[key].then = {
-            url: "localhost:8080",
-            id: "id01",
-            status: false,
-            freq: 30000,
-            text: "Prueba",
-        };
-
-    }
-
-    //else
-    if (elseIsDirty) {
-        obj[key].else = {
-            url: "localhost:8080",
-            id: "id01",
-            status: false,
-            freq: 30000,
-            text: "Prueba"
-        };
-    }
-    return obj;
-}
-
-function event(key) {
-    var obj = header();
-    obj[key] = {};
-    if (key == 'create') {
-        obj[key] = (generateCondition(key))[key];
-    } else if (key == 'update') {
-        obj[key].id = idEvent;
-        obj[key] = (generateCondition(key))[key];
-    } else if (key == 'delete') {
-        obj[key].id = idEvent;
-    }
-    xhr.open('POST', 'http://' + platformIp + '/' + key, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = function(e) {
-        var response = JSON.parse(xhr.responseText);
-        if ((xhr.readyState === 4) && (xhr.status === 200)) {
-            if (key == 'create') obj.idEvent = response.idEvent;
-            xhr.open('POST', 'http://' + myIp + '/events/' + key, true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onload = function(e) {
-                if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                    alert(key + ' event successfully');
-                }
-            };
-            xhr.onerror = function(e) {
-                console.error(xhr.statusText + e);
-            };
-            xhr.send(JSON.stringify(obj));
-        }
-    };
-    xhr.onerror = function(e) {
-        console.error(xhr.statusText + e);
-    };
-    xhr.send(JSON.stringify(obj));
 }
 
 function search(hardware, startDate, finishDate) {
