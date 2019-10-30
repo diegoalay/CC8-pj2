@@ -26,16 +26,15 @@
                         </div>
                     </div>
                     <div class="col-ms-12 col-md-4">
-                        <h3>CONDITION</h3>
                         <div class="input-field">
                             <p>Seleccione la condición</p>
                             <select id="condition" name="select" class="form-control pro-edt-select form-control-primary">
-                                    <option value="EQ">=</option>
-                                    <option value="NEQ">!=</option>
-                                    <option value="LT"><</option>
-                                    <option value="GT0">></option>
-                                    <option value="LTE"><=</option>
-                                    <option value="GTE">>=</option>
+                                    <option value="=">=</option>
+                                    <option value="!=">!=</option>
+                                    <option value="<"><</option>
+                                    <option value=">">></option>
+                                    <option value="<=>"><=</option>
+                                    <option value=">=">>=</option>
                                 </select>
                         </div>
                         <p>Seleccione la propiedad</p>
@@ -49,7 +48,6 @@
                         </div>
                     </div>
                     <div class="col-ms-12 col-md-4">
-                        <h3>RIGTH</h3>
                         <div class="input-field">
                             <div class="input-group mg-b-pro-edt">
                                 <span class="input-group-addon"><i class="fas fa-keyboard" aria-hidden="true"></i></span>
@@ -60,7 +58,7 @@
                 </div>
                 <div class="row admin">
                     <div class="col-ms-12 col-md-4">
-                        <h3>Else</h3>
+                        <h3>THEN</h3>
                         <div class="input-field">
                             <p>Seleccione IP Hardware</p>
                             <select id="thenPlatform" name="select" class="form-control pro-edt-select form-control-primary">
@@ -69,7 +67,6 @@
                         </div>
                     </div>
                     <div class="col-ms-12 col-md-4">
-                        <h3>HARDWARE</h3>
                         <div class="input-field">
                             <p>Seleccione el dispositivo</p>
                             <select id="thenHardware" name="select" class="form-control pro-edt-select form-control-primary">
@@ -78,7 +75,6 @@
                         </div>
                     </div>
                     <div class="col-ms-12 col-md-4">
-                        <h3>RIGTH</h3>
                         <div class="input-field">
                             <select id="thenKey" name="select" class="form-control pro-edt-select form-control-primary">
                                     <option value="sensor">sensor</option>
@@ -97,7 +93,7 @@
                 </div>  
                 <div class="row admin">
                     <div class="col-ms-12 col-md-4">
-                        <h3>Else</h3>
+                        <h3>ELSE</h3>
                         <div class="input-field">
                             <p>Seleccione IP Hardware</p>
                             <select id="elsePlatform" name="select" class="form-control pro-edt-select form-control-primary">
@@ -106,7 +102,6 @@
                         </div>
                     </div>
                     <div class="col-ms-12 col-md-4">
-                        <h3>HARDWARE</h3>
                         <div class="input-field">
                             <p>Seleccione el dispositivo</p>
                             <select id="elseHardware" name="select" class="form-control pro-edt-select form-control-primary">
@@ -115,7 +110,6 @@
                         </div>
                     </div>
                     <div class="col-ms-12 col-md-4">
-                        <h3>THEN</h3>
                         <div class="input-field">
                             <select id="elseKey" name="select" class="form-control pro-edt-select form-control-primary">
                                     <option value="sensor">sensor</option>
@@ -127,7 +121,7 @@
                         <div class="input-field">
                             <div class="input-group mg-b-pro-edt">
                                 <span class="input-group-addon"><i class="fas fa-keyboard" aria-hidden="true"></i></span>
-                                <input class="form-control" type="text" name="node-name-input" id="thenValue" placeholder="Ingrese el valor ..." required>
+                                <input class="form-control" type="text" name="node-name-input" id="elseValue" placeholder="Ingrese el valor ..." required>
                             </div>
                         </div>
                     </div>

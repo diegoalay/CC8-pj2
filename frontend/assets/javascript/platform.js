@@ -1,7 +1,3 @@
-var xhr = new XMLHttpRequest();
-var platformIp = "";
-var myIp = "localhost:80";
-var myName = "greenhouse";
 
 function getTimeInFormat() {
     var date = new Date();

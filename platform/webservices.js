@@ -129,12 +129,13 @@ app.post('/create', async(req, res, next) => {
 
 app.post('/update', async(req, res, next) => {
     var body = getParams(req);
+    console.log(body);
     var idEvent = body.update.id;
     body.action = 'update';
-    for (key in body.update) {
-        body[key] = body.update[key];
-    }
-    body.hardware_id = body.create.if.left.id;
+    for(key in body.update){
+        body[key] = body.update[key];    
+    }    
+    // if(body.create.if != undefined) body.hardware_id = body.create.if.left.id;
     delete body.update.id;
     delete body.update;
     var obj = DB.getHeader();
