@@ -17,6 +17,7 @@ $(function() {
     $('input[name="daterange"]').daterangepicker({
         opens: 'left'
     }, function(start, end, label) {
+        // search("id01", "2019-09-17T14:33:37-0600", "2019-11-02T00:06:22-0600");
         console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
     });
 });
@@ -183,8 +184,7 @@ function createForm(json) {
             inputStatus = document.createElement("input");
             inputStatus.setAttribute('type', 'text');
             inputStatus.setAttribute('class', 'form-control');
-            inputStatus.setAttribute('id', `${key}-status`);
-            inputStatus.setAttribute('required', `true`);
+            inputStatus.setAttribute('id', `${key}-estado`);
             formGroup5.appendChild(labelStatus);
             formGroup5.appendChild(inputStatus);
             form1.appendChild(formGroup5);
@@ -234,18 +234,18 @@ function sendChange(id, type) {
     } else {
         text = document.getElementById(`${id}-text`);
         textVal = text.value;
-        status = document.getElementById(`${id}-status`);
+        status = document.getElementById(`${id}-estado`);
         statusVal = status.value;
         if (text != "") {
             obj.change[id] = {
-                text: correctFormat(`text`, text),
+                text: correctFormat(`text`, textVal),
             }
             send = true;
         }
 
         if (status != "") {
             obj.change[id] = {
-                status: correctFormat(`status`, status),
+                status: correctFormat(`status`, statusVal),
             }
             send = true;
         }
