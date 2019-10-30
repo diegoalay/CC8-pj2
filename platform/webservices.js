@@ -50,7 +50,7 @@ client.on('message', async function(topic, message) {
     DB.change(obj.id, {sensor: correctFormat(`sensor`, obj.sensor)});
     events = await handlerEvents.handlerById(obj.id);
     resultSensor = await DB.getInfoById(obj.id);
-    resultLed = await DB.getInfoById(`id02`);
+    resultLed = await DB.getInfoById(`id02`);                                                   ``
     DB.createDevice(obj.id, obj.sensor, resultSensor);   
     client.publish('/01/response', (resultSensor.freq).toString());
     client.publish('/01/response', (resultLed.text).toString());

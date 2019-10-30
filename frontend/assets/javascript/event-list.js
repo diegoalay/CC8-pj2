@@ -12,7 +12,6 @@ let eventData = [];
 let infoData = [];
 
 function appendEvents(event,key) {
-    console.log(event)
     var date = event.date;
     var idEvent;
     var id;
@@ -26,7 +25,6 @@ function appendEvents(event,key) {
         idEvent = event.id;
     }
     var tableRef = document.getElementById("tableEvents").getElementsByTagName('tbody')[0];
-    console.log(event);
     eventData[id] = event;
     text = `<tr>`;
     text += `<td id="${id}-idEvent">`;
@@ -279,6 +277,7 @@ function removeOptions(selectbox) {
 
 function appendHardware(url, selectName) {
     jsonObj = infoData[url];
+    console.log(infoData);
     var selectHardware = document.getElementById(selectName);
     removeOptions(selectHardware);
     var data = jsonObj.hardware;
@@ -294,28 +293,33 @@ function appendHardware(url, selectName) {
 }
 
 function info(url) {
-    var obj = header();
-    xhr.open('POST', 'http://' + url + '/info', true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = function(e) {
-        if ((xhr.readyState === 4) && (xhr.status === 200)) {
-            var item = JSON.parse(xhr.responseText);
-            infoData[url] = item;
-        }
-    };
-    xhr.onerror = function(e) {
-        console.error(xhr.statusText + e);
-    };
-    xhr.send(JSON.stringify(obj));
+    return new Promise(function (resolve, reject) {
+        var obj = header();
+        xhr.open('POST', 'http://' + url + '/info', true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = function(e) {
+            if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                resolve(JSON.parse(xhr.response));
+            }
+        };
+        xhr.onerror = function(e) {
+            reject({
+                status: this.status,
+                statusText: xhr.statusText
+            });
+        };
+        xhr.send(JSON.stringify(obj));
+    });
 }
 
-function appendPlatforms(json) {
+async function appendPlatforms(json) {
     jsonObj = JSON.parse(json);
     var selectLeft = document.getElementById("leftPlatform");
     var selectThen = document.getElementById("thenPlatform");
     var selectElse = document.getElementById("elsePlatform");
     for (var key in jsonObj) {
         obj = jsonObj[key];
+        var url = obj[`url`];
         option = document.createElement("option");
         option.setAttribute('name', obj.name);
         option.setAttribute('url', obj.url);
@@ -327,7 +331,11 @@ function appendPlatforms(json) {
         selectLeft.appendChild(option);
         selectThen.appendChild(option2);
         selectElse.appendChild(option3);
-        info(obj.url);
+        var infoPlatform = await info(obj.url);
+        var element = {
+            hardware: infoPlatform.hardware,
+        }
+        infoData[`${url}`] = element;
     }
 }
 
@@ -356,6 +364,7 @@ document.onreadystatechange = () => {
         document.getElementById(`leftPlatform`).addEventListener('change', function(){
             let option = this[this.selectedIndex];
             const url = option.getAttribute('url');
+            console.log(url);
             if(url == 'default') {
                 ifIsDirty = false; 
                 removeOptions(document.getElementById('leftHardware'));

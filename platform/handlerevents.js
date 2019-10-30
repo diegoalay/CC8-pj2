@@ -181,6 +181,7 @@ async function handlerEvent(event){
     var localIp = DB.ip();
     var idEvent = event.if.left.id;
     var urlEvent = event.if.left.url;
+    console.log(event);
     if(urlEvent == localIp){// hardware mine
         var key = getKey(event.if.right);
         var val = event.if.right[key];
