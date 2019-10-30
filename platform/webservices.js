@@ -3,7 +3,7 @@ var app = express(); // definimos la app usando express
 var bodyParser = require('body-parser'); //
 var DB = require('./database.js');
 var mqtt = require('mqtt');
-var client = mqtt.connect('mqtt://172.20.10.3');
+var client = mqtt.connect('mqtt://192.168.0.113');
 var handlerEvents = require('./handlerevents.js');
 var cors = require('cors');
 app.use(cors());
