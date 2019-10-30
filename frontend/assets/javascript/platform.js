@@ -12,35 +12,7 @@ function convertDateInFormat(time) {
     return date.toISOString();
 }
 
-var ctx = document.getElementById('myChart').getContext('2d');
 
-var myChart = new Chart(ctx, {
-    type: 'line',
-    backgroundColor: '#fff',
-    data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        borderColor: "#fffff",
-        datasets: [{
-            label: 'Plataforma',
-            data: [
-                10,
-                20,
-                30,
-                40
-            ],
-            borderColor: "#000",
-            borderWidth: "1",
-            hoverBorderColor: "#000",
-            backgroundColor: [
-                "#6970d5"
-            ],
-            fill: false,
-        }],
-        options: {
-            responsive: true,
-        }
-    },
-});
 
 function createForm(json) {
     jsonObj = JSON.parse(json);
@@ -232,13 +204,39 @@ function header() {
     return obj;
 }
 
-function graphic(jsonObj){
+function graphic(jsonObj) {
     let labels = [];
     let data = []
-    for(key in jsonObj){
+    for (key in jsonObj) {
         labels.push(key);
         data.push(jsonObj[key].sensor);
     }
+    console.log(labels);
+    console.log(data);
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        backgroundColor: '#fff',
+        data: {
+            labels: labels,
+            borderColor: "#fffff",
+            datasets: [{
+                data: data,
+                borderColor: "#000",
+                borderWidth: "1",
+                hoverBorderColor: "#000",
+                backgroundColor: [
+                    "#6970d5"
+                ],
+                fill: false,
+            }],
+            options: {
+                responsive: true,
+            }
+        },
+    });
 }
 
 function search(hardware, startDate, finishDate) {
@@ -274,7 +272,7 @@ function search(hardware, startDate, finishDate) {
                     alert('pedir todo');
                     pendingData = true;
                 }
-            }else{
+            } else {
                 pendingData = true;
             }
             let data = frontResp.data;
@@ -292,7 +290,7 @@ function search(hardware, startDate, finishDate) {
                         xhr.setRequestHeader("Content-Type", "application/json");
                         xhr.onload = function(e) {
                             if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                                for(key in platformResp.data){
+                                for (key in platformResp.data) {
                                     data[key] = platformResp.data[key];
                                 }
                                 graphic(data);
@@ -308,7 +306,7 @@ function search(hardware, startDate, finishDate) {
                     console.error(xhr.statusText + e);
                 };
                 xhr.send(JSON.stringify(obj));
-            }else{
+            } else {
                 graphic(data);
             }
         }
@@ -352,6 +350,7 @@ function poling() {
             createForm(xhr.responseText);
             $('#platform-name').text(platformName);
         }
+        search("id01", "2019-09-13T14:33:37-0600", "2019-10-23T00:06:22-0600");
     };
     xhr.onerror = function(e) {
         console.error(xhr.statusText + e);
@@ -367,7 +366,7 @@ document.onreadystatechange = () => {
         platformName = url.searchParams.get("name");
         platformIp = url.searchParams.get("url");
         poling();
-        search("id01","2019-09-17T14:33:37-0600","2019-10-31T00:06:22-0600" );
+        // search("id01", "2019-09-17T14:33:37-0600", "2019-10-31T00:06:22-0600");
         // search("id01","2019-09-12T14:33:37-0600","2019-09-19T00:06:22-0600" );
         // search("id01","2019-09-17T14:33:37-0600","2019-09-22T00:06:22-0600" );
         // search("id01","2019-09-17T14:33:38-0600","2019-09-18T00:06:22-0600" );
