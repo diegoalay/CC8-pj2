@@ -13,6 +13,13 @@ function convertDateInFormat(time) {
 }
 
 
+$(function() {
+    $('input[name="daterange"]').daterangepicker({
+        opens: 'left'
+    }, function(start, end, label) {
+        console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+    });
+});
 
 function createForm(json) {
     jsonObj = JSON.parse(json);
@@ -99,7 +106,7 @@ function createForm(json) {
             saveButton.setAttribute('type', 'button');
             saveButton.setAttribute('class', 'botonEvento');
 
-            onClick="deletePlatform(\'` + id + `\',this)" 
+            onClick = "deletePlatform(\'` + id + `\',this)"
             saveButton.setAttribute('onclick', `sendChange(\'` + key + `\', \'` + obj.type + `\')`);
             saveButton.innerHTML = "Guardar";
 
@@ -195,9 +202,9 @@ function createForm(json) {
     }
 }
 
-function correctFormat(type, val){
-    try{
-        if(type == `text`){
+function correctFormat(type, val) {
+    try {
+        if (type == `text`) {
             return val;
         } else if (type == `status`) {
             if (val == `true`) return true;
@@ -205,38 +212,38 @@ function correctFormat(type, val){
         } else {
             return parseFloat(val);
         }
-    }catch(e){
+    } catch (e) {
         return `invalid format`;
     }
 }
 
-function sendChange(id, type){
+function sendChange(id, type) {
     var obj = header();
     let send = false;
     obj.change = {};
-    if(type == `input`){
+    if (type == `input`) {
         freq = document.getElementById(`${id}-freq`);
         freqVal = freq.value;
-        if(freq != ""){            
+        if (freq != "") {
             obj.change[id] = {
                 freq: correctFormat(`freq`, freqVal),
             }
             send = true;
             freq.value = ``;
         }
-    }else{
+    } else {
         text = document.getElementById(`${id}-text`);
         textVal = text.value;
         status = document.getElementById(`${id}-status`);
         statusVal = status.value;
-        if(text != ""){            
+        if (text != "") {
             obj.change[id] = {
                 text: correctFormat(`text`, text),
             }
             send = true;
-        } 
-        
-        if(status != ""){
+        }
+
+        if (status != "") {
             obj.change[id] = {
                 status: correctFormat(`status`, status),
             }
@@ -245,7 +252,7 @@ function sendChange(id, type){
         text.value = ``;
         status.value = ``;
     }
-    if(send == true){
+    if (send == true) {
         xhr.open('POST', 'http://' + platformIp + '/change', true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = function(e) {
@@ -257,8 +264,8 @@ function sendChange(id, type){
         xhr.onerror = function(e) {
             console.error(xhr.statusText + e);
         };
-        xhr.send(JSON.stringify(obj));   
-    }else{
+        xhr.send(JSON.stringify(obj));
+    } else {
         alert(`Complete los valores`);
     }
 }
@@ -420,7 +427,7 @@ function poling() {
             createForm(xhr.responseText);
             $('#platform-name').text(platformName);
         }
-        search("id01","2019-09-17T14:33:37-0600","2019-11-02T00:06:22-0600" );
+        search("id01", "2019-09-17T14:33:37-0600", "2019-11-02T00:06:22-0600");
     };
     xhr.onerror = function(e) {
         console.error(xhr.statusText + e);
