@@ -180,14 +180,24 @@ function createForm(json) {
             formGroup5.setAttribute('class', 'form-group');
             labelStatus = document.createElement("label");
             labelStatus.innerHTML = "Status:";
-            inputStatus = document.createElement("input");
-            inputStatus.setAttribute('type', 'text');
-            inputStatus.setAttribute('class', 'form-control');
+            inputStatus = document.createElement("select");
+            inputStatus.setAttribute('name', 'estatus');
+            inputStatus.setAttribute('class', 'form-control pro-edt-select form-control-primary');
+            inputOption1 = document.createElement("option");
+            inputOption1.setAttribute('value', 'true');
+            inputOption1.innerHTML = "True";
+            inputOption2 = document.createElement("option");
+            inputOption2.setAttribute('value', 'false');
+            inputOption2.innerHTML = "False";
+
+            inputStatus.appendChild(inputOption1);
+            inputStatus.appendChild(inputOption2);
             inputStatus.setAttribute('id', `${key}-status`);
-            inputStatus.setAttribute('required', `true`);
             formGroup5.appendChild(labelStatus);
             formGroup5.appendChild(inputStatus);
             form1.appendChild(formGroup5);
+
+
 
             saveButton = document.createElement("button");
             saveButton.setAttribute('type', 'button');
