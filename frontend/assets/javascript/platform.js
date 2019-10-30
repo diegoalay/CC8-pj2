@@ -12,6 +12,36 @@ function convertDateInFormat(time) {
     return date.toISOString();
 }
 
+var ctx = document.getElementById('myChart').getContext('2d');
+
+var myChart = new Chart(ctx, {
+    type: 'line',
+    backgroundColor: '#fff',
+    data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        borderColor: "#fffff",
+        datasets: [{
+            label: 'Plataforma',
+            data: [
+                10,
+                20,
+                30,
+                40
+            ],
+            borderColor: "#000",
+            borderWidth: "1",
+            hoverBorderColor: "#000",
+            backgroundColor: [
+                "#6970d5"
+            ],
+            fill: false,
+        }],
+        options: {
+            responsive: true,
+        }
+    },
+});
+
 function createForm(json) {
     jsonObj = JSON.parse(json);
     var data = jsonObj.hardware;
