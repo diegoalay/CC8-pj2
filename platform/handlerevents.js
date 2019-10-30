@@ -4,6 +4,7 @@ const http = require('http');
 strftime = require("strftime");
 
 function getKey(attributes){
+    console.log('attributes: ' + attributes);
     for (var key in attributes) {
         return key; 
     }
@@ -85,7 +86,6 @@ function lookupEvent(search,event){
 }
 
 function search(event,hardwareEvent){
-    console.log(event);
     var obj = DB.getHeader();
     var url = url = event['url'];
     var requestUrl = '';
@@ -106,8 +106,6 @@ function search(event,hardwareEvent){
         requestUrl = url;
         requestPort = 80;
     }
-    console.log(requestUrl);
-    console.log(requestPort);
     const options = {
         hostname: requestUrl,
         path: '/search',
@@ -134,6 +132,7 @@ function search(event,hardwareEvent){
 }
 
 function change(event){
+    console.log(event);
     var obj = DB.getHeader();
     var url = '';
     var requestUrl = '';
@@ -147,8 +146,6 @@ function change(event){
         } 
     }
     obj.change[event.id] = changeObj;   
-    console.log("OBJECT HERE"); 
-    console.log(obj);
     if(url.includes(':')){
         requestUrl = url.substring(0,url.indexOf(':'));
         requestPort = url.substring(url.indexOf(':') + 1,url.length);
@@ -167,7 +164,6 @@ function change(event){
     }
       
     const req = http.request(options, (res) => {
-        console.log(`statusCode: ${res.statusCode}`)
         res.on('data', function (body) {
             console.log('body: ' + body);
         });
@@ -187,15 +183,11 @@ async function handlerEvent(event){
     // var localIp = '1234';
     var idEvent = event.if.left.id;
     var urlEvent = event.if.left.url;
-    console.log(localIp);
     if(urlEvent == localIp){// hardware mine
         var key = getKey(event.if.right);
         var val = event.if.right[key];
         var hardware = await DB.getInfoById(idEvent);
-        var hardwareVal = hardware[key];
-        console.log("el key es: " + key);
-        console.log("el valor es: " + val);
-        console.log("el valor del hardware es: " + hardwareVal);        
+        var hardwareVal = hardware[key];  
         switch(event.if.condition.trim()){
             case '=':{
                 console.log("=")
@@ -245,6 +237,7 @@ async function handlerEvent(event){
             case '>=':{
                 console.log(">=")
                 if(hardwareVal >= val){
+                    console.log('si');
                     change(event.then)
                 }else{
                     change(event.else)
@@ -257,14 +250,20 @@ async function handlerEvent(event){
     }   
 }
  
-// handler = async function(){
-//     console.log('empieza');
-//     interval(async () => {
-//         var events = await DB.getEvents(); 
-//         for(key in events){
-//             handlerEvent(events[key]);
-//         }
-//     }, 10000)
-// }
+handler = async function(){
+    console.log('empieza');
+    interval(async () => {
+        var events = await DB.getEvents(); 
+        for(key in events){
+            handlerEvent(events[key]);
+        }
+    }, 10000)
+}
 
-// handler();
+exports.handlerById = async function(id_hardware){
+    console.log('empieza');
+    var events = await DB.getEventsById(id_hardware); 
+    for(key in events){
+        handlerEvent(events[key]);
+    }
+}

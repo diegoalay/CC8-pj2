@@ -349,6 +349,7 @@ function search(hardware, startDate, finishDate) {
             if (pendingData) {
                 obj.search['id_hardware'] = hardware;
                 obj.search['start_date'] = startDate;
+                console.log(obj);
                 xhr.open('POST', 'http://' + platformIp + '/search', true);
                 xhr.setRequestHeader("Content-Type", "application/json");
                 xhr.onload = function(e) {
@@ -419,7 +420,7 @@ function poling() {
             createForm(xhr.responseText);
             $('#platform-name').text(platformName);
         }
-        search("id01","2019-09-17T14:33:37-0600","2019-10-29T00:06:22-0600" );
+        search("id01","2019-09-17T14:33:37-0600","2019-11-02T00:06:22-0600" );
     };
     xhr.onerror = function(e) {
         console.error(xhr.statusText + e);

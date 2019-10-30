@@ -12,19 +12,21 @@ let eventData = [];
 let infoData = [];
 
 function appendEvents(event,key) {
-    console.log(event);
-    if(key == `create` || key == `update`) {
-        for(var keyRef in event[key]){
-            event[keyRef] = event[key][keyRef];
-        }
-        delete event[key];
-    }
-    console.log(event);
-    var tableRef = document.getElementById("tableEvents").getElementsByTagName('tbody')[0];
-    idEvent = event.idEvent;
-    id = event._id;
+    console.log(event)
     var date = event.date;
-    var url = event.if.left.url;
+    var idEvent;
+    var id;
+    var url;
+    if(key == `create` || key == `update`) {
+        idEvent = event.idEvent;
+        id = event._id;
+        url = event[key].if.left.url;
+    }else{
+        id = event._id;
+        idEvent = event.id;
+    }
+    var tableRef = document.getElementById("tableEvents").getElementsByTagName('tbody')[0];
+    console.log(event);
     eventData[id] = event;
     text = `<tr>`;
     text += `<td id="${id}-idEvent">`;
@@ -215,9 +217,9 @@ function generateCondition(key) {
         condition = condition.options[condition.selectedIndex].value;
         leftId = leftHardware.getAttribute('id');
         leftUrl = leftPlatform.getAttribute('url');
-        rigthKey = document.getElementById('rigthPlatform');
-        rigthKey = rigthKey.options[rigthKey.selectedIndex].value;
-        rigthValue = correctFormat(rigthKey, document.getElementById('rigthValue').value);
+        rightKey = document.getElementById('rightPlatform');
+        rightKey = rightKey.options[rightKey.selectedIndex].value;
+        rightValue = correctFormat(rightKey, document.getElementById('rightValue').value);
         obj[key].if = {
             left: {
                 url: leftUrl,
@@ -225,8 +227,8 @@ function generateCondition(key) {
                 freq: 6000,
             },
             condition: condition,
-            rigth: {
-                [`${rigthKey}`]: rigthValue,
+            right: {
+                [`${rightKey}`]: rightValue,
             }
         };
     }

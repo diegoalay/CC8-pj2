@@ -49,9 +49,9 @@ function getTimeInFormat(){
           condition = condition.options[condition.selectedIndex].value;
           leftId = leftHardware.getAttribute('id');
           leftUrl = leftPlatform.getAttribute('url');
-          rigthKey = document.getElementById('rigthPlatform');
-          rigthKey = rigthKey.options[rigthKey.selectedIndex].value;
-          rigthValue = correctFormat(rigthKey, document.getElementById('rigthValue').value);
+          rightKey = document.getElementById('rightPlatform');
+          rightKey = rightKey.options[rightKey.selectedIndex].value;
+          rightValue = correctFormat(rightKey, document.getElementById('rightValue').value);
           obj[key].if = {
               left: {
                   url: leftUrl,
@@ -59,8 +59,8 @@ function getTimeInFormat(){
                   freq: 6000,
               },
               condition: condition,
-              rigth:{
-                  [`${rigthKey}`]: rigthValue,
+              right:{
+                  [`${rightKey}`]: rightValue,
               }
           };
       }

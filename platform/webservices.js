@@ -3,8 +3,8 @@ var app = express(); // definimos la app usando express
 var bodyParser = require('body-parser'); //
 var DB = require('./database.js');
 var mqtt = require('mqtt');
-var client = mqtt.connect('mqtt://192.168.1.22');
-// var handlerEvents = require('./handlerevents.js');
+var client = mqtt.connect('mqtt://172.20.10.3');
+var handlerEvents = require('./handlerevents.js');
 var cors = require('cors');
 app.use(cors());
 app.options('*', cors());
@@ -12,6 +12,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 var port = process.env.PORT || 8080; // seteamos el puerto
 
+function correctFormat(type, val){
+    try{
+        if(type == `text`){
+            return val;
+        } else if (type == `status`) {
+            if (val == `true`) return true;
+            else return false;
+        } else {
+            return parseFloat(val);
+        }
+    }catch(e){
+        return `invalid format`;
+    }
+}
 
 function getParams(req) {
     if (req.headers["content-type"] == "application/json") {
@@ -25,17 +39,22 @@ function getParams(req) {
 client.on('connect', function() {
     client.subscribe('/01/devices', function(err) {
         if (!err) {
-            client.publish('/response', '');
+            client.publish('/response', 'ERROR');
         }
     })
 })
 
 client.on('message', async function(topic, message) {
     // message is Buffer
-    console.log(message.toString());
+    // console.log(message.toString());
     obj = JSON.parse(message.toString());
+    DB.change(obj.id, {sensor: correctFormat(`sensor`, obj.sensor)});
+    events = await handlerEvents.handlerById(obj.id);
     result = await DB.getInfoById(obj.id);
-    // client.publish('/01/response', (result.freq).toString());
+    console.log(result);
+    DB.createDevice(obj.id, obj.sensor,result);    
+    client.publish('/01/response', (result.freq).toString());
+    client.publish('/01/response', (result.text).toString());
     // client.publish('/01/response', 'ON');
     // client.publish('/01/response', 'OFF');
 })
