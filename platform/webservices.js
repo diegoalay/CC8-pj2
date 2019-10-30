@@ -48,7 +48,7 @@ app.post('/info', async (req, res, next) => {
     for(var i = 0; i < result.length; i++){
         var eachObj = {
             tag: result[i].tag,
-            text: result[i].type,
+            type: result[i].type,
         }
         obj.hardware[result[i].id] = eachObj;
     }
@@ -129,12 +129,13 @@ app.post('/create', async (req, res, next) => {
 
 app.post('/update', async (req, res, next) => {
     var body = getParams(req);
+    console.log(body);
     var idEvent = body.update.id;
     body.action = 'update';
     for(key in body.update){
         body[key] = body.update[key];    
     }    
-    body.hardware_id = body.create.if.left.id;
+    // if(body.create.if != undefined) body.hardware_id = body.create.if.left.id;
     delete body.update.id;
     delete body.update;
     var obj = DB.getHeader();
