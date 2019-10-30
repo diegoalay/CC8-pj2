@@ -130,8 +130,7 @@ app.post('/platforms/update', async (req, res, next) => {
 
 app.post('/device', async (req, res, next) => {   
     var body = getParams(req);
-    var idHardware = body.data['id_hardware'];
-    var type = body.data['type'];
+    console.log(body);
     var idHardware = body.search['id_hardware'];
     var type = body.search['type'];    
     for(key in body.data){

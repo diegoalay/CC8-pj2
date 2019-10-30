@@ -232,9 +232,19 @@ function header() {
     return obj;
 }
 
+function graphic(jsonObj){
+    let labels = [];
+    let data = []
+    for(key in jsonObj){
+        labels.push(key);
+        data.push(jsonObj[key].sensor);
+    }
+}
+
 function search(hardware, startDate, finishDate) {
     //buscamos en cache primero
-    var obj = header();
+    let pending = false;
+    let obj = header();
     obj.search = {};
     obj.search['id_hardware'] = hardware;
     obj.search['start_date'] = startDate;
@@ -243,52 +253,63 @@ function search(hardware, startDate, finishDate) {
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = function(e) {
         var frontResp = JSON.parse(xhr.responseText);
-        console.log(frontResp);
+        let pendingData = false;
         if ((xhr.readyState === 4) && (xhr.status === 200)) {
             var length = Object.keys(frontResp.data).length;
-            alert(length);
             if (length > 0) {
                 if (new Date(frontResp.start) > new Date(startDate) && new Date(frontResp.finish) >= new Date(finishDate)) {
                     pending = new Date(new Date(frontResp.start).getTime());
                     finishDate = pending.toISOString();
                     alert('pedir el resto izquierda: ' + startDate + ' - ' + finishDate);
+                    pendingData = true;
                 } else if (new Date(frontResp.start) >= new Date(startDate) && new Date(frontResp.finish) < new Date(finishDate)) {
                     pending = new Date(new Date(frontResp.finish).getTime() + (new Date(finishDate).getTime() - new Date(frontResp.finish).getTime()));
-                    startDate = finishDate;
+                    startDate = frontResp.finish;
                     finishDate = pending.toISOString();
                     alert('pedir el resto derecha: ' + new Date(frontResp.finish) + '-' + pending);
+                    pendingData = true;
                 } else if (new Date(frontResp.start) <= new Date(startDate) && new Date(frontResp.finish) >= new Date(finishDate)) {
                     alert('todo en cache');
                 } else {
-                    pending
                     alert('pedir todo');
+                    pendingData = true;
                 }
+            }else{
+                pendingData = true;
             }
-            if (pending) {
+            let data = frontResp.data;
+            if (pendingData) {
+                obj.search['id_hardware'] = hardware;
+                obj.search['start_date'] = startDate;
                 xhr.open('POST', 'http://' + platformIp + '/search', true);
                 xhr.setRequestHeader("Content-Type", "application/json");
                 xhr.onload = function(e) {
                     var platformResp = JSON.parse(xhr.responseText);
                     console.log(platformResp);
+                    obj.data = platformResp.data
                     if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                        console.log(platformResp);
                         xhr.open('POST', 'http://' + myIp + '/device', true);
                         xhr.setRequestHeader("Content-Type", "application/json");
                         xhr.onload = function(e) {
                             if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                                console.log(true);
+                                for(key in platformResp.data){
+                                    data[key] = platformResp.data[key];
+                                }
+                                graphic(data);
                             }
                         };
                         xhr.onerror = function(e) {
                             console.error(xhr.statusText + e);
                         };
-                        xhr.send(JSON.stringify(platformResp));
+                        xhr.send(JSON.stringify(obj));
                     }
                 };
                 xhr.onerror = function(e) {
                     console.error(xhr.statusText + e);
                 };
                 xhr.send(JSON.stringify(obj));
+            }else{
+                graphic(data);
             }
         }
     };
@@ -346,7 +367,7 @@ document.onreadystatechange = () => {
         platformName = url.searchParams.get("name");
         platformIp = url.searchParams.get("url");
         poling();
-        // search("id01","2019-09-17T14:33:37-0600","2019-09-19T00:06:22-0600" );
+        search("id01","2019-09-17T14:33:37-0600","2019-10-31T00:06:22-0600" );
         // search("id01","2019-09-12T14:33:37-0600","2019-09-19T00:06:22-0600" );
         // search("id01","2019-09-17T14:33:37-0600","2019-09-22T00:06:22-0600" );
         // search("id01","2019-09-17T14:33:38-0600","2019-09-18T00:06:22-0600" );
