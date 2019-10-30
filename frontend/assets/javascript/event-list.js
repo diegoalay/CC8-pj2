@@ -23,6 +23,7 @@ function appendEvents(event,key) {
     }else{
         id = event._id;
         idEvent = event.id;
+        url = event.if.left.url;
     }
     var tableRef = document.getElementById("tableEvents").getElementsByTagName('tbody')[0];
     eventData[id] = event;
@@ -38,7 +39,7 @@ function appendEvents(event,key) {
     text += `</td>`;
     text += `<td>`;
     text +=    `<button data-toggle="tooltip"  onClick="editEvent('Editar Evento: ${id}',\'` + id + `\',this)"  title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>`;
-    text    += `<button data-toggle="tooltip" onClick="deleteEvent(\'` + id + `\',this)" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>`;
+    text    += `<button data-toggle="tooltip" onClick="deleteEvent(\'` + id + `\',\'` + key + `\',this)" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>`;
     text += `</td>`;
     text += `</tr>`;
     newRow = tableRef.insertRow(tableRef.rows.length);
@@ -65,9 +66,12 @@ function editEvent(text, id, element) {
     event = eventData[id];
 }
 
-function deleteEvent(id,element){
+function deleteEvent(id, key, element){
     event = eventData[id];
-    url = event.if.left.url;
+    console.log(event);
+    console.log(eventData);
+    if(key == `create`) url = event.create.if.left.url;
+    else url = event.if.left.url;
     currentRow = element.parentElement.parentElement;
     var index = $('table tr').index(currentRow);
     var obj = header(); 
@@ -294,21 +298,25 @@ function appendHardware(url, selectName) {
 
 function info(url) {
     return new Promise(function (resolve, reject) {
-        var obj = header();
-        xhr.open('POST', 'http://' + url + '/info', true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onload = function(e) {
-            if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                resolve(JSON.parse(xhr.response));
-            }
-        };
-        xhr.onerror = function(e) {
-            reject({
-                status: this.status,
-                statusText: xhr.statusText
-            });
-        };
-        xhr.send(JSON.stringify(obj));
+        try{
+            var obj = header();
+            xhr.open('POST', 'http://' + url + '/info', true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onload = function(e) {
+                if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                    resolve(JSON.parse(xhr.response));
+                }
+            };
+            xhr.onerror = function(e) {
+                reject({
+                    status: this.status,
+                    statusText: xhr.statusText
+                });
+            };
+            xhr.send(JSON.stringify(obj));
+        }catch(e){
+            
+        }
     });
 }
 
