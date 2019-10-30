@@ -121,6 +121,42 @@ textarea {
     outline: none;
 }
 
+.platform-card {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.platform-card .admin-content {
+    border: 1px solid white;
+}
+
+.platform-card h3 p {
+    color: white;
+}
+
+.nav-tabs li a {
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+/* FORMS */
+
+.tab-pane form {
+    padding: 20px 0;
+}
+
+.tab-pane form label {
+    color: white;
+    font-weight: bold;
+}
+
+.form-control[readonly] {
+    color: #152036;
+}
+
 
 /* Modal */
 

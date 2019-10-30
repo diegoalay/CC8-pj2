@@ -47,6 +47,10 @@
 		============================================ -->
     <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
     <script src="https://kit.fontawesome.com/d73b9dc8c8.js" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="deps/jquery.min.js"></script>
+    <script type="text/javascript" src="deps/underscore.js"></script>
+    <script type="text/javascript" src="lib/jsonform.js"></script>
 </head>
 
 <body>
@@ -64,7 +68,7 @@
             <div class="left-custom-menu-adp-wrap comment-scrollbar">
                 <nav class="sidebar-nav left-sidebar-menu-pro">
                     <ul class="metismenu" id="menu1">
-                        <li class="active">
+                        <li class="">
                             <a class="has-arrow" href="">
                                 <i class="fas fa-cubes"></i>
                                 <span class="mini-click-non">Plataformas</span>
@@ -73,7 +77,7 @@
                                 <li><a title="Ver Plataformas" href="./platform_list.html"><span class="mini-sub-pro">Ver Plataformas</span></a></li>
                             </ul>
                         </li>
-                        <li class="active">
+                        <li class="">
                             <a class="has-arrow" href="">
                                 <i class="far fa-calendar-alt"></i>
                                 <span class="mini-click-non">Eventos</span>
@@ -159,8 +163,9 @@
     </div>
 </div>
 </div>
+<div id="forms"></div>
 <div class="section-admin container-fluid">
-    <div class="row admin text-center">
+    <div class="row admin">
         <div class="col-md-12">
             <div class="row" id="platformCard">
             </div>
@@ -188,6 +193,7 @@
 <script>
     let view = 'index';
 </script>
+<script src="assets/javascript/platform-list.js"></script>
 <!-- Modal Agregar Plataforma -->
 <div class="modal fade" id="platformModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -227,8 +233,7 @@
         </div>
     </div>
 </div>
-     
-<!-- Modal Evento -->
+     <!-- Modal Evento -->
 <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -369,8 +374,7 @@
             </div>
         </div>
     </div>
-</div> 
-<div class="footer-copyright-area">
+</div> <div class="footer-copyright-area">
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
@@ -382,9 +386,7 @@
     </div>
 </div>
 </div>
-<!-- jquery
-============================================ -->
-<script src="assets/js/vendor/jquery-1.12.4.min.js"></script>
+
 <!-- bootstrap JS
 ============================================ -->
 <script src="assets/js/bootstrap.min.js"></script>
@@ -498,4 +500,3 @@
     //     }
     // }
 </script>
-<script src="assets/javascript/platform-list.js"></script>

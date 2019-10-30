@@ -18,14 +18,14 @@ function appendEvent(event) {
     var date = event.date;
     text = `<tr>`;
     text += `<td id="${id}-idEvent">`;
-    text +=   `${idEvent}`;
+    text += `${idEvent}`;
     text += `</td>`;
     text += `<td id="${id}-date">`;
-    text +=   `${date}`;
+    text += `${date}`;
     text += `</td>`;
     text += `<td>`;
-    text +=    `<button data-toggle="tooltip"  onClick="editEvent('Editar Evento',\'` + id + `\',this)"  title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>`;
-    text    += `<button data-toggle="tooltip" onClick="deleteEvent(\'` + id + `\',this)" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>`;
+    text += `<button data-toggle="tooltip"  onClick="editEvent('Editar Evento',\'` + id + `\',this)"  title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>`;
+    text += `<button data-toggle="tooltip" onClick="deleteEvent(\'` + id + `\',this)" title="Trash" class="pd-setting-ed"><i class="fa fa-trash-o" aria-hidden="true"></i></button>`;
     text += `</td>`;
     text += `</tr>`;
     newRow = tableRef.insertRow(tableRef.rows.length);
@@ -40,8 +40,8 @@ function newEvent(text, name, url, element) {
     // document.getElementById(`modalUrl`).value = url;
 }
 
-function sendRequest(){
-    if(action == `create`) createEvent('create');
+function sendRequest() {
+    if (action == `create`) createEvent('create');
     else updateEvent();
 }
 
@@ -66,7 +66,7 @@ function updateEvent() {
     xhr.onerror = function(e) {
         console.error(xhr.statusText + e);
     };
-    xhr.send(JSON.stringify(obj));     
+    xhr.send(JSON.stringify(obj));
 }
 
 function editEvent(text, id, element) {
@@ -78,10 +78,10 @@ function editEvent(text, id, element) {
     currentRow = element.parentElement.parentElement;
     document.getElementById(`titleEventModal`).textContent = text;
     document.getElementById(`modalName`).value = name;
-    document.getElementById(`modalUrl`).value = url;   
+    document.getElementById(`modalUrl`).value = url;
 }
 
-function deleteEvent(id,element){
+function deleteEvent(id, element) {
     currentRow = element.parentElement.parentElement;
     idRow = id;
     var index = $('table tr').index(currentRow);
@@ -98,7 +98,7 @@ function deleteEvent(id,element){
     xhr.onerror = function(e) {
         console.error(xhr.statusText + e);
     };
-    xhr.send(JSON.stringify(obj));   
+    xhr.send(JSON.stringify(obj));
 }
 
 function poling() {
@@ -118,48 +118,48 @@ function poling() {
     xhr.send();
 }
 
-function getTimeInFormat(){
-  var date = new Date();
-  return date.toISOString(); 
+function getTimeInFormat() {
+    var date = new Date();
+    return date.toISOString();
 }
 
-function convertDateInFormat(time){
+function convertDateInFormat(time) {
     var date = new Date(time);
     return date.toISOString();
 }
 
-function header(){
+function header() {
     obj = {
-            "id": myName,
-            "url": myIp,
-            "date": getTimeInFormat(),        
-        }
+        "id": myName,
+        "url": myIp,
+        "date": getTimeInFormat(),
+    }
     return obj;
 }
 
-function correctFormat(type, val){
+function correctFormat(type, val) {
     alert(val);
     alert(type);
-    try{
-        if(type == `text`){
+    try {
+        if (type == `text`) {
             return val;
-        }else if(type == `status`){
-            if(val == `true`) return true;
+        } else if (type == `status`) {
+            if (val == `true`) return true;
             else return false;
-        }else{
+        } else {
             return parseFloat(val);
         }
-    }catch(e){
+    } catch (e) {
         alert(e);
         return `invalid format`;
     }
 }
 
-function generateCondition(key){
+function generateCondition(key) {
     var obj = {};
     obj[key] = {};
     //if
-    if(ifIsDirty){
+    if (ifIsDirty) {
         leftPlatform = document.getElementById('leftPlatform');
         leftPlatform = leftPlatform.options[leftPlatform.selectedIndex];
         leftHardware = document.getElementById('leftHardware')
@@ -178,14 +178,14 @@ function generateCondition(key){
                 freq: 6000,
             },
             condition: condition,
-            rigth:{
+            rigth: {
                 [`${rigthKey}`]: rigthValue,
             }
         };
     }
 
     //then
-    if(thenIsDirty){
+    if (thenIsDirty) {
         thenPlatform = document.getElementById('thenPlatform');
         thenPlatform = thenPlatform.options[thenPlatform.selectedIndex];
         thenHardware = document.getElementById('thenHardware');
@@ -198,12 +198,12 @@ function generateCondition(key){
         obj[key].then = {
             url: thenUrl,
             id: thenId,
-            [`${thenKey}`]: rigthValue,       
+            [`${thenKey}`]: rigthValue,
         };
     }
 
     //else
-    if(elseIsDirty){
+    if (elseIsDirty) {
         elsePlatform = document.getElementById('elsePlatform');
         elsePlatform = elsePlatform.options[elsePlatform.selectedIndex];
         elseHardware = document.getElementById('elseHardware');
@@ -216,22 +216,22 @@ function generateCondition(key){
         obj[key].else = {
             url: elseUrl,
             id: elseId,
-            [`${elseKey}`]: elseValue,       
+            [`${elseKey}`]: elseValue,
         };
     }
     console.log(obj);
     return obj;
 }
 
-function createEvent(key){
+function createEvent(key) {
     var obj = header();
     obj[key] = {};
-    if(key == 'create'){
+    if (key == 'create') {
         obj[key] = (generateCondition(key))[key];
-    }else if(key == 'update'){
+    } else if (key == 'update') {
         obj[key].id = idEvent;
         obj[key] = (generateCondition(key))[key];
-    }else if(key == 'delete'){
+    } else if (key == 'delete') {
         obj[key].id = idEvent;
     }
     console.log(obj);
@@ -260,17 +260,17 @@ function createEvent(key){
     // xhr.send(JSON.stringify(obj)); 
 }
 
-function getHardware(element){
+function getHardware(element) {
     console.log(element)
 }
 
 function removeOptions(selectbox) {
-    for(var i = selectbox.options.length - 1 ; i >= 1 ; i--){
+    for (var i = selectbox.options.length - 1; i >= 1; i--) {
         selectbox.remove(i);
     }
 }
 
-function appendHardware(url, selectName){
+function appendHardware(url, selectName) {
     jsonObj = infoData[url];
     console.log(jsonObj);
     var selectHardware = document.getElementById(selectName);
@@ -283,27 +283,27 @@ function appendHardware(url, selectName){
         option.setAttribute('type', obj.type);
         option.setAttribute('id', key);
         option.innerHTML = key;
-        selectHardware.appendChild(option);         
+        selectHardware.appendChild(option);
     }
 }
 
-function info(url){
+function info(url) {
     var obj = header();
     xhr.open('POST', 'http://' + url + '/info', true);
     xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = function (e) {
+    xhr.onload = function(e) {
         if ((xhr.readyState === 4) && (xhr.status === 200)) {
             var item = JSON.parse(xhr.responseText);
             infoData[url] = item;
         }
     };
-    xhr.onerror = function (e) {
+    xhr.onerror = function(e) {
         console.error(xhr.statusText + e);
     };
-    xhr.send(JSON.stringify(obj)); 
+    xhr.send(JSON.stringify(obj));
 }
 
-function appendPlatforms(json){
+function appendPlatforms(json) {
     jsonObj = JSON.parse(json);
     var selectLeft = document.getElementById("leftPlatform");
     var selectThen = document.getElementById("thenPlatform");
@@ -320,63 +320,63 @@ function appendPlatforms(json){
         option3.innerHTML = obj.name;
         selectLeft.appendChild(option);
         selectThen.appendChild(option2);
-        selectElse.appendChild(option3);   
-        info(obj.url); 
+        selectElse.appendChild(option3);
+        info(obj.url);
     }
 }
 
-function getPlatforms(){
+function getPlatforms() {
     xhr.open('GET', 'http://' + myIp + '/platforms/list', true);
     xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = function (e) {
+    xhr.onload = function(e) {
         if ((xhr.readyState === 4) && (xhr.status === 200)) {
             appendPlatforms(xhr.responseText);
         }
     };
-    xhr.onerror = function (e) {
+    xhr.onerror = function(e) {
         console.error(xhr.statusText + e);
     };
-    xhr.send(); 
+    xhr.send();
 }
 
 document.onreadystatechange = () => {
     if (document.readyState === 'complete') {
         eventModal = $('#eventModal');
         getPlatforms();
-        if(view == `event_list`) {
-            document.getElementById(`leftPlatform`).addEventListener('change', function(){
+        if (view == `event_list`) {
+            document.getElementById(`leftPlatform`).addEventListener('change', function() {
                 let option = this[this.selectedIndex];
                 const url = option.getAttribute('url');
-                if(url == 'default') {
-                    ifIsDirty = false; 
+                if (url == 'default') {
+                    ifIsDirty = false;
                     removeOptions(document.getElementById('leftHardware'));
-                }else{
+                } else {
                     ifIsDirty = true;
                     appendHardware(url, 'leftHardware');
                 }
             });
-            document.getElementById(`thenPlatform`).addEventListener('change', function(){
+            document.getElementById(`thenPlatform`).addEventListener('change', function() {
                 let option = this[this.selectedIndex];
                 const url = option.getAttribute('url');
-                if(url == 'default'){
+                if (url == 'default') {
                     thenIsDirty = false;
                     removeOptions(document.getElementById('thenHardware'));
-                }else{
+                } else {
                     thenIsDirty = true;
-                    appendHardware(url,'thenHardware');
+                    appendHardware(url, 'thenHardware');
                 }
             });
-            document.getElementById(`elsePlatform`).addEventListener('change', function(){
+            document.getElementById(`elsePlatform`).addEventListener('change', function() {
                 let option = this[this.selectedIndex];
                 const url = option.getAttribute('url');
-                if(url == 'default'){ 
-                    elseIsDirty = false; 
+                if (url == 'default') {
+                    elseIsDirty = false;
                     removeOptions(document.getElementById('elseHardware'));
-                }else{
+                } else {
                     elseIsDirty = true;
-                    appendHardware(url,'elseHardware');
+                    appendHardware(url, 'elseHardware');
                 }
             });
-        }  
+        }
     }
-};  
+};
