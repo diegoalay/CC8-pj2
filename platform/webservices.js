@@ -45,18 +45,15 @@ client.on('connect', function() {
 })
 
 client.on('message', async function(topic, message) {
-    // message is Buffer
     // console.log(message.toString());
     obj = JSON.parse(message.toString());
     DB.change(obj.id, {sensor: correctFormat(`sensor`, obj.sensor)});
     events = await handlerEvents.handlerById(obj.id);
-    result = await DB.getInfoById(obj.id);
-    console.log(result);
-    DB.createDevice(obj.id, obj.sensor,result);    
-    client.publish('/01/response', (result.freq).toString());
-    client.publish('/01/response', (result.text).toString());
-    // client.publish('/01/response', 'ON');
-    // client.publish('/01/response', 'OFF');
+    resultSensor = await DB.getInfoById(obj.id);
+    resultLed = await DB.getInfoById(`id02`);
+    DB.createDevice(obj.id, obj.sensor, resultSensor);   
+    client.publish('/01/response', (resultSensor.freq).toString());
+    client.publish('/01/response', (resultLed.text).toString());
 })
 
 app.post('/info', async(req, res, next) => {

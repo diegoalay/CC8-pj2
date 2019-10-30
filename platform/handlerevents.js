@@ -4,7 +4,6 @@ const http = require('http');
 strftime = require("strftime");
 
 function getKey(attributes){
-    console.log('attributes: ' + attributes);
     for (var key in attributes) {
         return key; 
     }
@@ -180,7 +179,6 @@ function change(event){
 
 async function handlerEvent(event){
     var localIp = DB.ip();
-    // var localIp = '1234';
     var idEvent = event.if.left.id;
     var urlEvent = event.if.left.url;
     if(urlEvent == localIp){// hardware mine
@@ -251,7 +249,6 @@ async function handlerEvent(event){
 }
  
 handler = async function(){
-    console.log('empieza');
     interval(async () => {
         var events = await DB.getEvents(); 
         for(key in events){
@@ -261,7 +258,6 @@ handler = async function(){
 }
 
 exports.handlerById = async function(id_hardware){
-    console.log('empieza');
     var events = await DB.getEventsById(id_hardware); 
     for(key in events){
         handlerEvent(events[key]);
