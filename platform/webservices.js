@@ -3,7 +3,7 @@ var app = express(); // definimos la app usando express
 var bodyParser = require('body-parser'); //
 var DB = require('./database.js');
 var mqtt = require('mqtt');
-var client = mqtt.connect('mqtt://172.20.10.3');
+var client = mqtt.connect('mqtt://192.168.1.22');
 // var handlerEvents = require('./handlerevents.js');
 var cors = require('cors');
 app.use(cors());
@@ -23,16 +23,21 @@ function getParams(req) {
 }
 
 client.on('connect', function() {
-    client.subscribe('/devices', function(err) {
+    client.subscribe('/01/devices', function(err) {
         if (!err) {
-            client.publish('/response', 'Axel me hace su hijo');
+            client.publish('/response', '');
         }
     })
 })
 
-client.on('message', function(topic, message) {
+client.on('message', async function(topic, message) {
     // message is Buffer
     console.log(message.toString());
+    obj = JSON.parse(message.toString());
+    result = await DB.getInfoById(obj.id);
+    // client.publish('/01/response', (result.freq).toString());
+    // client.publish('/01/response', 'ON');
+    // client.publish('/01/response', 'OFF');
 })
 
 app.post('/info', async(req, res, next) => {
@@ -97,8 +102,10 @@ app.post('/change', async(req, res, next) => {
         idHardware = key;
     }
     DB.createLogSearchOrChange(id, url, date, change, 'request to ./change', 'change');
-    DB.change(idHardware, change[idHardware]);
-    res.json({ data: change });
+    var obj = DB.getHeader();
+    if(DB.change(idHardware, change[idHardware])) obj.status = "OK";
+    else  obj.status = "ERROR";
+    res.json(obj);
 });
 
 app.post('/devices', async(req, res, next) => {

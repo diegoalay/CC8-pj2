@@ -79,20 +79,22 @@ exports.createDevice = function(id,sensor){
 }
 
 exports.change = function(idHardware, fields){
-  MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
-    if (err) throw err;
-    var query = { id: idHardware };
-    var dbo = db.db(dbName); 
-    dbo.collection("info").updateOne(query, { $set: fields }, function(err, res) {
-      if (err) return(false);
-      else{
-        console.log("info updated " + idHardware);
-        db.close();
-        return(true);
-      }
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+      if (err) throw err;
+      var query = { id: idHardware };
+      var dbo = db.db(dbName); 
+      dbo.collection("info").updateOne(query, { $set: fields }, function(err, res) {
+        if (err) reject(false);
+        else{
+          console.log("info update " + idHardware);
+          db.close();
+          resolve(true);
+        }
+      });
     });
   });
-}
+}  
 
 exports.createEvent = function(obj){
   return new Promise((resolve, reject) => {

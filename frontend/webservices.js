@@ -161,16 +161,13 @@ app.post('/search', async (req, res, next) => {
         obj.start = (result[0].date);
         obj.finish = (result[result.length - 1].date);       
         for(var i = 0; i < result.length; i++){ 
-            date2 = strftime('%Y-%m-%dT%H:%M:%S%z',new Date(result[i].date));
-            date3 = new Date(result[i].date);
-            date = result[i].date;
             var eachObj = {
                 sensor: result[i].sensor || "",
                 status: result[i].status || "",
                 text: result[i].text || "",
                 freq: result[i].freq || "",
             }
-            obj.data[date.toISOString()] = eachObj;
+            obj.data[strftime('%Y-%m-%dT%H:%M:%S%z',new Date(result[i].date))] = eachObj;
         }
     }
     res.jsonp(obj); 

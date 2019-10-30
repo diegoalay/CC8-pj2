@@ -12,6 +12,8 @@ function convertDateInFormat(time) {
     return date.toISOString();
 }
 
+
+
 function createForm(json) {
     jsonObj = JSON.parse(json);
     var data = jsonObj.hardware;
@@ -87,7 +89,7 @@ function createForm(json) {
             inputFreq = document.createElement("input");
             inputFreq.setAttribute('type', 'number');
             inputFreq.setAttribute('class', 'form-control');
-            inputFreq.setAttribute('id', `${key}-id`);
+            inputFreq.setAttribute('id', `${key}-freq`);
             inputFreq.setAttribute('required', `true`);
             formGroup2.appendChild(labelFreq);
             formGroup2.appendChild(inputFreq);
@@ -96,7 +98,9 @@ function createForm(json) {
             saveButton = document.createElement("button");
             saveButton.setAttribute('type', 'button');
             saveButton.setAttribute('class', 'botonEvento');
-            saveButton.setAttribute('onclick', `sendChange('${key}', '${obj.type}')`);
+
+            onClick="deletePlatform(\'` + id + `\',this)" 
+            saveButton.setAttribute('onclick', `sendChange(\'` + key + `\', \'` + obj.type + `\')`);
             saveButton.innerHTML = "Guardar";
 
             form1.appendChild(saveButton);
@@ -159,7 +163,7 @@ function createForm(json) {
             inputText = document.createElement("input");
             inputText.setAttribute('type', 'text');
             inputText.setAttribute('class', 'form-control');
-            inputText.setAttribute('id', `${key}-id`);
+            inputText.setAttribute('id', `${key}-text`);
             inputText.setAttribute('required', `true`);
             formGroup2.appendChild(labelText);
             formGroup2.appendChild(inputText);
@@ -172,7 +176,7 @@ function createForm(json) {
             inputStatus = document.createElement("input");
             inputStatus.setAttribute('type', 'text');
             inputStatus.setAttribute('class', 'form-control');
-            inputStatus.setAttribute('id', `${key}-id`);
+            inputStatus.setAttribute('id', `${key}-status`);
             inputStatus.setAttribute('required', `true`);
             formGroup5.appendChild(labelStatus);
             formGroup5.appendChild(inputStatus);
@@ -181,7 +185,7 @@ function createForm(json) {
             saveButton = document.createElement("button");
             saveButton.setAttribute('type', 'button');
             saveButton.setAttribute('class', 'botonEvento');
-            saveButton.setAttribute('onclick', `sendChange('${key}', '${obj.type}')`);
+            saveButton.setAttribute('onclick', `sendChange('${key}', '${obj.type}', this)`);
             saveButton.innerHTML = "Guardar";
 
             form1.appendChild(saveButton);
@@ -191,6 +195,73 @@ function createForm(json) {
     }
 }
 
+function correctFormat(type, val){
+    try{
+        if(type == `text`){
+            return val;
+        } else if (type == `status`) {
+            if (val == `true`) return true;
+            else return false;
+        } else {
+            return parseFloat(val);
+        }
+    }catch(e){
+        return `invalid format`;
+    }
+}
+
+function sendChange(id, type){
+    var obj = header();
+    let send = false;
+    obj.change = {};
+    if(type == `input`){
+        freq = document.getElementById(`${id}-freq`);
+        freqVal = freq.value;
+        if(freq != ""){            
+            obj.change[id] = {
+                freq: correctFormat(`freq`, freqVal),
+            }
+            send = true;
+            freq.value = ``;
+        }
+    }else{
+        text = document.getElementById(`${id}-text`);
+        textVal = text.value;
+        status = document.getElementById(`${id}-status`);
+        statusVal = status.value;
+        if(text != ""){            
+            obj.change[id] = {
+                text: correctFormat(`text`, text),
+            }
+            send = true;
+        } 
+        
+        if(status != ""){
+            obj.change[id] = {
+                status: correctFormat(`status`, status),
+            }
+            send = true;
+        }
+        text.value = ``;
+        status.value = ``;
+    }
+    if(send == true){
+        xhr.open('POST', 'http://' + platformIp + '/change', true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = function(e) {
+            if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                var response = JSON.parse(xhr.responseText);
+                alert(response.status);
+            }
+        };
+        xhr.onerror = function(e) {
+            console.error(xhr.statusText + e);
+        };
+        xhr.send(JSON.stringify(obj));   
+    }else{
+        alert(`Complete los valores`);
+    }
+}
 
 function header() {
     obj = {
@@ -201,16 +272,40 @@ function header() {
     return obj;
 }
 
-function graphic(jsonObj){
+function graphic(jsonObj) {
     let labels = [];
     let data = []
-    for(key in jsonObj){
+    for (key in jsonObj) {
         labels.push(key);
         data.push(jsonObj[key].sensor);
     }
     console.log(labels);
     console.log(data);
 
+    var ctx = document.getElementById('myChart').getContext('2d');
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        backgroundColor: '#fff',
+        data: {
+            labels: labels,
+            borderColor: "#fffff",
+            datasets: [{
+                label: 'Sensor vs Fecha',
+                data: data,
+                borderColor: "#000",
+                borderWidth: "1",
+                hoverBorderColor: "#000",
+                backgroundColor: [
+                    "#6970d5"
+                ],
+                fill: false,
+            }],
+            options: {
+                responsive: true,
+            }
+        },
+    });
 }
 
 function search(hardware, startDate, finishDate) {
@@ -225,7 +320,6 @@ function search(hardware, startDate, finishDate) {
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = function(e) {
         var frontResp = JSON.parse(xhr.responseText);
-        console.log(frontResp);
         let pendingData = false;
         if ((xhr.readyState === 4) && (xhr.status === 200)) {
             var length = Object.keys(frontResp.data).length;
@@ -233,23 +327,23 @@ function search(hardware, startDate, finishDate) {
                 if (new Date(frontResp.start) > new Date(startDate) && new Date(frontResp.finish) >= new Date(finishDate)) {
                     pending = new Date(new Date(frontResp.start).getTime());
                     finishDate = pending.toISOString();
-                    alert('pedir el resto izquierda: ' + startDate + ' - ' + finishDate);
+                    console.log('pedir el resto izquierda: ' + startDate + ' - ' + finishDate);
                     pendingData = true;
                 } else if (new Date(frontResp.start) >= new Date(startDate) && new Date(frontResp.finish) < new Date(finishDate)) {
                     pending = new Date(new Date(frontResp.finish).getTime() + (new Date(finishDate).getTime() - new Date(frontResp.finish).getTime()));
                     startDate = frontResp.finish;
-                    // startDate = startDate.toISOString();
                     finishDate = pending.toISOString();
-                    alert('pedir el resto derecha: ' + startDate + '-' + pending);
+                    console.log('pedir el resto derecha: ' + new Date(frontResp.finish) + '-' + pending);
                     pendingData = true;
                 } else if (new Date(frontResp.start) <= new Date(startDate) && new Date(frontResp.finish) >= new Date(finishDate)) {
-                    alert('todo en cache');
+                    console.log('todo en cache');
                 } else {
-                    alert('pedir todo');
+                    console.log('pedir todo 1');
                     pendingData = true;
                 }
-            }else{
+            } else {
                 pendingData = true;
+                console.log('pedir todo 2');
             }
             let data = frontResp.data;
             if (pendingData) {
@@ -259,13 +353,14 @@ function search(hardware, startDate, finishDate) {
                 xhr.setRequestHeader("Content-Type", "application/json");
                 xhr.onload = function(e) {
                     var platformResp = JSON.parse(xhr.responseText);
+                    console.log(platformResp);
                     obj.data = platformResp.data
                     if ((xhr.readyState === 4) && (xhr.status === 200)) {
                         xhr.open('POST', 'http://' + myIp + '/device', true);
                         xhr.setRequestHeader("Content-Type", "application/json");
                         xhr.onload = function(e) {
                             if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                                for(key in platformResp.data){
+                                for (key in platformResp.data) {
                                     data[key] = platformResp.data[key];
                                 }
                                 graphic(data);
@@ -281,7 +376,7 @@ function search(hardware, startDate, finishDate) {
                     console.error(xhr.statusText + e);
                 };
                 xhr.send(JSON.stringify(obj));
-            }else{
+            } else {
                 graphic(data);
             }
         }
