@@ -361,6 +361,7 @@ function search(hardware, startDate, finishDate) {
                 xhr.open('POST', 'http://' + platformIp + '/search/', true);
                 xhr.setRequestHeader("Content-Type", "application/json");
                 xhr.onload = function(e) {
+                    console.log(xhr.responseText);
                     var platformResp = JSON.parse(xhr.responseText);
                     console.log(platformResp);
                     obj.data = platformResp.data
@@ -428,7 +429,7 @@ function poling() {
             createForm(xhr.responseText);
             $('#platform-name').text(platformName);
         }
-        search("id01", "2019-09-17T14:33:37-0600", "2019-11-02T00:06:22-0600");
+        search("id01", "2019-09-21T00:00:00.000Z", "2019-09-22T14:41:00.000Z");
     };
     xhr.onerror = function(e) {
         console.error(xhr.statusText + e);
