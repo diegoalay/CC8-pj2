@@ -18,12 +18,14 @@ $(function() {
         opens: 'left'
     }, function(start, end, label) {
         // search("id01", "2019-09-17T14:33:37-0600", "2019-11-02T00:06:22-0600");
-        console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+        var input = document.getElementById(`id_hardware_date`).value;
+        search(input, start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
     });
 });
 
 function createForm(json) {
     jsonObj = JSON.parse(json);
+    console.log(jsonObj)
     var data = jsonObj.hardware;
     for (var key in data) {
         obj = data[key];
@@ -184,10 +186,13 @@ function createForm(json) {
             inputStatus = document.createElement("input");
             inputStatus.setAttribute('type', 'text');
             inputStatus.setAttribute('class', 'form-control');
-            inputStatus.setAttribute('id', `${key}-estado`);
+            inputStatus.setAttribute('id', `${key}-status`);
+            inputStatus.setAttribute('required', `true`);
             formGroup5.appendChild(labelStatus);
             formGroup5.appendChild(inputStatus);
             form1.appendChild(formGroup5);
+
+
 
             saveButton = document.createElement("button");
             saveButton.setAttribute('type', 'button');
@@ -234,8 +239,8 @@ function sendChange(id, type) {
     } else {
         text = document.getElementById(`${id}-text`);
         textVal = text.value;
-        status = document.getElementById(`${id}-estado`);
-        statusVal = status.value;
+        var statusValor = document.getElementById(`${id}-status`).value;
+        alert(textVal)
         if (text != "") {
             obj.change[id] = {
                 text: correctFormat(`text`, textVal),
@@ -243,12 +248,10 @@ function sendChange(id, type) {
             send = true;
         }
 
-        if (status != "") {
             obj.change[id] = {
-                status: correctFormat(`status`, statusVal),
+                status: correctFormat(`status`, statusValor),
             }
             send = true;
-        }
         text.value = ``;
         status.value = ``;
     }
@@ -286,8 +289,6 @@ function graphic(jsonObj) {
         labels.push(key);
         data.push(jsonObj[key].sensor);
     }
-    console.log(labels);
-    console.log(data);
 
     var ctx = document.getElementById('myChart').getContext('2d');
 
@@ -323,7 +324,7 @@ function search(hardware, startDate, finishDate) {
     obj.search['id_hardware'] = hardware;
     obj.search['start_date'] = startDate;
     obj.search['finish_date'] = finishDate;
-    xhr.open('POST', 'http://' + myIp + '/search', true);
+    xhr.open('POST', 'http://' + myIp + '/search/', true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = function(e) {
         var frontResp = JSON.parse(xhr.responseText);
@@ -357,7 +358,7 @@ function search(hardware, startDate, finishDate) {
                 obj.search['id_hardware'] = hardware;
                 obj.search['start_date'] = startDate;
                 console.log(obj);
-                xhr.open('POST', 'http://' + platformIp + '/search', true);
+                xhr.open('POST', 'http://' + platformIp + '/search/', true);
                 xhr.setRequestHeader("Content-Type", "application/json");
                 xhr.onload = function(e) {
                     var platformResp = JSON.parse(xhr.responseText);
@@ -396,7 +397,6 @@ function search(hardware, startDate, finishDate) {
 }
 
 function change(hardware) {
-    console.log(hardware);
     var obj = header();
     obj.change = {};
     obj.change[hardware.id] = {
@@ -424,6 +424,7 @@ function poling() {
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = function(e) {
         if ((xhr.readyState === 4) && (xhr.status === 200)) {
+            console.log(xhr.responseText);
             createForm(xhr.responseText);
             $('#platform-name').text(platformName);
         }
