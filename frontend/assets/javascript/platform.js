@@ -1,6 +1,8 @@
 var xhr = new XMLHttpRequest();
 var myIp = 'localhost';
 let myName = "greenhouse";
+let start_day;
+let end_day;
 
 function getTimeInFormat() {
     var date = new Date();
@@ -13,15 +15,18 @@ function convertDateInFormat(time) {
 }
 
 
-$(function() {
-    $('input[name="daterange"]').daterangepicker({
-        opens: 'left'
-    }, function(start, end, label) {
-        // search("id01", "2019-09-17T14:33:37-0600", "2019-11-02T00:06:22-0600");
-        var input = document.getElementById(`id_hardware_date`).value;
-        search(input, start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
-    });
-});
+
+// $(function() {
+//     $('input[name="daterange"]').daterangepicker({
+//         opens: 'left'
+//     }, function(start, end, label) {
+//         // search("id01", "2019-09-17T14:33:37-0600", "2019-11-02T00:06:22-0600");
+//         var input = document.getElementById(`id_hardware_date`).value;
+//         alert(input);
+//         console.log(start);
+//         search(input, start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
+//     });
+// });
 
 function createForm(json) {
     jsonObj = JSON.parse(json);
@@ -436,7 +441,6 @@ function poling() {
             createForm(xhr.responseText);
             $('#platform-name').text(platformName);
         }
-        search("id01", "2019-09-21T00:00:00.000Z", "2019-09-22T14:41:00.000Z");
     };
     xhr.onerror = function(e) {
         console.error(xhr.statusText + e);
@@ -444,7 +448,15 @@ function poling() {
     xhr.send(JSON.stringify(obj));
     // }, 2000);
 }
-// HACKEr-123
+
+function searchChart(){
+    var input = document.getElementById(`id_hardware_date`).value;
+    if(input == `default`){
+        alert(`Seleccione un dispositivo`);
+    }else{
+        search(input, start_day, end_day);
+    }
+}
 
 document.onreadystatechange = () => {
     if (document.readyState === 'complete') {
@@ -452,9 +464,32 @@ document.onreadystatechange = () => {
         platformName = url.searchParams.get("name");
         platformIp = url.searchParams.get("url");
         poling();
-        // search("id01","2019-09-12T14:33:37-0600","2019-09-19T00:06:22-0600" );
-        // search("id01","2019-09-17T14:33:37-0600","2019-09-22T00:06:22-0600" );
-        // search("id01","2019-09-17T14:33:38-0600","2019-09-18T00:06:22-0600" );
-        // event('create');
-    }
+
+        start_day = new Date(moment().startOf('day')).toISOString();
+        end_day = new Date(moment().endOf('day')).toISOString();
+
+        document.getElementById(`id_hardware_date`).addEventListener(`change`, function(){
+            searchChart();
+        });
+
+        $(function() {
+            $('input[name="daterange"]').daterangepicker({
+            opens: "left",
+            drops: "down",
+            startDate: moment(),
+            ranges: {
+                'Hoy': [moment(), moment()],
+                'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Últimos 7 días': [moment().subtract(6, 'days'), moment()],
+                'Últimos 30 días': [moment().subtract(29, 'days'), moment()],
+                'Este mes': [moment().startOf('month'), moment().endOf('month')],
+                'Último mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            }, function(start, end, label) {
+                start_day = new Date(start.startOf('day')).toISOString();
+                end_day = moment(end.endOf('day')).format("YYYY-MM-DDTHH:mm:ss.SSSZZ");
+                searchChart();
+            });
+        });
+    }  
 };
