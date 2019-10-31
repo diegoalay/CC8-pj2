@@ -182,6 +182,13 @@ canvas {
     margin-bottom: 20px;
 }
 
+.input-field p {
+    font-size: 18px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: white;
+}
+
 
 /* Modal */
 

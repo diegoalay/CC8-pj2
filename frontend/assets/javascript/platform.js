@@ -44,6 +44,13 @@ function createForm(json) {
         document.getElementById("tabs-ul").appendChild(tabElement);
         document.getElementById("tabs").appendChild(form);
 
+        idSelect = document.getElementById('id_hardware_date');
+        optionSelect = document.createElement('option');
+        optionSelect.setAttribute('value', `${key}`);
+        optionSelect.innerHTML = `${key}`;
+        idSelect.appendChild(optionSelect);
+
+
         if (obj.type == 'input') {
             form1 = document.createElement("form");
 
@@ -248,10 +255,10 @@ function sendChange(id, type) {
             send = true;
         }
 
-            obj.change[id] = {
-                status: correctFormat(`status`, statusValor),
-            }
-            send = true;
+        obj.change[id] = {
+            status: correctFormat(`status`, statusValor),
+        }
+        send = true;
         text.value = ``;
         status.value = ``;
     }
