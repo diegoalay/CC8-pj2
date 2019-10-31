@@ -185,11 +185,17 @@
                     </ul>
                     <div class="tab-content" id="tabs">
                         <div id="chart" class="tab-pane fade in active">
+
+                            <div class="input-field">
+                                <p>Seleccione dispositivo a buscar</p>
+                                <select id="id_hardware_date" name="select" class="form-control pro-edt-select form-control-primary">
+                                    <option value="0">Selecciona un ID</option>
+                                </select>
+                            </div>
                             <div class="range">
                                 <p>Seleccione Rango de Fechas</p>
                             </div>
-                            <input type="text" name="daterange" value="01/01/2018 - 01/15/2018" />
-                            <input type="text" id="id_hardware_date" value="" />
+                            <input type="text" name="daterange" class="form-control" value="01/01/2019 - 01/15/2019" />
                             <div class="graphic">
                                 <canvas id="myChart"></canvas>
                             </div>
