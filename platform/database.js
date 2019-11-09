@@ -6,17 +6,17 @@ const platformName = "greenhouseCC8";
 const ip = "localhost:8080";
 var url = "mongodb://" + ip + ":27017/";
 const dbName = "greenhouse";
-
+const myIp = `localhost:8080`;
 exports.getHeader = function(){
   var obj = {}
   obj.id = platformName;
-  obj.url = ip;
+  obj.url = myIp;
   obj.date = getTimeInFormat();
   return obj;  
 }
 
 exports.ip = function(){
-  return ip;
+  return myIp;
 }
 
 exports.platformName = function(){
@@ -39,12 +39,11 @@ exports.getIp = function(){
   });  
 }
 
-exports.createLogSearchOrChange = function(id,ip,date,search,info,type){
+exports.createLogSearch = function(obj){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
-    var obj = { id: id, ip: ip, requestDate: date, date: getTime(), search: search, info: info};
     var dbo = db.db(dbName); 
-    dbo.collection("logs/request").insertOne(obj,function(err, res) {
+    dbo.collection("logs/search").insertOne(obj,function(err, res) {
       if (err) throw err;
       console.log(type + " request");
       db.close();
@@ -52,12 +51,50 @@ exports.createLogSearchOrChange = function(id,ip,date,search,info,type){
   });
 }
 
-exports.createLogInfo = function(id,ip,date,info){
+exports.createLogSearch = function(obj){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
-    var obj = { id: id, ip: ip, requestDate: date, date: new Date(getTime()), info: info};
     var dbo = db.db(dbName); 
-    dbo.collection("logs/request").insertOne(obj,function(err, res) {
+    dbo.collection("logs/search").insertOne(obj,function(err, res) {
+      if (err) throw err;
+      console.log(type + " request");
+      db.close();
+    });
+  });
+}
+
+exports.createLogSearch = function(body){
+  MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db(dbName); 
+    var obj = { data: body, date: new Date(getTime())};
+    dbo.collection("logs/search").insertOne(obj,function(err, res) {
+      if (err) throw err;
+      console.log("search request");
+      db.close();
+    });
+  });
+}
+
+exports.createLogEvent = function(body){
+  MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+    if (err) throw err;
+    var obj = { data: body, date: new Date(getTime())};
+    var dbo = db.db(dbName); 
+    dbo.collection("logs/events").insertOne(obj,function(err, res) {
+      if (err) throw err;
+      console.log("event created");
+      db.close();
+    });
+  });
+}
+
+exports.createLogInfo = function(body){
+  MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+    if (err) throw err;
+    var obj = { data: body, date: new Date(getTime())};
+    var dbo = db.db(dbName); 
+    dbo.collection("logs/info").insertOne(obj,function(err, res) {
       if (err) throw err;
       console.log("info request");
       db.close();
@@ -65,14 +102,14 @@ exports.createLogInfo = function(id,ip,date,info){
   });
 }
 
-exports.createDevice = function(id, sensor, freq){
+exports.createDevice = function(id, sensor, freq, status, text){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
-    var obj = {hardware_id: id, sensor: sensor, status: true, freq: freq, text: Sensor.getText(sensor), date: new Date(getTime())};
+    var obj = {hardware_id: id, sensor: sensor, status: status, freq: freq, text: text, date: new Date(getTime())};
     var dbo = db.db(dbName); 
     dbo.collection(id).insertOne(obj,function(err, res) {
       if (err) throw err;
-      console.log("deviceInfo inserted");
+      console.log(`deviceInfo ${id} inserted`);
       db.close();
     });
   });
@@ -249,7 +286,24 @@ exports.getEventsById = function(hardware_id){
       if (err) throw err;
       var dbo = db.db(dbName); 
       var query = {hardware_id: hardware_id}
-      dbo.collection("events").find(query, { projection: { _id: 0 }}).toArray(function(err, data) {
+      dbo.collection("events").find(query, { projection: { _id: 1 }}).toArray(function(err, data) {
+        if(err)  reject(err) 
+        else{
+          db.close();
+          resolve(data);
+        }
+      });
+    });
+  });
+}
+
+exports.getEventsByCondition = function(condition){
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+      if (err) throw err;
+      var dbo = db.db(dbName); 
+      var query = {condition}
+      dbo.collection("events").find(query, { projection: { _id: 1 }}).toArray(function(err, data) {
         if(err)  reject(err) 
         else{
           db.close();

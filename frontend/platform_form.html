@@ -51,9 +51,12 @@
     <script type="text/javascript" src="deps/jquery.min.js"></script>
     <script type="text/javascript" src="deps/underscore.js"></script>
     <script type="text/javascript" src="lib/jsonform.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script> -->
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script> -->
+    <script type="text/javascript" src="assets/js/cdn/moment.min.js"></script>
+    <script type="text/javascript" src="assets/js/cdn/daterangepicker.min.js"></script>
+    <link rel="stylesheet" href="assets/css/cdn/daterangepicker.css">
+    <!-- <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" /> -->
 
 </head>
 
@@ -262,73 +265,3 @@
 </body>
 
 </html>
-<script>
-    // //Modal
-    // let xhr = new XMLHttpRequest();
-    // let myIp = "localhost:80";
-    // let myName = "greenhouse";
-    // let nameModal = document.getElementById("name-modal");
-    // let btn = document.getElementById("change-name");
-    // let span = document.getElementsByClassName("close")[0];
-    // let btnSave = document.getElementById('button-save');
-
-    // btn.onclick = () => {
-    //     nameModal.style.display = "block";
-    // };
-
-    // span.onclick = () => {
-    //     nameModal.style.display = "none";
-    // };
-
-    // btnSave.onclick = () => {
-    //     nameModal.style.display = "none";
-    // };
-
-    // window.onclick = (event) => {
-    //     if (event.target == nameModal) {
-    //         nameModal.style.display = "none";
-    //     }
-    // };
-
-    // function getHardware(element) {
-    //     console.log(element)
-    // }
-
-    // function appendPlatforms(json) {
-    //     jsonObj = JSON.parse(json);
-    //     var select = document.getElementById("IpHardware");
-    //     for (var key in jsonObj) {
-    //         obj = jsonObj[key];
-    //         option = document.createElement("option");
-    //         option.setAttribute('name', obj.name);
-    //         option.setAttribute('url', obj.url);
-    //         option.innerHTML = obj.name;
-    //         select.appendChild(option);
-    //     }
-    // }
-
-    // function getPlatforms() {
-    //     xhr.open('GET', 'http://' + myIp + '/platforms/list', true);
-    //     xhr.setRequestHeader("Content-Type", "application/json");
-    //     xhr.onload = function(e) {
-    //         if ((xhr.readyState === 4) && (xhr.status === 200)) {
-    //             appendPlatforms(xhr.responseText);
-    //         }
-    //     };
-    //     xhr.onerror = function(e) {
-    //         console.error(xhr.statusText + e);
-    //     };
-    //     xhr.send();
-    // }
-
-    // document.onreadystatechange = () => {
-    //     if (document.readyState == 'complete') {
-    //         getPlatforms();
-    //         document.getElementById(`IpHardware`).addEventListener('change', function() {
-    //             let option = this[this.selectedIndex];
-    //             const url = option.getAttribute('url');
-
-    //         });
-    //     }
-    // }
-</script>

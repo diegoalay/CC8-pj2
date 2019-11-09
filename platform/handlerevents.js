@@ -2,6 +2,7 @@ var DB = require('./database.js');
 const interval = require('interval-promise')
 const http = require('http');
 strftime = require("strftime");
+let externalEvents = {};
 
 function getKey(attributes){
     for (var key in attributes) {
@@ -91,8 +92,6 @@ function search(event,hardwareEvent){
     var requestPort = '';
     var end_date = new Date();
     var start_date = new Date(end_date.getTime() - 1000);
-    // var start_date = new Date('2019-09-17T14:33:37-0600');
-    // var end_date = new Date('2019-09-19T00:06:22-0600');
     obj.search = {
         id_hardware: event.id,
         start_date: strftime('%Y-%m-%dT%H:%M:%S%z', start_date),
@@ -249,13 +248,32 @@ async function handlerEvent(event){
     }   
 }
  
-handler = async function(){
+handlerExternalEvent = async function(event){
     interval(async () => {
-        var events = await DB.getEvents(); 
-        for(key in events){
-            handlerEvent(events[key]);
+        handlerEvent(event);
+    }, event.freq)
+}
+
+exports.lookupNewEvents = async () => {
+    var query = {who: `notmine`}
+    var events = await DB.getEventsByCondition(query);
+    for(key in events){
+        event = events[key];
+        if(!(externalEvents.includes(event._id))) {
+            handlerExternalEvent(event);
+            externalEvents.push(event);
         }
-    }, 10000)
+    }
+}
+
+exports.handlerEvents = async () => {
+    var query = {who: `notmine`}
+    var events = await DB.getEventsByCondition(query);         
+    for(key in events){
+        event = events[key];
+        handlerExternalEvent(event);
+        externalEvents.push(event._id);
+    }
 }
 
 exports.handlerById = async function(id_hardware){

@@ -15,14 +15,14 @@ function appendEvents(event,key) {
     var date = event.date;
     var idEvent;
     var id;
-    var url;
+    var url; 
     if(key == `create` || key == `update`) {
         idEvent = event.idEvent;
         id = event._id;
         url = event[key].if.left.url;
     }else{
         id = event._id;
-        idEvent = event.id;
+        idEvent = event.idEvent;
         url = event.if.left.url;
     }
     var tableRef = document.getElementById("tableEvents").getElementsByTagName('tbody')[0];
@@ -63,7 +63,67 @@ function editEvent(text, id, element) {
     eventModal.modal('toggle');
     currentRow = element.parentElement.parentElement;
     document.getElementById(`titleEventModal`).textContent = text;  
-    event = eventData[id];
+    let event = eventData[id];
+    let info = infoData[event.if.left.url]; 
+    console.log(info);
+//     leftPlatform = leftPlatform.options[leftPlatform.selectedIndex];
+//     leftHardware = document.getElementById('leftHardware')
+//     leftHardware = leftHardware.options[leftHardware.selectedIndex];
+//     condition = document.getElementById('condition');
+//     condition = condition.options[condition.selectedIndex].value;
+//     leftId = leftHardware.getAttribute('id');
+//     leftUrl = leftPlatform.getAttribute('url');
+//     rightKey = document.getElementById('rightPlatform');
+//     rightKey = rightKey.options[rightKey.selectedIndex].value;
+//     rightValue = correctFormat(rightKey, document.getElementById('rightValue').value);
+//     obj[key].if = {
+//         left: {
+//             url: leftUrl,
+//             id: leftId,
+//             freq: 6000,
+//         },
+//         condition: condition,
+//         right: {
+//             [`${rightKey}`]: rightValue,
+//         }
+//     };
+// }
+
+// //then
+// if (thenIsDirty) {
+//     thenPlatform = document.getElementById('thenPlatform');
+//     thenPlatform = thenPlatform.options[thenPlatform.selectedIndex];
+//     thenHardware = document.getElementById('thenHardware');
+//     thenHardware = thenHardware.options[thenHardware.selectedIndex];
+//     thenUrl = thenPlatform.getAttribute('url');
+//     thenId = thenHardware.getAttribute('id');
+//     thenKey = document.getElementById('thenKey');
+//     thenKey = thenKey.options[thenKey.selectedIndex].value;
+//     thenValue = correctFormat(thenKey, document.getElementById('thenValue').value);
+//     obj[key].then = {
+//         url: thenUrl,
+//         id: thenId,
+//         [`${thenKey}`]: thenValue,       
+//     };
+// }
+
+// //else
+// if (elseIsDirty) {
+//     elsePlatform = document.getElementById('elsePlatform');
+//     elsePlatform = elsePlatform.options[elsePlatform.selectedIndex];
+//     elseHardware = document.getElementById('elseHardware');
+//     elseHardware = elseHardware.options[elseHardware.selectedIndex];
+//     elseUrl = elsePlatform.getAttribute('url');
+//     elseId = elseHardware.getAttribute('id');
+//     elseKey = document.getElementById('elseKey');
+//     elseKey = elseKey.options[elseKey.selectedIndex].value;
+//     elseValue = correctFormat(elseKey, document.getElementById('elseValue').value);
+//     obj[key].else = {
+//         url: elseUrl,
+//         id: elseId,
+//         [`${elseKey}`]: elseValue,
+//     };
+// }    
 }
 
 function deleteEvent(id, key, element){
@@ -123,35 +183,36 @@ function sendEvent(key){
     }else if(key == 'delete'){
         obj[key].id = event.idEvent;
     }
-    xhr.open('POST', 'http://' + platformUrl + '/' + key, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = function (e) {
-        var response = JSON.parse(xhr.responseText);
-        if(response.status.toUpperCase() == `OK`){
-            if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                if(key == 'create') obj.idEvent = response.idEvent;
-                xhr.open('POST', 'http://' + myIp + '/events/' + key, true);
-                xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.onload = function (e) {
-                    if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                        obj._id = xhr.responseText.replace(/['"]+/g, '');
-                        appendEvents(obj,key);
-                        eventModal.modal('hide');
-                    }
-                };
-                xhr.onerror = function (e) {
-                    console.error(xhr.statusText + e);
-                };
-                xhr.send(JSON.stringify(obj));             
-            }
-        }else{
-            alert('error al crear el evento');
-        }
-    };
-    xhr.onerror = function (e) {
-        console.error(xhr.statusText + e);
-    };
-    xhr.send(JSON.stringify(obj)); 
+    console.log(obj);
+    // xhr.open('POST', 'http://' + platformUrl + '/' + key, true);
+    // xhr.setRequestHeader("Content-Type", "application/json");
+    // xhr.onload = function (e) {
+    //     var response = JSON.parse(xhr.responseText);
+    //     if(response.status.toUpperCase() == `OK`){
+    //         if ((xhr.readyState === 4) && (xhr.status === 200)) {
+    //             if(key == 'create') obj.idEvent = response.idEvent;
+    //             xhr.open('POST', 'http://' + myIp + '/events/' + key, true);
+    //             xhr.setRequestHeader("Content-Type", "application/json");
+    //             xhr.onload = function (e) {
+    //                 if ((xhr.readyState === 4) && (xhr.status === 200)) {
+    //                     obj._id = xhr.responseText.replace(/['"]+/g, '');
+    //                     appendEvents(obj,key);
+    //                     eventModal.modal('hide');
+    //                 }
+    //             };
+    //             xhr.onerror = function (e) {
+    //                 console.error(xhr.statusText + e);
+    //             };
+    //             xhr.send(JSON.stringify(obj));             
+    //         }
+    //     }else{
+    //         alert('error al crear el evento');
+    //     }
+    // };
+    // xhr.onerror = function (e) {
+    //     console.error(xhr.statusText + e);
+    // };
+    // xhr.send(JSON.stringify(obj)); 
 }
 
 function poling() {
@@ -199,12 +260,17 @@ function correctFormat(type, val){
             if (val == `true`) return true;
             else return false;
         } else {
-            return parseFloat(val);
+            try{
+                return parseFloat(val);
+            }catch(e){
+                return 0;
+            }
         }
     }catch(e){
-        return `invalid format`;
+        return ``;
     }
 }
+
 
 function generateCondition(key) {
     var obj = {};
@@ -222,11 +288,12 @@ function generateCondition(key) {
         rightKey = document.getElementById('rightPlatform');
         rightKey = rightKey.options[rightKey.selectedIndex].value;
         rightValue = correctFormat(rightKey, document.getElementById('rightValue').value);
+        freqValue = correctFormat(`freq`, document.getElementById('rightFreq').value);
         obj[key].if = {
             left: {
                 url: leftUrl,
                 id: leftId,
-                freq: 6000,
+                freq: freqValue,
             },
             condition: condition,
             right: {
@@ -245,7 +312,11 @@ function generateCondition(key) {
         thenId = thenHardware.getAttribute('id');
         thenKey = document.getElementById('thenKey');
         thenKey = thenKey.options[thenKey.selectedIndex].value;
+        console.log(thenKey);
+        console.log(document.getElementById('thenValue'));
+        console.log(document.getElementById('thenValue').value);
         thenValue = correctFormat(thenKey, document.getElementById('thenValue').value);
+        console.log(`value ${thenValue}`);
         obj[key].then = {
             url: thenUrl,
             id: thenId,
@@ -291,6 +362,7 @@ function appendHardware(url, selectName) {
         option.setAttribute('tag', obj.tag);
         option.setAttribute('type', obj.type);
         option.setAttribute('id', key);
+        option.setAttribute('value', key);
         option.innerHTML = key;
         selectHardware.appendChild(option);
     }
@@ -329,7 +401,8 @@ async function appendPlatforms(json) {
         obj = jsonObj[key];
         var url = obj[`url`];
         option = document.createElement("option");
-        option.setAttribute('name', obj.name);
+        let name = obj.name;
+        option.setAttribute('value', name);
         option.setAttribute('url', obj.url);
         option2 = option.cloneNode(true);;
         option3 = option.cloneNode(true);
@@ -340,7 +413,9 @@ async function appendPlatforms(json) {
         selectThen.appendChild(option2);
         selectElse.appendChild(option3);
         var infoPlatform = await info(obj.url);
+        console.log(name);
         var element = {
+            id: name,
             hardware: infoPlatform.hardware,
         }
         infoData[`${url}`] = element;

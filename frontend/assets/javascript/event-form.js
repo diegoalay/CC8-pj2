@@ -47,6 +47,7 @@ function getTimeInFormat(){
           leftHardware = leftHardware.options[leftHardware.selectedIndex];
           condition = document.getElementById('condition');
           condition = condition.options[condition.selectedIndex].value;
+          alert(condition);
           leftId = leftHardware.getAttribute('id');
           leftUrl = leftPlatform.getAttribute('url');
           rightKey = document.getElementById('rightPlatform');
@@ -115,30 +116,29 @@ function getTimeInFormat(){
       }else if(key == 'delete'){
           obj[key].id = idEvent;
       }
-      console.log(obj);
-      // xhr.open('POST', 'http://' + eventIp + '/' + key, true);
-      // xhr.setRequestHeader("Content-Type", "application/json");
-      // xhr.onload = function (e) {
-      //     var response = JSON.parse(xhr.responseText);
-      //     if ((xhr.readyState === 4) && (xhr.status === 200)) {
-      //         if(key == 'create') obj.idEvent = response.idEvent;
-      //         xhr.open('POST', 'http://' + myIp + '/events/' + key, true);
-      //         xhr.setRequestHeader("Content-Type", "application/json");
-      //         xhr.onload = function (e) {
-      //             if ((xhr.readyState === 4) && (xhr.status === 200)) {
-      //                 alert(key + ' event successfully');
-      //             }
-      //         };
-      //         xhr.onerror = function (e) {
-      //             console.error(xhr.statusText + e);
-      //         };
-      //         xhr.send(JSON.stringify(obj));             
-      //     }
-      // };
-      // xhr.onerror = function (e) {
-      //     console.error(xhr.statusText + e);
-      // };
-      // xhr.send(JSON.stringify(obj)); 
+      xhr.open('POST', 'http://' + eventIp + '/' + key, true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.onload = function (e) {
+          var response = JSON.parse(xhr.responseText);
+          if ((xhr.readyState === 4) && (xhr.status === 200)) {
+              if(key == 'create') obj.idEvent = response.idEvent;
+              xhr.open('POST', 'http://' + myIp + '/events/' + key, true);
+              xhr.setRequestHeader("Content-Type", "application/json");
+              xhr.onload = function (e) {
+                  if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                      alert(key + ' event successfully');
+                  }
+              };
+              xhr.onerror = function (e) {
+                  console.error(xhr.statusText + e);
+              };
+              xhr.send(JSON.stringify(obj));             
+          }
+      };
+      xhr.onerror = function (e) {
+          console.error(xhr.statusText + e);
+      };
+      xhr.send(JSON.stringify(obj)); 
   }
   
   function getHardware(element){

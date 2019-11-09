@@ -14,20 +14,6 @@ function convertDateInFormat(time) {
     return date.toISOString();
 }
 
-
-
-// $(function() {
-//     $('input[name="daterange"]').daterangepicker({
-//         opens: 'left'
-//     }, function(start, end, label) {
-//         // search("id01", "2019-09-17T14:33:37-0600", "2019-11-02T00:06:22-0600");
-//         var input = document.getElementById(`id_hardware_date`).value;
-//         alert(input);
-//         console.log(start);
-//         search(input, start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
-//     });
-// });
-
 function createForm(json) {
     jsonObj = JSON.parse(json);
     console.log(jsonObj)
@@ -329,6 +315,7 @@ function graphic(jsonObj) {
 }
 
 function search(hardware, startDate, finishDate) {
+    console.log(startDate);
     //buscamos en cache primero
     let pending = false;
     let obj = header();
@@ -345,13 +332,13 @@ function search(hardware, startDate, finishDate) {
             var length = Object.keys(frontResp.data).length;
             if (length > 0) {
                 if (new Date(frontResp.start) > new Date(startDate) && new Date(frontResp.finish) >= new Date(finishDate)) {
-                    pending = new Date(new Date(frontResp.start).getTime());
-                    finishDate = pending.toISOString();
+                    // pending = new Date(new Date(frontResp.start).getTime());
+                    // finishDate = pending.toISOString();
                     console.log('pedir el resto izquierda: ' + startDate + ' - ' + finishDate);
                     pendingData = true;
                 } else if (new Date(frontResp.start) >= new Date(startDate) && new Date(frontResp.finish) < new Date(finishDate)) {
-                    pending = new Date(new Date(frontResp.finish).getTime() + (new Date(finishDate).getTime() - new Date(frontResp.finish).getTime()));
-                    startDate = frontResp.finish;
+                    // pending = new Date(new Date(frontResp.finish).getTime() + (new Date(finishDate).getTime() - new Date(frontResp.finish).getTime()));
+                    // startDate = frontResp.finish;
                     finishDate = pending.toISOString();
                     console.log('pedir el resto derecha: ' + new Date(frontResp.finish) + '-' + pending);
                     pendingData = true;
@@ -365,6 +352,7 @@ function search(hardware, startDate, finishDate) {
                 pendingData = true;
                 console.log('pedir todo 2');
             }
+            console.log(obj);
             let data = frontResp.data;
             if (pendingData) {
                 obj.search['id_hardware'] = hardware;

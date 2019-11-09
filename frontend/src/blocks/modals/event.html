@@ -10,16 +10,17 @@
             </div>
             <div class="modal-body">
                 <div class="row admin">
-                    <div class="col-ms-12 col-md-4">
+                    <div class="col-ms-12 col-md-12">
                         <h3>IF</h3>
+                        <hr>
+                    </div>
+                    <div class="col-ms-12 col-md-4">
                         <div class="input-field">
-                            <p>Seleccione IP Hardware</p>
                             <select id="leftPlatform" name="select" class="form-control pro-edt-select form-control-primary">
                                     <option url="default" selected>Seleccione la plataforma.</option>
                                 </select>
                         </div>
                         <div class="input-field mb-4">
-                            <p>Seleccione ID Hardware</p>
                             <select id="leftHardware" name="select" class="form-control pro-edt-select form-control-primary">
                                 <option value="" disabled selected>Seleccione el dispositivo.</option>
                             </select>
@@ -27,17 +28,15 @@
                     </div>
                     <div class="col-ms-12 col-md-4">
                         <div class="input-field">
-                            <p>Seleccione la condición</p>
                             <select id="condition" name="select" class="form-control pro-edt-select form-control-primary">
                                     <option value="=">=</option>
                                     <option value="!=">!=</option>
                                     <option value="<"><</option>
                                     <option value=">">></option>
-                                    <option value="<=>"><=</option>
+                                    <option value="<="><=</option>
                                     <option value=">=">>=</option>
                                 </select>
                         </div>
-                        <p>Seleccione la propiedad</p>
                         <div class="input-field">
                             <select id="rightPlatform" name="select" class="form-control pro-edt-select form-control-primary">
                                 <option value="sensor">sensor</option>
@@ -55,20 +54,29 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-ms-12 col-md-4">
+                        <div class="input-field">
+                            <div class="input-group mg-b-pro-edt">
+                                <span class="input-group-addon"><i class="fas fa-keyboard" aria-hidden="true"></i></span>
+                                <input class="form-control" type="text" name="node-name-input" id="rightFreq" placeholder="Ingrese la frequencia ..." required>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="row admin">
-                    <div class="col-ms-12 col-md-4">
+                    <div class="col-ms-12 col-md-12">
                         <h3>THEN</h3>
+                        <hr>
+                    </div>
+                    <div class="col-ms-12 col-md-4">
                         <div class="input-field">
-                            <p>Seleccione IP Hardware</p>
                             <select id="thenPlatform" name="select" class="form-control pro-edt-select form-control-primary">
                                     <option url="default" selected>Seleccione la plataforma.</option>
-                                </select>
+                            </select>
                         </div>
                     </div>
                     <div class="col-ms-12 col-md-4">
                         <div class="input-field">
-                            <p>Seleccione el dispositivo</p>
                             <select id="thenHardware" name="select" class="form-control pro-edt-select form-control-primary">
                                 <option value="" disabled selected>Seleccione el dispositivo.</option>    
                             </select>
@@ -77,11 +85,11 @@
                     <div class="col-ms-12 col-md-4">
                         <div class="input-field">
                             <select id="thenKey" name="select" class="form-control pro-edt-select form-control-primary">
-                                    <option value="sensor">sensor</option>
-                                    <option value="status">status</option>
-                                    <option value="freq">freq</option>
-                                    <option value="text">text</option>
-                                </select>
+                                <option value="sensor">sensor</option>
+                                <option value="status">status</option>
+                                <option value="freq">freq</option>
+                                <option value="text">text</option>
+                            </select>
                         </div>
                         <div class="input-field">
                             <div class="input-group mg-b-pro-edt">
@@ -92,18 +100,19 @@
                     </div>
                 </div>  
                 <div class="row admin">
-                    <div class="col-ms-12 col-md-4">
+                    <div class="col-ms-12 col-md-12">
                         <h3>ELSE</h3>
+                        <hr>
+                    </div>
+                    <div class="col-ms-12 col-md-4">
                         <div class="input-field">
-                            <p>Seleccione IP Hardware</p>
                             <select id="elsePlatform" name="select" class="form-control pro-edt-select form-control-primary">
-                                    <option url="default" selected>Seleccione la plataforma.</option>
-                                </select>
+                                <option url="default" selected>Seleccione la plataforma.</option>
+                            </select>
                         </div>
                     </div>
                     <div class="col-ms-12 col-md-4">
                         <div class="input-field">
-                            <p>Seleccione el dispositivo</p>
                             <select id="elseHardware" name="select" class="form-control pro-edt-select form-control-primary">
                                 <option value="" disabled selected>Seleccione el dispositivo.</option>    
                             </select>
@@ -112,11 +121,11 @@
                     <div class="col-ms-12 col-md-4">
                         <div class="input-field">
                             <select id="elseKey" name="select" class="form-control pro-edt-select form-control-primary">
-                                    <option value="sensor">sensor</option>
-                                    <option value="status">status</option>
-                                    <option value="freq">freq</option>
-                                    <option value="text">text</option>
-                                </select>
+                                <option value="sensor">sensor</option>
+                                <option value="status">status</option>
+                                <option value="freq">freq</option>
+                                <option value="text">text</option>
+                            </select>
                         </div>
                         <div class="input-field">
                             <div class="input-group mg-b-pro-edt">
