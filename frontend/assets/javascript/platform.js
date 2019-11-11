@@ -314,8 +314,16 @@ function graphic(jsonObj) {
     });
 }
 
+function localeDate(){
+    const nDate = new Date().toLocaleString('en-US', {
+        timeZone: 'America/Guatemala'
+    });
+    console.log(nDate);
+}
+
 function search(hardware, startDate, finishDate) {
     console.log(startDate);
+    localeDate();
     //buscamos en cache primero
     let pending = false;
     let obj = header();

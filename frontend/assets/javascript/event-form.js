@@ -47,7 +47,6 @@ function getTimeInFormat(){
           leftHardware = leftHardware.options[leftHardware.selectedIndex];
           condition = document.getElementById('condition');
           condition = condition.options[condition.selectedIndex].value;
-          alert(condition);
           leftId = leftHardware.getAttribute('id');
           leftUrl = leftPlatform.getAttribute('url');
           rightKey = document.getElementById('rightPlatform');
@@ -153,7 +152,6 @@ function getTimeInFormat(){
   
   function appendHardware(url, selectName){
       jsonObj = infoData[url];
-      console.log(jsonObj);
       var selectHardware = document.getElementById(selectName);
       removeOptions(selectHardware);
       var data = jsonObj.hardware;
