@@ -2,6 +2,8 @@
     "name": "greenhouse",
     "main": "webservices.js",
     "dependencies": {
+        "@slack/events-api": "^2.3.0",
+        "@slack/web-api": "^5.4.0",
         "body-parser": "~1.0.1",
         "cors": "^2.8.5",
         "express": "~4.0.0",

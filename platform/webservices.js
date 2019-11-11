@@ -12,10 +12,32 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 var port = process.env.PORT || 8080; // seteamos el puerto
 var outputInfo = {};
+const { WebClient } = require('@slack/web-api');
+const token = 'xoxp-832530948422-832176886503-832537029094-ee75aba76a23106b7ae70826e384af3c';
+const web = new WebClient(token);
 
-function correctFormat(type, val){
-    try{
-        if(type == `text`){
+const conversationId1 = 'CQDR74G2Y'; //General
+const conversationId2 = 'CQE9VEBLG'; //Bomba
+const conversationId3 = 'CQDRMB7UL'; //Luces
+const conversationId4 = 'CQ2REJD19'; //Temperatura
+
+//Mandar Mensaje Slack
+
+function sendSlack(msg, channelId) {
+    (async() => {
+        // See: https://api.slack.com/methods/chat.postMessage
+        const res = await web.chat.postMessage({ channel: `${channelId}`, text: `${msg}` });
+
+        // `res` contains information about the posted message
+        console.log('Message sent: ', res.ts);
+    })();
+}
+//llamada Demo.
+sendSlack("Temperatura", conversationId4);
+
+function correctFormat(type, val) {
+    try {
+        if (type == `text`) {
             return val;
         } else if (type == `status`) {
             if (val == `true`) return true;
@@ -23,7 +45,7 @@ function correctFormat(type, val){
         } else {
             return parseFloat(val);
         }
-    }catch(e){
+    } catch (e) {
         return `invalid format`;
     }
 }
@@ -47,20 +69,20 @@ client.on('connect', function() {
 
 client.on('message', async function(topic, message) {
     obj = JSON.parse(message.toString());
-    DB.change(obj.id, {sensor: correctFormat(`sensor`, obj.sensor)});
+    DB.change(obj.id, { sensor: correctFormat(`sensor`, obj.sensor) });
     events = await handlerEvents.handlerById(obj.id);
     resultSensor = await DB.getInfoById(obj.id);
-    resultLed = await DB.getInfoById(`id02`); 
-    resultBomb = await DB.getInfoById(`id03`);  
-    var statusLed = false; 
+    resultLed = await DB.getInfoById(`id02`);
+    resultBomb = await DB.getInfoById(`id03`);
+    var statusLed = false;
     var statusBomb = false;
     if (outputInfo[`id02`] === undefined) {
         outputInfo.id02 = {};
         outputInfo.id02 = resultLed;
     } else {
         if (outputInfo.id02.text != resultLed.text) {
-            if(resultLed.text ===`ON`) statusLed = true; 
-            DB.createDevice(`id02`, 0, resultSensor, statusLed, resultLed.text);        
+            if (resultLed.text === `ON`) statusLed = true;
+            DB.createDevice(`id02`, 0, resultSensor, statusLed, resultLed.text);
         }
     }
 
@@ -69,11 +91,11 @@ client.on('message', async function(topic, message) {
         outputInfo.id03 = resultBomb;
     } else {
         if (outputInfo.id03.text != resultBomb.text) {
-            if(resultBomb.text ===`ON`) statusBomb = true; 
-            DB.createDevice(`id03`, 0, resultSensor, statusBomb, resultBomb.text);        
+            if (resultBomb.text === `ON`) statusBomb = true;
+            DB.createDevice(`id03`, 0, resultSensor, statusBomb, resultBomb.text);
         }
     }
-    DB.createDevice(obj.id, obj.sensor, resultSensor.freq, true, '');   
+    DB.createDevice(obj.id, obj.sensor, resultSensor.freq, true, '');
     client.publish('/response', `id01,input,0,${(resultSensor.freq).toString()}`);
     client.publish('/response', `id02,output,${(resultLed.text).toString()},${(statusLed == true)}`);
     client.publish('/response', `id03,output,${(resultBomb.text).toString()},${(statusLed == true)}`);
@@ -144,8 +166,8 @@ app.post('/change', async(req, res, next) => {
         idHardware = key;
     }
     var obj = DB.getHeader();
-    if(DB.change(idHardware, change[idHardware])) obj.status = "OK";
-    else  obj.status = "ERROR";
+    if (DB.change(idHardware, change[idHardware])) obj.status = "OK";
+    else obj.status = "ERROR";
     res.json(obj);
 });
 
@@ -165,7 +187,7 @@ app.post('/create', async(req, res, next) => {
         body[key] = body.create[key];
     }
     body.hardware_id = body.create.if.left.id;
-    if(body.create.if.left.url === DB.ip()) body.who = `mine`;
+    if (body.create.if.left.url === DB.ip()) body.who = `mine`;
     else body.who = `notmine`;
     delete body.create;
     var obj = DB.getHeader();
@@ -183,11 +205,11 @@ app.post('/update', async(req, res, next) => {
     DB.createLogEvent(body);
     var idEvent = body.update.id;
     body.action = 'update';
-    for(key in body.update){
-        body[key] = body.update[key];    
-    }    
+    for (key in body.update) {
+        body[key] = body.update[key];
+    }
     if (body.create.if != undefined) {
-        if(body.create.if.left.url === DB.ip()) body.who = `mine`;
+        if (body.create.if.left.url === DB.ip()) body.who = `mine`;
         else body.who = `notmine`;
     }
     delete body.update.id;
