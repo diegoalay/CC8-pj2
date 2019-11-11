@@ -3,7 +3,7 @@ var app = express(); // definimos la app usando express
 var bodyParser = require('body-parser'); //
 var DB = require('./database.js');
 var mqtt = require('mqtt');
-var client = mqtt.connect('mqtt://192.168.0.107');
+var client = mqtt.connect('mqtt://192.168.0.102');
 var handlerEvents = require('./handlerevents.js');
 var cors = require('cors');
 app.use(cors());
@@ -47,11 +47,12 @@ client.on('connect', function() {
 
 client.on('message', async function(topic, message) {
     obj = JSON.parse(message.toString());
+    console.log(obj);
     DB.change(obj.id, {sensor: correctFormat(`sensor`, obj.sensor)});
     events = await handlerEvents.handlerById(obj.id);
     resultSensor = await DB.getInfoById(obj.id);
     resultLed = await DB.getInfoById(`id02`);   
-    if (outputInfo[`id02`] != undefined) {
+    if (outputInfo[`id02`] === undefined) {
         outputInfo.id02 = {};
         outputInfo.id02 = resultLed;
     } else {
@@ -89,6 +90,7 @@ app.post('/info', async(req, res, next) => {
 app.post('/search', async(req, res, next) => {
     var body = getParams(req);
     var body = req.body;
+    // console.log(body);
     DB.createLogSearch(body);
     var id = body['id'];
     var url = body['url'];
@@ -113,6 +115,7 @@ app.post('/search', async(req, res, next) => {
             obj.data[strftime('%Y-%m-%dT%H:%M:%S%z', new Date(result[i].date))] = eachObj;
         }
     }
+    console.log(obj);
     res.jsonp(obj);
 });
 
@@ -195,3 +198,4 @@ app.post('/delete', async(req, res, next) => {
 
 app.listen(port);
 console.log('Aplicac ión creada en el puerto: ' + port);
+handlerEvents.handlerExternalEvents();

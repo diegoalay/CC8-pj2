@@ -2,7 +2,7 @@ var DB = require('./database.js');
 const interval = require('interval-promise')
 const http = require('http');
 strftime = require("strftime");
-let externalEvents = {};
+let externalEvents = [];
 
 function getKey(attributes){
     for (var key in attributes) {
@@ -91,12 +91,13 @@ function search(event,hardwareEvent){
     var requestUrl = '';
     var requestPort = '';
     var end_date = new Date();
-    var start_date = new Date(end_date.getTime() - 1000);
+    var start_date = new Date(end_date.getTime() - 60000);
     obj.search = {
         id_hardware: event.id,
-        start_date: strftime('%Y-%m-%dT%H:%M:%S%z', start_date),
-        finish_date: strftime('%Y-%m-%dT%H:%M:%S%z', end_date)
+        start_date:  JSON.stringify(start_date),
+        finish_date: JSON.stringify(end_date),
     };   
+    console.log(obj.search);
     if(url.includes(':')){
         requestUrl = url.substring(0,url.indexOf(':'));
         requestPort = url.substring(url.indexOf(':') + 1,url.length);
@@ -246,38 +247,58 @@ async function handlerEvent(event){
     }else{//hardware not mine
         var searchData = search(event.if.left,event);
     }   
+    return true;
 }
  
-handlerExternalEvent = async function(event){
-    interval(async () => {
-        handlerEvent(event);
-    }, event.freq)
+// handlerExternalEvent = async function(_id){
+//     var query = {_id: _id}
+//     var event = await DB.getEventsByCondition(query);  
+//     interval(async () => {
+//         handlerEvent(event);
+//     }, event.freq)
+// }
+
+handlerExternalEvent = async function(_id, time){  
+    while(true){
+        var query = {_id: _id, who: `notmine`}
+        var event = await DB.getEventByCondition(query);
+        if(event == undefined) break;
+        console.log(new Date());
+        // var delayInMilliseconds = event.if.left.freq;
+        var delayInMilliseconds = 20000;
+        setTimeout(function() {
+            console.log(new Date());
+            handlerEvent(event);
+        }, delayInMilliseconds);   
+    }
 }
 
-exports.lookupNewEvents = async () => {
+
+// lookupNewEvents = async () => {
+//     var query = {who: `notmine`}
+//     var events = await DB.getEventsByCondition(query);
+//     for(key in events){
+//         event = events[key];
+//         if(!(externalEvents.includes(event._id))) {
+//             externalEvents.push(event._id);
+//             handlerExternalEvent(event._id, event.if.left.freq);
+//         }
+//     }
+// }
+
+exports.handlerExternalEvents = async () => {
     var query = {who: `notmine`}
     var events = await DB.getEventsByCondition(query);
     for(key in events){
         event = events[key];
-        if(!(externalEvents.includes(event._id))) {
-            handlerExternalEvent(event);
-            externalEvents.push(event);
-        }
-    }
-}
-
-exports.handlerEvents = async () => {
-    var query = {who: `notmine`}
-    var events = await DB.getEventsByCondition(query);         
-    for(key in events){
-        event = events[key];
-        handlerExternalEvent(event);
         externalEvents.push(event._id);
+        handlerExternalEvent(event._id, event.if.left.freq);
     }
+    // lookupNewEvents();
 }
 
 exports.handlerById = async function(id_hardware){
-    var events = await DB.getEventsById(id_hardware); 
+    var events = await DB.getEventsById(id_hardware, 'mine'); 
     for(key in events){
         handlerEvent(events[key]);
     }

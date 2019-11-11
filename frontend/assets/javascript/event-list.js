@@ -170,7 +170,8 @@ function deleteEvent(id, key, element){
 function sendEvent(key){
     leftPlatform = document.getElementById('leftPlatform');
     leftPlatform = leftPlatform.options[leftPlatform.selectedIndex];
-    platformUrl = leftPlatform.getAttribute('url');
+    // platformUrl = leftPlatform.getAttribute('url');
+    platformUrl = `localhost:8080`;
     event = eventData[idRow];
     if(platformUrl == `default`) platformUrl = event.if.left.url;
     var obj = header();
@@ -184,35 +185,35 @@ function sendEvent(key){
         obj[key].id = event.idEvent;
     }
     console.log(obj);
-    // xhr.open('POST', 'http://' + platformUrl + '/' + key, true);
-    // xhr.setRequestHeader("Content-Type", "application/json");
-    // xhr.onload = function (e) {
-    //     var response = JSON.parse(xhr.responseText);
-    //     if(response.status.toUpperCase() == `OK`){
-    //         if ((xhr.readyState === 4) && (xhr.status === 200)) {
-    //             if(key == 'create') obj.idEvent = response.idEvent;
-    //             xhr.open('POST', 'http://' + myIp + '/events/' + key, true);
-    //             xhr.setRequestHeader("Content-Type", "application/json");
-    //             xhr.onload = function (e) {
-    //                 if ((xhr.readyState === 4) && (xhr.status === 200)) {
-    //                     obj._id = xhr.responseText.replace(/['"]+/g, '');
-    //                     appendEvents(obj,key);
-    //                     eventModal.modal('hide');
-    //                 }
-    //             };
-    //             xhr.onerror = function (e) {
-    //                 console.error(xhr.statusText + e);
-    //             };
-    //             xhr.send(JSON.stringify(obj));             
-    //         }
-    //     }else{
-    //         alert('error al crear el evento');
-    //     }
-    // };
-    // xhr.onerror = function (e) {
-    //     console.error(xhr.statusText + e);
-    // };
-    // xhr.send(JSON.stringify(obj)); 
+    xhr.open('POST', 'http://' + platformUrl + '/' + key, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function (e) {
+        var response = JSON.parse(xhr.responseText);
+        if(response.status.toUpperCase() == `OK`){
+            if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                if(key == 'create') obj.idEvent = response.idEvent;
+                xhr.open('POST', 'http://' + myIp + '/events/' + key, true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.onload = function (e) {
+                    if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                        obj._id = xhr.responseText.replace(/['"]+/g, '');
+                        appendEvents(obj,key);
+                        eventModal.modal('hide');
+                    }
+                };
+                xhr.onerror = function (e) {
+                    console.error(xhr.statusText + e);
+                };
+                xhr.send(JSON.stringify(obj));             
+            }
+        }else{
+            alert('error al crear el evento');
+        }
+    };
+    xhr.onerror = function (e) {
+        console.error(xhr.statusText + e);
+    };
+    xhr.send(JSON.stringify(obj)); 
 }
 
 function poling() {

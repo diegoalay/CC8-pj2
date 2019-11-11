@@ -6,7 +6,8 @@ const platformName = "greenhouseCC8";
 const ip = "localhost:8080";
 var url = "mongodb://" + ip + ":27017/";
 const dbName = "greenhouse";
-const myIp = `localhost:8080`;
+const myIp = `192.168.0.101:8080`;
+
 exports.getHeader = function(){
   var obj = {}
   obj.id = platformName;
@@ -280,13 +281,31 @@ exports.getEvents = function(){
   });
 }
 
-exports.getEventsById = function(hardware_id){
+exports.getEventsById = function(hardware_id, who){
   return new Promise((resolve, reject) => {
     MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
       if (err) throw err;
       var dbo = db.db(dbName); 
-      var query = {hardware_id: hardware_id}
+      var query = {hardware_id: hardware_id, who: who}
       dbo.collection("events").find(query, { projection: { _id: 1 }}).toArray(function(err, data) {
+        if(err)  reject(err) 
+        else{
+          db.close();
+          resolve(data);
+        }
+      });
+    });
+  });
+}
+
+exports.getEventByCondition = function(condition){
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+      if (err) throw err;
+      var dbo = db.db(dbName); 
+      var query = condition
+      console.log(query);
+      dbo.collection("events").findOne(query, function(err, data) {
         if(err)  reject(err) 
         else{
           db.close();
@@ -302,8 +321,9 @@ exports.getEventsByCondition = function(condition){
     MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
       if (err) throw err;
       var dbo = db.db(dbName); 
-      var query = {condition}
-      dbo.collection("events").find(query, { projection: { _id: 1 }}).toArray(function(err, data) {
+      var query = condition
+      console.log(query);
+      dbo.collection("events").find(query).toArray(function(err, data) {
         if(err)  reject(err) 
         else{
           db.close();
