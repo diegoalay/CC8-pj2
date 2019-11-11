@@ -3,7 +3,7 @@ var app = express(); // definimos la app usando express
 var bodyParser = require('body-parser'); //
 var DB = require('./database.js');
 var mqtt = require('mqtt');
-var client = mqtt.connect('mqtt://192.168.0.102');
+var client = mqtt.connect('mqtt://192.168.0.111');
 var handlerEvents = require('./handlerevents.js');
 var cors = require('cors');
 app.use(cors());
@@ -38,7 +38,7 @@ function getParams(req) {
 }
 
 client.on('connect', function() {
-    client.subscribe('/01/devices', function(err) {
+    client.subscribe('/devices', function(err) {
         if (!err) {
             client.publish('/response', 'ERROR');
         }
@@ -47,24 +47,36 @@ client.on('connect', function() {
 
 client.on('message', async function(topic, message) {
     obj = JSON.parse(message.toString());
-    console.log(obj);
     DB.change(obj.id, {sensor: correctFormat(`sensor`, obj.sensor)});
     events = await handlerEvents.handlerById(obj.id);
     resultSensor = await DB.getInfoById(obj.id);
-    resultLed = await DB.getInfoById(`id02`);   
+    resultLed = await DB.getInfoById(`id02`); 
+    resultBomb = await DB.getInfoById(`id03`);  
+    var statusLed = false; 
+    var statusBomb = false;
     if (outputInfo[`id02`] === undefined) {
         outputInfo.id02 = {};
         outputInfo.id02 = resultLed;
     } else {
         if (outputInfo.id02.text != resultLed.text) {
-            var statusLed = false;
-            if(resultLed.text == `ON`) statusLed = true; 
+            if(resultLed.text ===`ON`) statusLed = true; 
             DB.createDevice(`id02`, 0, resultSensor, statusLed, resultLed.text);        
         }
     }
+
+    if (outputInfo[`id03`] === undefined) {
+        outputInfo.id03 = {};
+        outputInfo.id03 = resultBomb;
+    } else {
+        if (outputInfo.id03.text != resultBomb.text) {
+            if(resultBomb.text ===`ON`) statusBomb = true; 
+            DB.createDevice(`id03`, 0, resultSensor, statusBomb, resultBomb.text);        
+        }
+    }
     DB.createDevice(obj.id, obj.sensor, resultSensor.freq, true, '');   
-    client.publish('/01/response', (resultSensor.freq).toString());
-    client.publish('/01/response', (resultLed.text).toString());
+    client.publish('/response', `id01,input,0,${(resultSensor.freq).toString()}`);
+    client.publish('/response', `id02,output,${(resultLed.text).toString()},${(statusLed == true)}`);
+    client.publish('/response', `id03,output,${(resultBomb.text).toString()},${(statusLed == true)}`);
 })
 
 app.post('/info', async(req, res, next) => {

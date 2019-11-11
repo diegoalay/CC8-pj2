@@ -321,16 +321,25 @@ function localeDate(){
     console.log(nDate);
 }
 
+function ISODateString(d) {
+    function pad(n) {return n<10 ? '0'+n : n}
+    return d.getUTCFullYear()+'-'
+         + pad(d.getUTCMonth()+1)+'-'
+         + pad(d.getUTCDate())+'T'
+         + pad(d.getUTCHours())+':'
+         + pad(d.getUTCMinutes())+':'
+         + pad(d.getUTCSeconds())+'Z'
+}
+
+
 function search(hardware, startDate, finishDate) {
-    console.log(startDate);
-    localeDate();
     //buscamos en cache primero
     let pending = false;
     let obj = header();
     obj.search = {};
     obj.search['id_hardware'] = hardware;
-    obj.search['start_date'] = startDate;
-    obj.search['finish_date'] = finishDate;
+    obj.search['start_date'] = (startDate);
+    obj.search['finish_date'] = (finishDate);
     xhr.open('POST', 'http://' + myIp + '/search/', true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = function(e) {
@@ -340,14 +349,17 @@ function search(hardware, startDate, finishDate) {
             var length = Object.keys(frontResp.data).length;
             if (length > 0) {
                 if (new Date(frontResp.start) > new Date(startDate) && new Date(frontResp.finish) >= new Date(finishDate)) {
-                    // pending = new Date(new Date(frontResp.start).getTime());
-                    // finishDate = pending.toISOString();
+                    pending = new Date(new Date(frontResp.start).getTime());
+                    pending = pending.setHours(pending.getHours()-6);
+                    finishDate = ISODateString(pending);
+                    startDate = ISODateString(new Date(startDate));
                     console.log('pedir el resto izquierda: ' + startDate + ' - ' + finishDate);
                     pendingData = true;
                 } else if (new Date(frontResp.start) >= new Date(startDate) && new Date(frontResp.finish) < new Date(finishDate)) {
-                    // pending = new Date(new Date(frontResp.finish).getTime() + (new Date(finishDate).getTime() - new Date(frontResp.finish).getTime()));
-                    // startDate = frontResp.finish;
-                    finishDate = pending.toISOString();
+                    let pending = new Date(new Date(frontResp.finish).getTime() + (new Date(finishDate).getTime() - new Date(frontResp.finish).getTime()));
+                    pending = pending.setHours(pending.getHours()-6);
+                    finishDate = ISODateString(new Date(pending));
+                    startDate = ISODateString(new Date(frontResp.finish));
                     console.log('pedir el resto derecha: ' + new Date(frontResp.finish) + '-' + pending);
                     pendingData = true;
                 } else if (new Date(frontResp.start) <= new Date(startDate) && new Date(frontResp.finish) >= new Date(finishDate)) {
@@ -358,6 +370,8 @@ function search(hardware, startDate, finishDate) {
                 }
             } else {
                 pendingData = true;
+                startDate = ISODateString(new Date(startDate));
+                finishDate = ISODateString(new Date(finishDate));
                 console.log('pedir todo 2');
             }
             console.log(obj);
@@ -365,13 +379,12 @@ function search(hardware, startDate, finishDate) {
             if (pendingData) {
                 obj.search['id_hardware'] = hardware;
                 obj.search['start_date'] = startDate;
-                console.log(obj);
                 xhr.open('POST', 'http://' + platformIp + '/search/', true);
                 xhr.setRequestHeader("Content-Type", "application/json");
                 xhr.onload = function(e) {
                     console.log(xhr.responseText);
                     var platformResp = JSON.parse(xhr.responseText);
-                    console.log(platformResp);
+                    // console.log(platformResp);
                     obj.data = platformResp.data
                     if ((xhr.readyState === 4) && (xhr.status === 200)) {
                         xhr.open('POST', 'http://' + myIp + '/device', true);

@@ -63,6 +63,7 @@ function polingCard() {
     xhr.onload = function(e) {
         if ((xhr.readyState === 4) && (xhr.status === 200)) {
             response = JSON.parse(xhr.responseText);
+            console.log(response);
             for (key in response) {
                 appendPlatformCard(response[key]);
             }
@@ -189,8 +190,21 @@ function poling() {
     xhr.send();
 }
 
+function ISODateString(d) {
+    function pad(n) {return n<10 ? '0'+n : n}
+    return d.getUTCFullYear()+'-'
+         + pad(d.getUTCMonth()+1)+'-'
+         + pad(d.getUTCDate())+'T'
+         + pad(d.getUTCHours() - 6)+':'
+         + pad(d.getUTCMinutes())+':'
+         + pad(d.getUTCSeconds())+'Z'
+}
 
 document.onreadystatechange = () => {
+    var end_date = new Date();
+    var start_date = new Date(end_date.getTime() - 1*60000);
+    console.log(ISODateString(start_date));
+    console.log(ISODateString(end_date));
     if (document.readyState === 'complete') {
         platformModal = $('#platformModal');
         if (view == `platform_list`) {

@@ -6,7 +6,7 @@ const platformName = "greenhouseCC8";
 const ip = "localhost:8080";
 var url = "mongodb://" + ip + ":27017/";
 const dbName = "greenhouse";
-const myIp = `192.168.0.101:8080`;
+const myIp = `192.168.0.105:8080`;
 
 exports.getHeader = function(){
   var obj = {}

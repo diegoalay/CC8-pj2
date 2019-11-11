@@ -85,19 +85,28 @@ function lookupEvent(search,event){
     }
 }
 
+function ISODateString(d) {
+    function pad(n) {return n<10 ? '0'+n : n}
+    return d.getUTCFullYear()+'-'
+         + pad(d.getUTCMonth()+1)+'-'
+         + pad(d.getUTCDate())+'T'
+         + pad(d.getUTCHours() - 6)+':'
+         + pad(d.getUTCMinutes())+':'
+         + pad(d.getUTCSeconds())+'Z'
+}
+
 function search(event,hardwareEvent){
     var obj = DB.getHeader();
     var url = url = event['url'];
     var requestUrl = '';
     var requestPort = '';
     var end_date = new Date();
-    var start_date = new Date(end_date.getTime() - 60000);
+    var start_date = new Date(end_date.getTime() - 1*60000);
     obj.search = {
         id_hardware: event.id,
-        start_date:  JSON.stringify(start_date),
-        finish_date: JSON.stringify(end_date),
+        start_date:  ISODateString(start_date),
+        finish_date: ISODateString(end_date),
     };   
-    console.log(obj.search);
     if(url.includes(':')){
         requestUrl = url.substring(0,url.indexOf(':'));
         requestPort = url.substring(url.indexOf(':') + 1,url.length);
@@ -116,7 +125,6 @@ function search(event,hardwareEvent){
     }
       
     const req = http.request(options, (res) => {
-        console.log(`statusCode: ${res.statusCode}`)
         res.on('data', function (body) {
             lookupEvent(JSON.parse(body),hardwareEvent);
         });
