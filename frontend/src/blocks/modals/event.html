@@ -12,6 +12,11 @@
                 <div class="row admin">
                     <div class="col-ms-12 col-md-12">
                         <h3>IF</h3>
+                        <div class="input-field">
+                            <select id="selectPlatformEvent" name="select" class="form-control pro-edt-select form-control-primary">
+                                <option url="default" selected>Seleccione plataforma.</option>
+                            </select>
+                        </div>
                         <hr>
                     </div>
                     <div class="col-ms-12 col-md-4">
@@ -98,7 +103,7 @@
                             </div>
                         </div>
                     </div>
-                </div>  
+                </div>
                 <div class="row admin">
                     <div class="col-ms-12 col-md-12">
                         <h3>ELSE</h3>
@@ -134,11 +139,11 @@
                             </div>
                         </div>
                     </div>
-                </div>                                                
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="botonEvento" data-dismiss="modal">Cancelar</button>
-                <button type="button" onClick="sendRequest()"  id="button-save" class="botonEvento">Guardar</button>
+                <button type="button" onClick="sendRequest()" id="button-save" class="botonEvento">Guardar</button>
             </div>
         </div>
     </div>
