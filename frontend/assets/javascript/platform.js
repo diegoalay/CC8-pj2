@@ -281,7 +281,29 @@ function header() {
     return obj;
 }
 
-function graphic(jsonObj) {
+function graphicOutput(jsonObj) {
+    let dataText = []
+    let dataStatus = [];
+    let trueLength = 0;
+    let falseLength = 0;
+    for (key in jsonObj) {
+        var freq = 0;
+        if (dataText[jsonObj[key].text] != undefined) {
+            freq = dataText[jsonObj[key].text] + 1;
+        } else {
+            freq = 1;
+        }
+        dataText[jsonObj[key].text] = freq;
+        if(jsonObj[key].status == true) trueLength++;
+        else if(jsonObj[key].status == false) falseLength++; 
+    }
+    dataStatus['true'] = trueLength != undefined ? trueLength : 0;
+    dataStatus['false'] = falseLength != undefined ? falseLength : 0;
+    console.log(dataText);
+    console.log(dataStatus);
+}
+
+function graphicInput(jsonObj) {
     let labels = [];
     let data = []
     for (key in jsonObj) {
@@ -334,67 +356,72 @@ function ISODateString(d) {
 
 function search(hardware, startDate, finishDate) {
     //buscamos en cache primero
-    let pending = false;
+    startDate = new Date(startDate);
+    startDate = startDate.setHours(startDate.getHours()-6);
+    startDate = (ISODateString(new Date(startDate)));
+    finishDate = new Date(finishDate);
+    finishDate = finishDate.setHours(finishDate.getHours()-6);
+    finishDate = (ISODateString(new Date(finishDate)));
     let obj = header();
     obj.search = {};
     obj.search['id_hardware'] = hardware;
-    obj.search['start_date'] = (startDate);
+    obj.search['start_date'] = (startDate);;
     obj.search['finish_date'] = (finishDate);
-    xhr.open('POST', 'http://' + myIp + '/search/', true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = function(e) {
-        var frontResp = JSON.parse(xhr.responseText);
-        let pendingData = false;
-        if ((xhr.readyState === 4) && (xhr.status === 200)) {
-            var length = Object.keys(frontResp.data).length;
-            if (length > 0) {
-                if (new Date(frontResp.start) > new Date(startDate) && new Date(frontResp.finish) >= new Date(finishDate)) {
-                    pending = new Date(new Date(frontResp.start).getTime());
-                    pending = pending.setHours(pending.getHours()-6);
-                    finishDate = ISODateString(pending);
-                    startDate = ISODateString(new Date(startDate));
-                    console.log('pedir el resto izquierda: ' + startDate + ' - ' + finishDate);
-                    pendingData = true;
-                } else if (new Date(frontResp.start) >= new Date(startDate) && new Date(frontResp.finish) < new Date(finishDate)) {
-                    let pending = new Date(new Date(frontResp.finish).getTime() + (new Date(finishDate).getTime() - new Date(frontResp.finish).getTime()));
-                    pending = pending.setHours(pending.getHours()-6);
-                    finishDate = ISODateString(new Date(pending));
-                    startDate = ISODateString(new Date(frontResp.finish));
-                    console.log('pedir el resto derecha: ' + new Date(frontResp.finish) + '-' + pending);
-                    pendingData = true;
-                } else if (new Date(frontResp.start) <= new Date(startDate) && new Date(frontResp.finish) >= new Date(finishDate)) {
-                    console.log('todo en cache');
-                } else {
-                    console.log('pedir todo 1');
-                    pendingData = true;
-                }
-            } else {
-                pendingData = true;
-                startDate = ISODateString(new Date(startDate));
-                finishDate = ISODateString(new Date(finishDate));
-                console.log('pedir todo 2');
-            }
+    // xhr.open('POST', 'http://' + myIp + '/search/', true);
+    // xhr.setRequestHeader("Content-Type", "application/json");
+    // xhr.onload = function(e) {
+    //     var frontResp = JSON.parse(xhr.responseText);
+    //     let pendingData = false;
+    //     if ((xhr.readyState === 4) && (xhr.status === 200)) {
+    //         var length = Object.keys(frontResp.data).length;
+    //         if (length > 0) {
+    //             if (new Date(frontResp.start) > new Date(startDate) && new Date(frontResp.finish) >= new Date(finishDate)) {
+    //                 pending = new Date(new Date(frontResp.start).getTime());
+    //                 pending = pending.setHours(pending.getHours()-6);
+    //                 finishDate = ISODateString(pending);
+    //                 startDate = ISODateString(new Date(startDate));
+    //                 console.log('pedir el resto izquierda: ' + startDate + ' - ' + finishDate);
+    //                 pendingData = true;
+    //             } else if (new Date(frontResp.start) >= new Date(startDate) && new Date(frontResp.finish) < new Date(finishDate)) {
+    //                 let pending = new Date(new Date(frontResp.finish).getTime() + (new Date(finishDate).getTime() - new Date(frontResp.finish).getTime()));
+    //                 pending = pending.setHours(pending.getHours()-6);
+    //                 finishDate = ISODateString(new Date(pending));
+    //                 startDate = ISODateString(new Date(frontResp.finish));
+    //                 console.log('pedir el resto derecha: ' + new Date(frontResp.finish) + '-' + pending);
+    //                 pendingData = true;
+    //             } else if (new Date(frontResp.start) <= new Date(startDate) && new Date(frontResp.finish) >= new Date(finishDate)) {
+    //                 console.log('todo en cache');
+    //             } else {
+    //                 console.log('pedir todo 1');
+    //                 pendingData = true;
+    //             }
+    //         } else {
+    //             pendingData = true;
+    //             startDate = ISODateString(new Date(startDate));
+    //             finishDate = ISODateString(new Date(finishDate));
+    //             console.log('pedir todo 2');
+    //         }
             console.log(obj);
-            let data = frontResp.data;
-            if (pendingData) {
+            if (true) {
                 obj.search['id_hardware'] = hardware;
                 obj.search['start_date'] = startDate;
                 xhr.open('POST', 'http://' + platformIp + '/search/', true);
                 xhr.setRequestHeader("Content-Type", "application/json");
                 xhr.onload = function(e) {
-                    console.log(xhr.responseText);
                     var platformResp = JSON.parse(xhr.responseText);
                     // console.log(platformResp);
-                    obj.data = platformResp.data
                     if ((xhr.readyState === 4) && (xhr.status === 200)) {
                         xhr.open('POST', 'http://' + myIp + '/device', true);
                         xhr.setRequestHeader("Content-Type", "application/json");
                         xhr.onload = function(e) {
                             if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                                let type = platformResp.type;
+                                let data = {};
                                 for (key in platformResp.data) {
                                     data[key] = platformResp.data[key];
                                 }
-                                graphic(data);
+                                if (type === `input`) graphicInput(data);
+                                else graphicOutput(data);
                             }
                         };
                         xhr.onerror = function(e) {
@@ -410,12 +437,12 @@ function search(hardware, startDate, finishDate) {
             } else {
                 graphic(data);
             }
-        }
-    };
-    xhr.onerror = function(e) {
-        console.error(xhr.statusText + e);
-    };
-    xhr.send(JSON.stringify(obj));
+    //     }
+    // };
+    // xhr.onerror = function(e) {
+    //     console.error(xhr.statusText + e);
+    // };
+    // xhr.send(JSON.stringify(obj));
 }
 
 function change(hardware) {
