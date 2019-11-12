@@ -25,9 +25,6 @@ function createForm(json) {
     var data = jsonObj.hardware;
     for (var key in data) {
         obj = data[key];
-        // console.log(obj);
-        //TABS
-
         form = document.createElement("div");
         form.setAttribute('id', "form-" + key)
         form.setAttribute('class', 'tab-pane fade');
@@ -287,8 +284,20 @@ function header() {
 }
 
 function graphicOutput(jsonObj) {
+    document.getElementById("graphics").innerHTML = "";
+    div = document.getElementById("graphics");
+    let chart = document.createElement("canvas");
+    chart.setAttribute("id","chartText");
+    div.appendChild(chart);
+
+    let chart2 = document.createElement("canvas");
+    chart2.setAttribute("id","chartStatus");
+    div.appendChild(chart2);
+
     let dataText = []
-    let dataStatus = [];
+    let dataTextValues = []
+    let dataTextLabels = []
+    let dataStatusValues = [];
     let trueLength = 0;
     let falseLength = 0;
     for (key in jsonObj) {
@@ -302,13 +311,59 @@ function graphicOutput(jsonObj) {
         if(jsonObj[key].status == true) trueLength++;
         else if(jsonObj[key].status == false) falseLength++; 
     }
-    dataStatus['true'] = trueLength != undefined ? trueLength : 0;
-    dataStatus['false'] = falseLength != undefined ? falseLength : 0;
-    console.log(dataText);
-    console.log(dataStatus);
+    for(let key in dataText){
+        dataTextValues.push(dataText[key]);
+        dataTextLabels.push(key);
+    }
+
+    trueLength = trueLength != undefined ? trueLength : 0
+    falseLength = falseLength != undefined ? falseLength : 0
+    dataStatusValues.push(trueLength);
+    dataStatusValues.push(falseLength);
+    console.log(dataStatusValues);
+
+    var charTxt = document.getElementById('chartText');
+
+    var textData = {
+        label: 'Text in devices',
+        data: dataTextValues,
+        borderWidth: 2,
+        hoverBorderWidth: 0
+    };
+
+    var chartText = new Chart(charTxt, {
+        type: 'horizontalBar',
+        data: {
+            labels: dataTextLabels,
+            datasets: [textData],
+        }
+    });
+
+    var charStats = document.getElementById('chartStatus');
+
+    var statusData = {
+        label: 'Status in devices',
+        data: dataStatusValues,
+        borderWidth: 2,
+        hoverBorderWidth: 0
+    };
+
+    var chartStatus = new Chart(charStats, {
+        type: 'horizontalBar',
+        data: {
+            labels: ["TRUE", "FALSE"],
+            datasets: [statusData],
+        }
+    });
 }
 
 function graphicInput(jsonObj) {
+    document.getElementById("graphics").innerHTML = "";
+    div = document.getElementById("graphics");
+    let chart = document.createElement("canvas");
+    chart.setAttribute("id","myChart");
+    div.appendChild(chart);
+
     let labels = [];
     let data = []
     for (key in jsonObj) {
@@ -340,47 +395,6 @@ function graphicInput(jsonObj) {
             }
         },
     });
-
-    var charTxt = document.getElementById('chartText');
-
-    var textData = {
-        label: 'Text in devices',
-        data: [10, 53, 14],
-        borderWidth: 2,
-        hoverBorderWidth: 0
-    };
-
-    var chartText = new Chart(charTxt, {
-        type: 'horizontalBar',
-        data: {
-            labels: ["text1", "text2", "text3"],
-            datasets: [textData],
-        }
-    });
-
-    var charStats = document.getElementById('chartStatus');
-
-    var statusData = {
-        label: 'Status in devices',
-        data: [10, 53, 14],
-        borderWidth: 2,
-        hoverBorderWidth: 0
-    };
-
-    var chartStatus = new Chart(charStats, {
-        type: 'horizontalBar',
-        data: {
-            labels: ["status1", "status2", "status3"],
-            datasets: [statusData],
-        }
-    });
-}
-
-function localeDate() {
-    const nDate = new Date().toLocaleString('en-US', {
-        timeZone: 'America/Guatemala'
-    });
-    console.log(nDate);
 }
 
 function search(hardware, startDate, finishDate) {
@@ -444,7 +458,7 @@ function search(hardware, startDate, finishDate) {
                         xhr.setRequestHeader("Content-Type", "application/json");
                         xhr.onload = function(e) {
                             if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                                let type = platformResp.type;
+                                let type = platformResp.search.type;
                                 let data = {};
                                 for (key in platformResp.data) {
                                     data[key] = platformResp.data[key];
