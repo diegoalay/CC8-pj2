@@ -308,8 +308,8 @@ function graphicOutput(jsonObj) {
             freq = 1;
         }
         dataText[jsonObj[key].text] = freq;
-        if(jsonObj[key].status == true) trueLength++;
-        else if(jsonObj[key].status == false) falseLength++; 
+        if (jsonObj[key].status == true) trueLength++;
+        else if (jsonObj[key].status == false) falseLength++;
     }
     for(let key in dataText){
         dataTextValues.push(dataText[key]);
@@ -400,10 +400,10 @@ function graphicInput(jsonObj) {
 function search(hardware, startDate, finishDate) {
     //buscamos en cache primero
     startDate = new Date(startDate);
-    startDate = startDate.setHours(startDate.getHours()-6);
+    startDate = startDate.setHours(startDate.getHours() - 6);
     startDate = (ISODateString(new Date(startDate)));
     finishDate = new Date(finishDate);
-    finishDate = finishDate.setHours(finishDate.getHours()-6);
+    finishDate = finishDate.setHours(finishDate.getHours() - 6);
     finishDate = (ISODateString(new Date(finishDate)));
     let obj = header();
     obj.search = {};
@@ -444,15 +444,19 @@ function search(hardware, startDate, finishDate) {
     //             finishDate = ISODateString(new Date(finishDate));
     //             console.log('pedir todo 2');
     //         }
-            console.log(obj);
-            if (true) {
-                obj.search['id_hardware'] = hardware;
-                obj.search['start_date'] = startDate;
-                xhr.open('POST', 'http://' + platformIp + '/search/', true);
+    console.log(obj);
+    if (true) {
+        obj.search['id_hardware'] = hardware;
+        obj.search['start_date'] = startDate;
+        xhr.open('POST', 'http://' + platformIp + '/search/', true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = function(e) {
+            var platformResp = JSON.parse(xhr.responseText);
+            // console.log(platformResp);
+            if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                xhr.open('POST', 'http://' + myIp + '/device', true);
                 xhr.setRequestHeader("Content-Type", "application/json");
                 xhr.onload = function(e) {
-                    var platformResp = JSON.parse(xhr.responseText);
-                    // console.log(platformResp);
                     if ((xhr.readyState === 4) && (xhr.status === 200)) {
                         xhr.open('POST', 'http://' + myIp + '/device', true);
                         xhr.setRequestHeader("Content-Type", "application/json");
@@ -477,9 +481,15 @@ function search(hardware, startDate, finishDate) {
                     console.error(xhr.statusText + e);
                 };
                 xhr.send(JSON.stringify(obj));
-            } else {
-                graphic(data);
             }
+        };
+        xhr.onerror = function(e) {
+            console.error(xhr.statusText + e);
+        };
+        xhr.send(JSON.stringify(obj));
+    } else {
+        graphic(data);
+    }
     //     }
     // };
     // xhr.onerror = function(e) {
