@@ -201,10 +201,6 @@ function ISODateString(d) {
 }
 
 document.onreadystatechange = () => {
-    var end_date = new Date();
-    var start_date = new Date(end_date.getTime() - 1*60000);
-    console.log(ISODateString(start_date));
-    console.log(ISODateString(end_date));
     if (document.readyState === 'complete') {
         platformModal = $('#platformModal');
         if (view == `platform_list`) {

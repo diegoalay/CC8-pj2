@@ -252,6 +252,7 @@ async function handlerEvent(event){
 // }
 
 handlerExternalEvent = async function(_id, time){  
+    handlerEvent(event);
     while(true){
         var query = {_id: _id, who: `notmine`}
         var event = await DB.getEventByCondition(query);
@@ -266,17 +267,17 @@ handlerExternalEvent = async function(_id, time){
 }
 
 
-// lookupNewEvents = async () => {
-//     var query = {who: `notmine`}
-//     var events = await DB.getEventsByCondition(query);
-//     for(key in events){
-//         event = events[key];
-//         if(!(externalEvents.includes(event._id))) {
-//             externalEvents.push(event._id);
-//             handlerExternalEvent(event._id, event.if.left.freq);
-//         }
-//     }
-// }
+lookupNewEvents = async () => {
+    var query = {who: `notmine`}
+    var events = await DB.getEventsByCondition(query);
+    for(key in events){
+        event = events[key];
+        if(!(externalEvents.includes(event._id))) {
+            externalEvents.push(event._id);
+            handlerExternalEvent(event._id, event.if.left.freq);
+        }
+    }
+}
 
 exports.handlerExternalEvents = async () => {
     var query = {who: `notmine`}
@@ -286,7 +287,7 @@ exports.handlerExternalEvents = async () => {
         externalEvents.push(event._id);
         handlerExternalEvent(event._id, event.if.left.freq);
     }
-    // lookupNewEvents();
+    lookupNewEvents();
 }
 
 exports.handlerById = async function(id_hardware){

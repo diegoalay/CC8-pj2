@@ -12,7 +12,7 @@ exports.getHeader = function(){
   var obj = {}
   obj.id = platformName;
   obj.url = myIp;
-  obj.date = getTimeInFormat();
+  obj.date = new Date(getTimeInFormat());
   return obj;  
 }
 
@@ -26,28 +26,12 @@ exports.platformName = function(){
 
 function getTimeByDate(date){
   var date = new Date(date);
-  var dateTime = (date.getTime() - 6); 
+  return date.setHours(date.getHours() - 6)
 }
 
 function getTimeInFormat(){
   var date = new Date();
-  var dateTime = (date.getTime() - 6); 
-}
-
-function ISODateString(d) {
-  function pad(n) {return n<10 ? '0'+n : n}
-  return d.getUTCFullYear()+'-'
-       + pad(d.getUTCMonth()+1)+'-'
-       + pad(d.getUTCDate())+'T'
-       + pad(d.getUTCHours() - 6)+':'
-       + pad(d.getUTCMinutes())+':'
-       + pad(d.getUTCSeconds())+'Z'
-}
-
-function getTime(){
-  var date = new Date();
-  var dateTime = (date.getTime() - 6); 
-  return dateTime;
+  return date.setHours(date.getHours() - 6)
 }
 
 exports.getIp = function(){
@@ -62,7 +46,7 @@ exports.createLogSearch = function(obj){
     var dbo = db.db(dbName); 
     dbo.collection("logs/search").insertOne(obj,function(err, res) {
       if (err) throw err;
-      console.log(type + " request");
+      // console.log(type + " request");
       db.close();
     });
   });
@@ -84,10 +68,10 @@ exports.createLogSearch = function(body){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
     var dbo = db.db(dbName); 
-    var obj = { data: body, date: GetTime()};
+    var obj = { data: body, date: new Date(getTimeInFormat())};
     dbo.collection("logs/search").insertOne(obj,function(err, res) {
       if (err) throw err;
-      console.log("search request");
+      // console.log("search request");
       db.close();
     });
   });
@@ -96,11 +80,11 @@ exports.createLogSearch = function(body){
 exports.createLogEvent = function(body){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
-    var obj = { data: body, date: GetTime()};
+    var obj = { data: body, date: new Date(getTimeInFormat())};
     var dbo = db.db(dbName); 
     dbo.collection("logs/events").insertOne(obj,function(err, res) {
       if (err) throw err;
-      console.log("event created");
+      // console.log("event created");
       db.close();
     });
   });
@@ -109,11 +93,11 @@ exports.createLogEvent = function(body){
 exports.createLogInfo = function(body){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
-    var obj = { data: body, date: GetTime()};
+    var obj = { data: body, date: new Date(getTimeInFormat())};
     var dbo = db.db(dbName); 
     dbo.collection("logs/info").insertOne(obj,function(err, res) {
       if (err) throw err;
-      console.log("info request");
+      // console.log("info request");
       db.close();
     });
   });
@@ -122,11 +106,11 @@ exports.createLogInfo = function(body){
 exports.createDevice = function(id, sensor, freq, status, text){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
-    var obj = {hardware_id: id, sensor: sensor, status: status, freq: freq, text: text, date: GetTime()};
+    var obj = {hardware_id: id, sensor: sensor, status: status, freq: freq, text: text, date: new Date(getTimeInFormat())};
     var dbo = db.db(dbName); 
     dbo.collection(id).insertOne(obj,function(err, res) {
       if (err) throw err;
-      console.log(`deviceInfo ${id} inserted`);
+      // console.log(`deviceInfo ${id} inserted`);
       db.close();
     });
   });
@@ -141,7 +125,7 @@ exports.change = function(idHardware, fields){
       dbo.collection("info").updateOne(query, { $set: fields }, function(err, res) {
         if (err) reject(false);
         else{
-          console.log("info update " + idHardware);
+          // console.log("info update " + idHardware);
           db.close();
           resolve(true);
         }
@@ -158,7 +142,7 @@ exports.createEvent = function(obj){
       dbo.collection("events").insertOne(obj,function(err, res) {
         if (err) reject(err);
         else{
-          console.log("event inserted " + res.insertedId);
+          // console.log("event inserted " + res.insertedId);
           db.close();
           resolve(res.insertedId);
         }
@@ -168,8 +152,8 @@ exports.createEvent = function(obj){
 }
 
 exports.updateEvent= function(idEvent, fields){
-  console.log(idEvent);
-  console.log(fields);
+  // console.log(idEvent);
+  // console.log(fields);
   return new Promise((resolve, reject) => {
     MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
       var query = { _id: ObjectID(idEvent) };
@@ -221,7 +205,7 @@ exports.searchEvents = function(idHardware,startDate,finishDate){
           $unwind:'$hardware'
         }, 
         {
-          '$match' : { 'date' : { '$gte' : getTimeByDate(startDate),  '$lte': getTimeByDate(finishDate)} }
+          '$match' : { 'date' : { '$gte' : new Date(startDate),  '$lt': new Date(finishDate)} }
         },              
         {
           $project: { 
@@ -240,8 +224,8 @@ exports.searchEvents = function(idHardware,startDate,finishDate){
           if(err)  reject(err) 
           else{
             // console.log(data);
-            db.close();
             resolve(data);
+            db.close();
           }
       });
     });
@@ -322,7 +306,7 @@ exports.getEventByCondition = function(condition){
       if (err) throw err;
       var dbo = db.db(dbName); 
       var query = condition
-      console.log(query);
+      // console.log(query);
       dbo.collection("events").findOne(query, function(err, data) {
         if(err)  reject(err) 
         else{
@@ -340,7 +324,7 @@ exports.getEventsByCondition = function(condition){
       if (err) throw err;
       var dbo = db.db(dbName); 
       var query = condition
-      console.log(query);
+      // console.log(query);
       dbo.collection("events").find(query).toArray(function(err, data) {
         if(err)  reject(err) 
         else{

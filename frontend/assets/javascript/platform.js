@@ -210,7 +210,7 @@ function correctFormat(type, val) {
         if (type == `text`) {
             return val;
         } else if (type == `status`) {
-            if (val == `true`) return true;
+            if (val === `true` || val === `1` || val === 1) return true;
             else return false;
         } else {
             return parseFloat(val);
@@ -237,19 +237,20 @@ function sendChange(id, type) {
     } else {
         text = document.getElementById(`${id}-text`);
         textVal = text.value;
-        var statusValor = document.getElementById(`${id}-status`).value;
-        alert(textVal)
-        if (text != "") {
+        if (textVal != "") {
             obj.change[id] = {
                 text: correctFormat(`text`, textVal),
             }
             send = true;
         }
 
-        obj.change[id] = {
-            status: correctFormat(`status`, statusValor),
+        var statusValor = document.getElementById(`${id}-status`).value;
+        if(statusValor != "") {
+            obj.change[id] = {
+                status: correctFormat(`status`, statusValor),
+            }
+            send = true;
         }
-        send = true;
         text.value = ``;
         status.value = ``;
     }
@@ -330,7 +331,6 @@ function ISODateString(d) {
          + pad(d.getUTCMinutes())+':'
          + pad(d.getUTCSeconds())+'Z'
 }
-
 
 function search(hardware, startDate, finishDate) {
     //buscamos en cache primero
@@ -440,7 +440,6 @@ function change(hardware) {
 }
 
 function poling() {
-    // setInterval(() => {
     var obj = header();
     xhr.open('POST', 'http://' + platformIp + '/info', true);
     xhr.setRequestHeader("Content-Type", "application/json");
@@ -455,7 +454,6 @@ function poling() {
         console.error(xhr.statusText + e);
     };
     xhr.send(JSON.stringify(obj));
-    // }, 2000);
 }
 
 function searchChart(){
