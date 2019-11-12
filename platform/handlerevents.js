@@ -11,19 +11,14 @@ function getKey(attributes){
 }
 
 function lookupEvent(search,event){
-    console.log(search);
     for(keyDate in search.data){
         var match = null;
         var key = getKey(event.if.right);
         var val = event.if.right[key];
         var hardware = search.data[keyDate];
-        var hardwareVal = hardware[key];
-        console.log("el key es: " + key);
-        console.log("el valor es: " + val);
-        console.log("el valor del hardware es: " + hardwareVal);        
+        var hardwareVal = hardware[key];        
         switch(event.if.condition.trim()){
             case '=':{
-                console.log("=")
                 if(hardwareVal == val){
                     if(match == null) match = true;
                 }else{
@@ -32,7 +27,6 @@ function lookupEvent(search,event){
                 break;
             }
             case '!=':{
-                console.log("!=")
                 if(hardwareVal != val){
                     if(match == null) match = true;
                 }else{
@@ -41,7 +35,6 @@ function lookupEvent(search,event){
                 break;
             }
             case '<':{
-                console.log("<")
                 if(hardwareVal < val){
                     if(match == null) match = true;
                 }else{
@@ -50,7 +43,6 @@ function lookupEvent(search,event){
                 break;
             }
             case '>':{
-                console.log(">")
                 if(hardwareVal > val){
                     if(match == null) match = true;
                 }else{
@@ -59,7 +51,6 @@ function lookupEvent(search,event){
                 break;
             }
             case '<=':{
-                console.log("<=")
                 if(hardwareVal <= val){
                     if(match == null) match = true;
                 }else{
@@ -68,7 +59,6 @@ function lookupEvent(search,event){
                 break;
             }
             case '>=':{
-                console.log(">=")
                 if(hardwareVal >= val){
                     if(match == null) match = true;
                 }else{
@@ -126,7 +116,11 @@ function search(event,hardwareEvent){
       
     const req = http.request(options, (res) => {
         res.on('data', function (body) {
-            lookupEvent(JSON.parse(body),hardwareEvent);
+            try{
+                lookupEvent(JSON.parse(body),hardwareEvent);
+            }catch(e){
+
+            }
         });
     })
       
@@ -139,7 +133,6 @@ function search(event,hardwareEvent){
 }
 
 function change(event){
-    console.log(event);
     var obj = DB.getHeader();
     var url = '';
     var requestUrl = '';
@@ -172,7 +165,7 @@ function change(event){
       
     const req = http.request(options, (res) => {
         res.on('data', function (body) {
-            console.log('body: ' + body);
+            // console.log('body: ' + body);
         });
     })
       
@@ -189,7 +182,6 @@ async function handlerEvent(event){
     var localIp = DB.ip();
     var idEvent = event.if.left.id;
     var urlEvent = event.if.left.url;
-    console.log(event);
     if(urlEvent == localIp){// hardware mine
         var key = getKey(event.if.right);
         var val = event.if.right[key];
@@ -197,7 +189,6 @@ async function handlerEvent(event){
         var hardwareVal = hardware[key];  
         switch(event.if.condition.trim()){
             case '=':{
-                console.log("=")
                 if(hardwareVal == val){
                     change(event.then)
                 }else{
@@ -206,7 +197,6 @@ async function handlerEvent(event){
                 break;
             }
             case '!=':{
-                console.log("!=")
                 if(hardwareVal != val){
                     change(event.then)
                 }else{
@@ -215,7 +205,6 @@ async function handlerEvent(event){
                 break;
             }
             case '<':{
-                console.log("<")
                 if(hardwareVal < val){
                     change(event.then)
                 }else{
@@ -224,7 +213,6 @@ async function handlerEvent(event){
                 break;
             }
             case '>':{
-                console.log(">")
                 if(hardwareVal > val){
                     change(event.then)
                 }else{
@@ -233,7 +221,6 @@ async function handlerEvent(event){
                 break;
             }
             case '<=':{
-                console.log("<=")
                 if(hardwareVal <= val){
                     change(event.then)
                 }else{
@@ -242,9 +229,7 @@ async function handlerEvent(event){
                 break;
             }
             case '>=':{
-                console.log(">=")
                 if(hardwareVal >= val){
-                    console.log('si');
                     change(event.then)
                 }else{
                     change(event.else)
@@ -271,9 +256,8 @@ handlerExternalEvent = async function(_id, time){
         var query = {_id: _id, who: `notmine`}
         var event = await DB.getEventByCondition(query);
         if(event == undefined) break;
-        console.log(new Date());
-        // var delayInMilliseconds = event.if.left.freq;
-        var delayInMilliseconds = 20000;
+        var delayInMilliseconds = event.if.left.freq;
+        // var delayInMilliseconds = ;
         setTimeout(function() {
             console.log(new Date());
             handlerEvent(event);

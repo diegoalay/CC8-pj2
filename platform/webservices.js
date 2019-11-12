@@ -3,7 +3,7 @@ var app = express(); // definimos la app usando express
 var bodyParser = require('body-parser'); //
 var DB = require('./database.js');
 var mqtt = require('mqtt');
-var client = mqtt.connect('mqtt://192.168.0.111');
+var client = mqtt.connect('mqtt://192.168.0.107');
 var handlerEvents = require('./handlerevents.js');
 var cors = require('cors');
 app.use(cors());
@@ -47,6 +47,7 @@ client.on('connect', function() {
 
 client.on('message', async function(topic, message) {
     obj = JSON.parse(message.toString());
+    console.log(obj);
     DB.change(obj.id, {sensor: correctFormat(`sensor`, obj.sensor)});
     events = await handlerEvents.handlerById(obj.id);
     resultSensor = await DB.getInfoById(obj.id);
@@ -101,8 +102,8 @@ app.post('/info', async(req, res, next) => {
 
 app.post('/search', async(req, res, next) => {
     var body = getParams(req);
+    console.log(body);
     var body = req.body;
-    // console.log(body);
     DB.createLogSearch(body);
     var id = body['id'];
     var url = body['url'];
@@ -180,6 +181,7 @@ app.post('/create', async(req, res, next) => {
 
 app.post('/update', async(req, res, next) => {
     var body = getParams(req);
+
     DB.createLogEvent(body);
     var idEvent = body.update.id;
     body.action = 'update';

@@ -24,14 +24,30 @@ exports.platformName = function(){
   return platformName;
 }
 
+function getTimeByDate(date){
+  var date = new Date(date);
+  var dateTime = (date.getTime() - 6); 
+}
+
 function getTimeInFormat(){
   var date = new Date();
-  return strftime('%Y-%m-%dT%H:%M:%S%z', date); 
+  var dateTime = (date.getTime() - 6); 
+}
+
+function ISODateString(d) {
+  function pad(n) {return n<10 ? '0'+n : n}
+  return d.getUTCFullYear()+'-'
+       + pad(d.getUTCMonth()+1)+'-'
+       + pad(d.getUTCDate())+'T'
+       + pad(d.getUTCHours() - 6)+':'
+       + pad(d.getUTCMinutes())+':'
+       + pad(d.getUTCSeconds())+'Z'
 }
 
 function getTime(){
   var date = new Date();
-  return date;
+  var dateTime = (date.getTime() - 6); 
+  return dateTime;
 }
 
 exports.getIp = function(){
@@ -68,7 +84,7 @@ exports.createLogSearch = function(body){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
     var dbo = db.db(dbName); 
-    var obj = { data: body, date: new Date(getTime())};
+    var obj = { data: body, date: GetTime()};
     dbo.collection("logs/search").insertOne(obj,function(err, res) {
       if (err) throw err;
       console.log("search request");
@@ -80,7 +96,7 @@ exports.createLogSearch = function(body){
 exports.createLogEvent = function(body){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
-    var obj = { data: body, date: new Date(getTime())};
+    var obj = { data: body, date: GetTime()};
     var dbo = db.db(dbName); 
     dbo.collection("logs/events").insertOne(obj,function(err, res) {
       if (err) throw err;
@@ -93,7 +109,7 @@ exports.createLogEvent = function(body){
 exports.createLogInfo = function(body){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
-    var obj = { data: body, date: new Date(getTime())};
+    var obj = { data: body, date: GetTime()};
     var dbo = db.db(dbName); 
     dbo.collection("logs/info").insertOne(obj,function(err, res) {
       if (err) throw err;
@@ -106,7 +122,7 @@ exports.createLogInfo = function(body){
 exports.createDevice = function(id, sensor, freq, status, text){
   MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
     if (err) throw err;
-    var obj = {hardware_id: id, sensor: sensor, status: status, freq: freq, text: text, date: new Date(getTime())};
+    var obj = {hardware_id: id, sensor: sensor, status: status, freq: freq, text: text, date: GetTime()};
     var dbo = db.db(dbName); 
     dbo.collection(id).insertOne(obj,function(err, res) {
       if (err) throw err;
@@ -152,6 +168,8 @@ exports.createEvent = function(obj){
 }
 
 exports.updateEvent= function(idEvent, fields){
+  console.log(idEvent);
+  console.log(fields);
   return new Promise((resolve, reject) => {
     MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
       var query = { _id: ObjectID(idEvent) };
@@ -203,7 +221,7 @@ exports.searchEvents = function(idHardware,startDate,finishDate){
           $unwind:'$hardware'
         }, 
         {
-          '$match' : { 'date' : { '$gte' : new Date(startDate),  '$lte': new Date(finishDate)} }
+          '$match' : { 'date' : { '$gte' : getTimeByDate(startDate),  '$lte': getTimeByDate(finishDate)} }
         },              
         {
           $project: { 
