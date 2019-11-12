@@ -245,7 +245,7 @@ function sendChange(id, type) {
         }
 
         var statusValor = document.getElementById(`${id}-status`).value;
-        if(statusValor != "") {
+        if (statusValor != "") {
             obj.change[id] = {
                 status: correctFormat(`status`, statusValor),
             }
@@ -335,9 +335,43 @@ function graphicInput(jsonObj) {
             }
         },
     });
+
+    var charTxt = document.getElementById('chartText');
+
+    var textData = {
+        label: 'Text in devices',
+        data: [10, 53, 14],
+        borderWidth: 2,
+        hoverBorderWidth: 0
+    };
+
+    var chartText = new Chart(charTxt, {
+        type: 'horizontalBar',
+        data: {
+            labels: ["text1", "text2", "text3"],
+            datasets: [textData],
+        }
+    });
+
+    var charStats = document.getElementById('chartStatus');
+
+    var statusData = {
+        label: 'Status in devices',
+        data: [10, 53, 14],
+        borderWidth: 2,
+        hoverBorderWidth: 0
+    };
+
+    var chartStatus = new Chart(charStats, {
+        type: 'horizontalBar',
+        data: {
+            labels: ["status1", "status2", "status3"],
+            datasets: [statusData],
+        }
+    });
 }
 
-function localeDate(){
+function localeDate() {
     const nDate = new Date().toLocaleString('en-US', {
         timeZone: 'America/Guatemala'
     });
@@ -345,13 +379,13 @@ function localeDate(){
 }
 
 function ISODateString(d) {
-    function pad(n) {return n<10 ? '0'+n : n}
-    return d.getUTCFullYear()+'-'
-         + pad(d.getUTCMonth()+1)+'-'
-         + pad(d.getUTCDate())+'T'
-         + pad(d.getUTCHours())+':'
-         + pad(d.getUTCMinutes())+':'
-         + pad(d.getUTCSeconds())+'Z'
+    function pad(n) { return n < 10 ? '0' + n : n }
+    return d.getUTCFullYear() + '-' +
+        pad(d.getUTCMonth() + 1) + '-' +
+        pad(d.getUTCDate()) + 'T' +
+        pad(d.getUTCHours()) + ':' +
+        pad(d.getUTCMinutes()) + ':' +
+        pad(d.getUTCSeconds()) + 'Z'
 }
 
 function search(hardware, startDate, finishDate) {
@@ -483,11 +517,11 @@ function poling() {
     xhr.send(JSON.stringify(obj));
 }
 
-function searchChart(){
+function searchChart() {
     var input = document.getElementById(`id_hardware_date`).value;
-    if(input == `default`){
+    if (input == `default`) {
         alert(`Seleccione un dispositivo`);
-    }else{
+    } else {
         search(input, start_day, end_day);
     }
 }
@@ -502,28 +536,28 @@ document.onreadystatechange = () => {
         start_day = new Date(moment().startOf('day')).toISOString();
         end_day = new Date(moment().endOf('day')).toISOString();
 
-        document.getElementById(`id_hardware_date`).addEventListener(`change`, function(){
+        document.getElementById(`id_hardware_date`).addEventListener(`change`, function() {
             searchChart();
         });
 
         $(function() {
             $('input[name="daterange"]').daterangepicker({
-            opens: "left",
-            drops: "down",
-            startDate: moment(),
-            ranges: {
-                'Hoy': [moment(), moment()],
-                'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                'Últimos 7 días': [moment().subtract(6, 'days'), moment()],
-                'Últimos 30 días': [moment().subtract(29, 'days'), moment()],
-                'Este mes': [moment().startOf('month'), moment().endOf('month')],
-                'Último mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-            },
+                opens: "left",
+                drops: "down",
+                startDate: moment(),
+                ranges: {
+                    'Hoy': [moment(), moment()],
+                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Últimos 7 días': [moment().subtract(6, 'days'), moment()],
+                    'Últimos 30 días': [moment().subtract(29, 'days'), moment()],
+                    'Este mes': [moment().startOf('month'), moment().endOf('month')],
+                    'Último mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
             }, function(start, end, label) {
                 start_day = new Date(start.startOf('day')).toISOString();
                 end_day = moment(end.endOf('day')).format("YYYY-MM-DDTHH:mm:ss.SSSZZ");
                 searchChart();
             });
         });
-    }  
+    }
 };
