@@ -4,14 +4,19 @@ let myName = "greenhouse";
 let start_day;
 let end_day;
 
-function getTimeInFormat() {
-    var date = new Date();
-    return date.toISOString();
+function ISODateString(d) {
+    function pad(n) { return n < 10 ? '0' + n : n }
+    return d.getUTCFullYear() + '-' +
+        pad(d.getUTCMonth() + 1) + '-' +
+        pad(d.getUTCDate()) + 'T' +
+        pad(d.getUTCHours()) + ':' +
+        pad(d.getUTCMinutes()) + ':' +
+        pad(d.getUTCSeconds()) + 'Z'
 }
 
-function convertDateInFormat(time) {
-    var date = new Date(time);
-    return date.toISOString();
+function getTimeInFormat() {
+    var date = new Date();
+    return ISODateString(date);
 }
 
 function createForm(json) {
@@ -376,16 +381,6 @@ function localeDate() {
         timeZone: 'America/Guatemala'
     });
     console.log(nDate);
-}
-
-function ISODateString(d) {
-    function pad(n) { return n < 10 ? '0' + n : n }
-    return d.getUTCFullYear() + '-' +
-        pad(d.getUTCMonth() + 1) + '-' +
-        pad(d.getUTCDate()) + 'T' +
-        pad(d.getUTCHours()) + ':' +
-        pad(d.getUTCMinutes()) + ':' +
-        pad(d.getUTCSeconds()) + 'Z'
 }
 
 function search(hardware, startDate, finishDate) {

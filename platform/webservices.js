@@ -130,7 +130,6 @@ app.post('/info', async(req, res, next) => {
 
 app.post('/search', async(req, res, next) => {
     var body = req.body;
-    console.log(body);
     DB.createLogSearch(body);
     var id = body['id'];
     var url = body['url'];
@@ -160,7 +159,6 @@ app.post('/search', async(req, res, next) => {
 
 app.post('/change', async(req, res, next) => {
     var body = req.body;
-    console.log(body);
     DB.createLogEvent(body);
     var id = body['id'];
     var url = body['url'];
@@ -208,15 +206,14 @@ app.post('/create', async(req, res, next) => {
 app.post('/update', async(req, res, next) => {
     var body = getParams(req);
     console.log(body);
-    
     DB.createLogEvent(body);
     var idEvent = body.update.id;
     body.action = 'update';
     for (key in body.update) {
         body[key] = body.update[key];
     }
-    if (body.create.if != undefined) {
-        if (body.create.if.left.url === DB.ip()) body.who = `mine`;
+    if (body.update.if != undefined) {
+        if (body.update.if.left.url === DB.ip()) body.who = `mine`;
         else body.who = `notmine`;
     }
     delete body.update.id;

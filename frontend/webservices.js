@@ -84,13 +84,15 @@ app.post('/events/create', async (req, res, next) => {
 
 app.post('/events/update', async (req, res, next) => {
     var body = getParams(req);
-    for(key in body.update){
-        body[key] = body.update[key];    
+    var idEvent = body._id;
+    body.type = 'update';
+    for (key in body.update) {
+        body[key] = body.update[key];
     }
-    var idEvent = body.update.id;
+    delete body.update.id;
     delete body.update;
-    DB.updateEvent(idEvent,body);
-    return res.end();
+    DB.updateEvent(idEvent, body);
+    res.end();
 });
 
 app.post('/events/delete', async (req, res, next) => {

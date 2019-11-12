@@ -6,7 +6,7 @@ const platformName = "greenhouseCC8";
 const ip = "localhost:8080";
 var url = "mongodb://" + ip + ":27017/";
 const dbName = "greenhouse";
-const myIp = `192.168.0.105:8080`;
+const myIp = `localhost:8080`;
 
 exports.getHeader = function(){
   var obj = {}
@@ -152,8 +152,6 @@ exports.createEvent = function(obj){
 }
 
 exports.updateEvent= function(idEvent, fields){
-  // console.log(idEvent);
-  // console.log(fields);
   return new Promise((resolve, reject) => {
     MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
       var query = { _id: ObjectID(idEvent) };

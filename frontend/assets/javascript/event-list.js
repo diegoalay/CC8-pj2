@@ -5,11 +5,12 @@ action = ``;
 idRow = ``;
 currentRow = ``;
 eventModal = ``;
-let ifIsDirty = ``;
-let thenIsDirty = ``;
-let elseIsDirty = ``;
-let eventData = [];
-let infoData = [];
+var ifIsDirty = ``;
+var thenIsDirty = ``;
+var elseIsDirty = ``;
+var eventData = [];
+var infoData = [];
+var sendUrl = null;
 
 function appendEvents(event,key) {
     var date = event.date;
@@ -32,7 +33,7 @@ function appendEvents(event,key) {
     text += `${idEvent}`;
     text += `</td>`;
     text += `<td id="${id}-url">`;
-    text +=   `${url}`;
+    text +=   `${event.platformUrl}`;
     text += `</td>`;    
     text += `<td id="${id}-date">`;
     text += `${date}`;
@@ -65,71 +66,71 @@ function editEvent(text, id, element) {
     document.getElementById(`titleEventModal`).textContent = text;  
     let event = eventData[id];
     let info = infoData[event.if.left.url]; 
-    console.log(info);
-//     leftPlatform = leftPlatform.options[leftPlatform.selectedIndex];
-//     leftHardware = document.getElementById('leftHardware')
-//     leftHardware = leftHardware.options[leftHardware.selectedIndex];
-//     condition = document.getElementById('condition');
-//     condition = condition.options[condition.selectedIndex].value;
-//     leftId = leftHardware.getAttribute('id');
-//     leftUrl = leftPlatform.getAttribute('url');
-//     rightKey = document.getElementById('rightPlatform');
-//     rightKey = rightKey.options[rightKey.selectedIndex].value;
-//     rightValue = correctFormat(rightKey, document.getElementById('rightValue').value);
-//     obj[key].if = {
-//         left: {
-//             url: leftUrl,
-//             id: leftId,
-//             freq: 6000,
-//         },
-//         condition: condition,
-//         right: {
-//             [`${rightKey}`]: rightValue,
-//         }
-//     };
-// }
+    console.log(event);
 
-// //then
-// if (thenIsDirty) {
-//     thenPlatform = document.getElementById('thenPlatform');
-//     thenPlatform = thenPlatform.options[thenPlatform.selectedIndex];
-//     thenHardware = document.getElementById('thenHardware');
-//     thenHardware = thenHardware.options[thenHardware.selectedIndex];
-//     thenUrl = thenPlatform.getAttribute('url');
-//     thenId = thenHardware.getAttribute('id');
-//     thenKey = document.getElementById('thenKey');
-//     thenKey = thenKey.options[thenKey.selectedIndex].value;
-//     thenValue = correctFormat(thenKey, document.getElementById('thenValue').value);
-//     obj[key].then = {
-//         url: thenUrl,
-//         id: thenId,
-//         [`${thenKey}`]: thenValue,       
-//     };
-// }
+    //PLATFORM
+    $("#selectPlatformEvent").val(`${event.platformUrl}`);
 
-// //else
-// if (elseIsDirty) {
-//     elsePlatform = document.getElementById('elsePlatform');
-//     elsePlatform = elsePlatform.options[elsePlatform.selectedIndex];
-//     elseHardware = document.getElementById('elseHardware');
-//     elseHardware = elseHardware.options[elseHardware.selectedIndex];
-//     elseUrl = elsePlatform.getAttribute('url');
-//     elseId = elseHardware.getAttribute('id');
-//     elseKey = document.getElementById('elseKey');
-//     elseKey = elseKey.options[elseKey.selectedIndex].value;
-//     elseValue = correctFormat(elseKey, document.getElementById('elseValue').value);
-//     obj[key].else = {
-//         url: elseUrl,
-//         id: elseId,
-//         [`${elseKey}`]: elseValue,
-//     };
-// }    
+    //IF
+    $("#leftPlatform").val(`${event.if.left.url}`);
+    changeSelect(document.getElementById(`leftPlatform`),event.if.left.url,'leftHardware');
+    $("#leftHardware").val(`${event.if.left.id}`);
+    $("#condition").val(`${event.if.condition}`);
+    var keyRigth;
+    var keyValue;
+    for(key in event.if.right){
+        keyRigth = key;
+        keyValue = event.if.right[key];
+        $("#rightPlatform").val(`${keyRigth}`);
+    }
+    $("#rightValue").val(`${keyValue}`);
+    if(event.if.left.freq != undefined) $("#rightFreq").val(`${event.if.left.freq}`);
+
+
+    //THEN
+    $("#thenPlatform").val(`${event.then.url}`);
+    changeSelect(document.getElementById(`thenPlatform`),event.then.url,'thenHardware');
+    $("#thenHardware").val(`${event.then.id}`);
+    var keyThen = key;
+    keyVale = ``;
+    for(let key in event.then) {
+        if(key !== `url` && key != `id`) {
+            keyThen = key;
+            keyValue = event.then[key];
+            $("#thenKey").val(`${key}`);
+        }
+    }
+    $("#thenValue").val(`${keyValue}`);
+
+    //ELSE
+    $("#elsePlatform").val(`${event.else.url}`);
+    changeSelect(document.getElementById(`elsePlatform`),event.else.url,'elseHardware');
+    $("#elseHardware").val(`${event.else.id}`);
+    var keyelse = key;
+    keyVale = ``;
+    for(let key in event.else) {
+        if(key !== `url` && key != `id`) {
+            keyelse = key;
+            keyValue = event.else[key];
+            $("#elseKey").val(`${key}`);
+        }
+    }
+    $("#elseValue").val(`${keyValue}`);
+    sendUrl = event.platformUrl;
 }
 
+function changeSelect(select, url, element) {
+    let option = [select.selectedIndex];
+    if(url == 'default') {
+        ifIsDirty = false; 
+        removeOptions(document.getElementById(element));
+    }else{
+        ifIsDirty = true;
+        appendHardware(url, element);
+    }
+}
 function deleteEvent(id, key, element){
     event = eventData[id];
-    console.log(event);
-    console.log(eventData);
     if(key == `create`) url = event.create.if.left.url;
     else url = event.if.left.url;
     currentRow = element.parentElement.parentElement;
@@ -168,52 +169,61 @@ function deleteEvent(id, key, element){
 }
 
 function sendEvent(key){
-    leftPlatform = document.getElementById('leftPlatform');
-    leftPlatform = leftPlatform.options[leftPlatform.selectedIndex];
-    // platformUrl = leftPlatform.getAttribute('url');
-    platformUrl = `localhost:8080`;
+    selectPlatformEvent = document.getElementById('selectPlatformEvent');
+    selectPlatformEvent = selectPlatformEvent.options[selectPlatformEvent.selectedIndex];
     event = eventData[idRow];
-    if(platformUrl == `default`) platformUrl = event.if.left.url;
-    var obj = header();
-    obj[key] = {};
-    if(key == 'create'){
-        obj[key] = (generateCondition(key))[key];
-    }else if(key == 'update'){
-        obj[key] = (generateCondition(key))[key];
-        obj[key].id = event.idEvent;
-    }else if(key == 'delete'){
-        obj[key].id = event.idEvent;
-    }
-    console.log(obj);
-    xhr.open('POST', 'http://' + platformUrl + '/' + key, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = function (e) {
-        var response = JSON.parse(xhr.responseText);
-        if(response.status.toUpperCase() == `OK`){
-            if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                if(key == 'create') obj.idEvent = response.idEvent;
-                xhr.open('POST', 'http://' + myIp + '/events/' + key, true);
-                xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.onload = function (e) {
-                    if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                        obj._id = xhr.responseText.replace(/['"]+/g, '');
-                        appendEvents(obj,key);
-                        eventModal.modal('hide');
-                    }
-                };
-                xhr.onerror = function (e) {
-                    console.error(xhr.statusText + e);
-                };
-                xhr.send(JSON.stringify(obj));             
-            }
-        }else{
-            alert('error al crear el evento');
+    console.log(`here`);
+    let platformUrl;
+    if(key === `create`) platformUrl = selectPlatformEvent.getAttribute('url');
+    else platformUrl = sendUrl;
+    if(platformUrl !== `default`){
+        alert(sendUrl);
+        alert(platformUrl);
+        var obj = header();
+        obj[key] = {};
+        if(key == 'create'){
+            obj[key] = (generateCondition(key))[key];
+        }else if(key == 'update'){
+            obj[key] = (generateCondition(key))[key];
+            obj[key].id = event.idEvent;
+        }else if(key == 'delete'){
+            obj[key].id = event.idEvent;
         }
-    };
-    xhr.onerror = function (e) {
-        console.error(xhr.statusText + e);
-    };
-    xhr.send(JSON.stringify(obj)); 
+        xhr.open('POST', 'http://' + platformUrl + '/' + key, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = function (e) {
+            obj.platformUrl = platformUrl;
+            obj.type = key;
+            var response = JSON.parse(xhr.responseText);
+            if(response.status.toUpperCase() == `OK`){
+                if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                    if(key === 'create' ) obj.idEvent = response.idEvent;
+                    else if(key === `update`) obj._id = event._id;
+                    xhr.open('POST', 'http://' + myIp + '/events/' + key, true);
+                    xhr.setRequestHeader("Content-Type", "application/json");
+                    xhr.onload = function (e) {
+                        if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                            obj._id = xhr.responseText.replace(/['"]+/g, '');
+                            if(key == 'create') appendEvents(obj,key);
+                            eventModal.modal('hide');
+                        }
+                    };
+                    xhr.onerror = function (e) {
+                        console.error(xhr.statusText + e);
+                    };
+                    xhr.send(JSON.stringify(obj));             
+                }
+            }else{
+                alert('error al crear el evento');
+            }
+        };
+        xhr.onerror = function (e) {
+            console.error(xhr.statusText + e);
+        };
+        xhr.send(JSON.stringify(obj)); 
+    } else {
+        alert(`Debe seleccionar a qué plataforma desea crear el evento`);
+    }
 }
 
 function poling() {
@@ -234,14 +244,19 @@ function poling() {
     xhr.send();
 }
 
-function getTimeInFormat() {
-    var date = new Date();
-    return date.toISOString();
+function ISODateString(d) {
+    function pad(n) { return n < 10 ? '0' + n : n }
+    return d.getUTCFullYear() + '-' +
+        pad(d.getUTCMonth() + 1) + '-' +
+        pad(d.getUTCDate()) + 'T' +
+        pad(d.getUTCHours()) + ':' +
+        pad(d.getUTCMinutes()) + ':' +
+        pad(d.getUTCSeconds()) + 'Z'
 }
 
-function convertDateInFormat(time) {
-    var date = new Date(time);
-    return date.toISOString();
+function getTimeInFormat() {
+    var date = new Date();
+    return ISODateString(date);
 }
 
 function header() {
@@ -313,11 +328,7 @@ function generateCondition(key) {
         thenId = thenHardware.getAttribute('id');
         thenKey = document.getElementById('thenKey');
         thenKey = thenKey.options[thenKey.selectedIndex].value;
-        console.log(thenKey);
-        console.log(document.getElementById('thenValue'));
-        console.log(document.getElementById('thenValue').value);
         thenValue = correctFormat(thenKey, document.getElementById('thenValue').value);
-        console.log(`value ${thenValue}`);
         obj[key].then = {
             url: thenUrl,
             id: thenId,
@@ -395,6 +406,7 @@ function info(url) {
 
 async function appendPlatforms(json) {
     jsonObj = JSON.parse(json);
+    var selectPlatformEvent = document.getElementById("selectPlatformEvent");
     var selectLeft = document.getElementById("leftPlatform");
     var selectThen = document.getElementById("thenPlatform");
     var selectElse = document.getElementById("elsePlatform");
@@ -403,23 +415,26 @@ async function appendPlatforms(json) {
         var url = obj[`url`];
         option = document.createElement("option");
         let name = obj.name;
-        option.setAttribute('value', name);
+        option.setAttribute('value', obj.url);
         option.setAttribute('url', obj.url);
         option2 = option.cloneNode(true);;
         option3 = option.cloneNode(true);
+        option4 = option.cloneNode(true);
         option.innerHTML = obj.name;
         option2.innerHTML = obj.name;
         option3.innerHTML = obj.name;
+        option4.innerHTML = obj.name;
         selectLeft.appendChild(option);
         selectThen.appendChild(option2);
         selectElse.appendChild(option3);
+        selectPlatformEvent.appendChild(option4);
         var infoPlatform = await info(obj.url);
-        console.log(name);
         var element = {
             id: name,
             hardware: infoPlatform.hardware,
         }
         infoData[`${url}`] = element;
+        console.log(infoData);
     }
 }
 
@@ -445,10 +460,59 @@ document.onreadystatechange = () => {
         }else{
             getPlatforms();
         }
+        
+        //DIRTY IF
+        document.getElementById(`leftHardware`).addEventListener(`change`, function () { 
+            ifIsDirty = true;
+        })
+
+        document.getElementById(`condition`).addEventListener(`change`, function () { 
+            ifIsDirty = true;
+        })
+
+        document.getElementById(`rightPlatform`).addEventListener(`change`, function () { 
+            ifIsDirty = true;
+        })
+
+        document.getElementById(`rightValue`).addEventListener(`change`, function () { 
+            ifIsDirty = true;
+        })
+
+        document.getElementById(`rightFreq`).addEventListener(`change`, function () { 
+            ifIsDirty = true;
+        })
+
+
+        //DIRTY THEN
+        document.getElementById(`thenHardware`).addEventListener(`change`, function () { 
+            thenIsDirty = true;
+        })
+
+        document.getElementById(`thenKey`).addEventListener(`change`, function () { 
+            thenIsDirty = true;
+        })
+
+        document.getElementById(`thenValue`).addEventListener(`change`, function () { 
+            thenIsDirty = true;
+        })
+
+        //DIRTY ELSE
+        document.getElementById(`elseHardware`).addEventListener(`change`, function () { 
+            elseIsDirty = true;
+        })
+
+        document.getElementById(`elseKey`).addEventListener(`change`, function () { 
+            elseIsDirty = true;
+        })
+
+        document.getElementById(`elseValue`).addEventListener(`change`, function () { 
+            elseIsDirty = true;
+        })        
+
+        //SELECT EVENTS
         document.getElementById(`leftPlatform`).addEventListener('change', function(){
             let option = this[this.selectedIndex];
             const url = option.getAttribute('url');
-            console.log(url);
             if(url == 'default') {
                 ifIsDirty = false; 
                 removeOptions(document.getElementById('leftHardware'));
@@ -479,6 +543,5 @@ document.onreadystatechange = () => {
                 appendHardware(url,'elseHardware');
             }
         });
-    
     }
 };

@@ -180,66 +180,68 @@ function change(event){
 
 async function handlerEvent(event){
     var localIp = DB.ip();
-    var idEvent = event.if.left.id;
-    var urlEvent = event.if.left.url;
-    if(urlEvent == localIp){// hardware mine
-        var key = getKey(event.if.right);
-        var val = event.if.right[key];
-        var hardware = await DB.getInfoById(idEvent);
-        var hardwareVal = hardware[key];  
-        switch(event.if.condition.trim()){
-            case '=':{
-                if(hardwareVal == val){
-                    change(event.then)
-                }else{
-                    change(event.else)
+    if(event != undefined){
+        var idEvent = event.if.left.id;
+        var urlEvent = event.if.left.url;
+        if(urlEvent == localIp){// hardware mine
+            var key = getKey(event.if.right);
+            var val = event.if.right[key];
+            var hardware = await DB.getInfoById(idEvent);
+            var hardwareVal = hardware[key];  
+            switch(event.if.condition.trim()){
+                case '=':{
+                    if(hardwareVal == val){
+                        change(event.then)
+                    }else{
+                        change(event.else)
+                    }
+                    break;
                 }
-                break;
-            }
-            case '!=':{
-                if(hardwareVal != val){
-                    change(event.then)
-                }else{
-                    change(event.else)
-                }                  
-                break;
-            }
-            case '<':{
-                if(hardwareVal < val){
-                    change(event.then)
-                }else{
-                    change(event.else)
+                case '!=':{
+                    if(hardwareVal != val){
+                        change(event.then)
+                    }else{
+                        change(event.else)
+                    }                  
+                    break;
                 }
-                break;
-            }
-            case '>':{
-                if(hardwareVal > val){
-                    change(event.then)
-                }else{
-                    change(event.else)
+                case '<':{
+                    if(hardwareVal < val){
+                        change(event.then)
+                    }else{
+                        change(event.else)
+                    }
+                    break;
                 }
-                break;
-            }
-            case '<=':{
-                if(hardwareVal <= val){
-                    change(event.then)
-                }else{
-                    change(event.else)
+                case '>':{
+                    if(hardwareVal > val){
+                        change(event.then)
+                    }else{
+                        change(event.else)
+                    }
+                    break;
                 }
-                break;
-            }
-            case '>=':{
-                if(hardwareVal >= val){
-                    change(event.then)
-                }else{
-                    change(event.else)
+                case '<=':{
+                    if(hardwareVal <= val){
+                        change(event.then)
+                    }else{
+                        change(event.else)
+                    }
+                    break;
                 }
-                break;
+                case '>=':{
+                    if(hardwareVal >= val){
+                        change(event.then)
+                    }else{
+                        change(event.else)
+                    }
+                    break;
+                }
             }
-        }
-    }else{//hardware not mine
-        var searchData = search(event.if.left,event);
-    }   
+        }else{//hardware not mine
+            var searchData = search(event.if.left,event);
+        }   
+    }
     return true;
 }
  
@@ -260,7 +262,6 @@ handlerExternalEvent = async function(_id, time){
         var delayInMilliseconds = event.if.left.freq;
         // var delayInMilliseconds = ;
         setTimeout(function() {
-            console.log(new Date());
             handlerEvent(event);
         }, delayInMilliseconds);   
     }

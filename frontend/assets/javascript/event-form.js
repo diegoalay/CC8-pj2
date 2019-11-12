@@ -1,13 +1,19 @@
 
-function getTimeInFormat(){
-    var date = new Date();
-    return date.toISOString(); 
-  }
+    function ISODateString(d) {
+        function pad(n) { return n < 10 ? '0' + n : n }
+        return d.getUTCFullYear() + '-' +
+            pad(d.getUTCMonth() + 1) + '-' +
+            pad(d.getUTCDate()) + 'T' +
+            pad(d.getUTCHours()) + ':' +
+            pad(d.getUTCMinutes()) + ':' +
+            pad(d.getUTCSeconds()) + 'Z'
+    }
+    
+    function getTimeInFormat() {
+        var date = new Date();
+        return ISODateString(date);
+    }
   
-  function convertDateInFormat(time){
-      var date = new Date(time);
-      return date.toISOString();
-  }
   
   function header(){
         obj = {

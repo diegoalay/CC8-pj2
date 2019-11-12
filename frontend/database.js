@@ -108,19 +108,19 @@ exports.createDevice = function(obj){
 }
 
 exports.updateEvent= function(idEvent, fields){
-  return new Promise((resolve, reject) => {
-    MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
-      var query = { _id: ObjectID(idEvent) };
-      var dbo = db.db(dbName); 
-      dbo.collection("events").updateOne(query, { $set: fields }, function(err, res) {
-        if (err) reject(false);
-        else{
-          console.log("event updated " + idEvent);
-          db.close();
-          resolve(true);
-        }
-      });
-    });
+  obj = {};
+  if(fields.platformUrl != undefined) obj.platformUrl = fields.platformUrl;
+  if(fields.if != undefined) obj.if = fields.if;
+  if(fields.then != undefined) obj.then = fields.then;
+  if(fields.else != undefined) obj.else = fields.else;
+  MongoClient.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }, function(err, db) {
+    var dbo = db.db(dbName); 
+    dbo.collection("events").updateOne(
+      { _id: ObjectID(idEvent) },
+      {
+        $set: obj,
+      }
+    );
   });
 }
 
