@@ -281,39 +281,7 @@ function header() {
     return obj;
 }
 
-function graphic(jsonObj) {
-    let labels = [];
-    let data = []
-    for (key in jsonObj) {
-        labels.push(key);
-        data.push(jsonObj[key].sensor);
-    }
-
-    var ctx = document.getElementById('myChart').getContext('2d');
-
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        backgroundColor: '#fff',
-        data: {
-            labels: labels,
-            borderColor: "#fffff",
-            datasets: [{
-                label: 'Sensor vs Fecha',
-                data: data,
-                borderColor: "#000",
-                borderWidth: "1",
-                hoverBorderColor: "#000",
-                backgroundColor: [
-                    "#6970d5"
-                ],
-                fill: false,
-            }],
-            options: {
-                responsive: true,
-            }
-        },
-    });
-
+function outputGraphic() {
     var charTxt = document.getElementById('chartText');
 
     var textData = {
@@ -346,6 +314,40 @@ function graphic(jsonObj) {
             labels: ["status1", "status2", "status3"],
             datasets: [statusData],
         }
+    });
+}
+
+function graphic(jsonObj) {
+    let labels = [];
+    let data = []
+    for (key in jsonObj) {
+        labels.push(key);
+        data.push(jsonObj[key].sensor);
+    }
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        backgroundColor: '#fff',
+        data: {
+            labels: labels,
+            borderColor: "#fffff",
+            datasets: [{
+                label: 'Sensor vs Fecha',
+                data: data,
+                borderColor: "#000",
+                borderWidth: "1",
+                hoverBorderColor: "#000",
+                backgroundColor: [
+                    "#6970d5"
+                ],
+                fill: false,
+            }],
+            options: {
+                responsive: true,
+            }
+        },
     });
 }
 
