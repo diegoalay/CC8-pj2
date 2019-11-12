@@ -152,7 +152,7 @@ app.post('/search', async(req, res, next) => {
                 text: result[i].text,
                 freq: result[i].freq,
             }
-            obj.data[strftime('%Y-%m-%dT%H:%M:%S%z', new Date(result[i].date))] = eachObj;
+            obj.data[ISODateString(new Date(result[i].date))] = eachObj;
         }
     }
     res.jsonp(obj);
